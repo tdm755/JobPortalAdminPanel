@@ -189,7 +189,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Notification --> */}
               <li>
                 <NavLink
-                  to="#"
+                  to="/candidatedetails"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white `}
                 // ${pathname.includes('') && 'bg-white  dark:bg-meta-4'
                 // }
@@ -204,7 +204,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Menu Item Settings --> */}
               <li>
                 <NavLink
-                  to="/employers"
+                  to="/employersdetails"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white `}
                 // ${pathname.includes('') &&
                 //   'bg-white  dark:bg-meta-4'
@@ -237,7 +237,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Manage Job Category --> */} 
               <li>
                 <NavLink
-                  to="#"
+                  to="/manageadvertisement"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white `}
                 // ${pathname.includes('') &&
                 //   'bg-white  dark:bg-meta-4'

@@ -9,7 +9,8 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
-import Employers from './pages/Employers/Employers.tsx';
+import Employers from './pages/Employers/EmployerCards.tsx';
+import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -87,13 +88,22 @@ function App() {
         />  
 
         <Route
-          path="/employers"
+          path="/employersdetails"
           element={
             <>
               <Employers />
             </>
           }
-        />       
+        /> 
+        <Route
+          path="/candidatedetails"
+          element={
+            <>
+              <CandidateDetails />
+            </>
+          }
+        />      
+           
       </Routes>
     </>
   );
