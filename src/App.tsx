@@ -29,8 +29,16 @@ function App() {
   ) : (
     <>
       <Routes>
-        <Route
+      <Route
           index
+          element={
+            <>
+              <SignIn />
+            </>
+          }
+        /> 
+        <Route
+          path='/dashbordsection'
           element={
             <>
               <ECommerce />
@@ -77,15 +85,7 @@ function App() {
               <Buttons />
             </>
           }
-        />
-        <Route
-          path="/auth/signin"
-          element={
-            <>
-              <SignIn />
-            </>
-          }
-        />  
+        />         
 
         <Route
           path="/employersdetails"

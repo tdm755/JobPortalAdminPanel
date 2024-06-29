@@ -114,7 +114,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   return (
                     <React.Fragment>
                       <NavLink
-                        to="/"
+                        to="/dashbordsection"
                         className={`group relative flex items-center gap-2.5 rounded-sm px-4 py-2 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white ${(pathname === '/' ||
                           pathname.includes('dashboard')) &&
                           'bg-white  dark:bg-meta-4'
