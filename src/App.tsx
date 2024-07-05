@@ -55,6 +55,7 @@ function App() {
   ) : (
     <>
      <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+     <ToastContainer />
       <Routes>
         <Route
           index
