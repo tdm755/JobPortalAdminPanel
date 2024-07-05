@@ -24,6 +24,8 @@ function CandidateDetails() {
     fetchData();
   }, []);
 
+  console.log(candidates)
+
   return (
     <DefaultLayout>
       <>
