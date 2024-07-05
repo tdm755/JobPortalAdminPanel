@@ -29,6 +29,10 @@ function CandidateDetails() {
   return (
     <DefaultLayout>
       <>
+      {/* <form action="#">
+ 
+</form> */}
+
         <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
         <div className="p-4 sm:p-6">
           <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">

@@ -63,8 +63,8 @@ function EmployerCards() {
           <tbody>
 
 
-            {employers.map((employer)=>(
-                <tr key={employer.EmployerProfile.eid} className="border-b">
+            {employers.map((employer)=>{
+               return  <tr key={employer.EmployerProfile.eid} className="border-b">
                 <td className="px-4 py-2">{employer.EmployerProfile.eid}</td>
                 <td className="px-4 py-2">
                   <div className="flex items-center">                  
@@ -87,16 +87,12 @@ function EmployerCards() {
                 </td>
                 <td className="px-4 py-2">
                   <div className="flex space-x-2 sm:space-x-3">
-                    <button className=" bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"><img className='w-5' src={viewIcon} alt="" /></button>
+                    <Link to={'viewandeditdetails'}> <button className=" bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"><img className='w-5' src={viewIcon} alt="" /></button></Link>
                     <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={deleteIcon} alt=""/></button>
                   </div>
                 </td>
               </tr>
-            ))}
-            
-
-
-
+              })}
           </tbody>
         </table>
       </div>
