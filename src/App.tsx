@@ -1,6 +1,7 @@
 import { useEffect, useState, createContext } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
-
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import Chart from './pages/Chart';
@@ -12,12 +13,34 @@ import Buttons from './pages/UiElements/Buttons';
 import Employers from './pages/Employers/EmployerCards.tsx';
 import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
 import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage2.jsx';
+import { centralizedAuthCheck } from './utils/authUtils.js';
 
+export const AuthContext = createContext();
 
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
+  const navigate = useNavigate();
+
+  const login = () => {
+    setIsLoggedIn(true);
+  };
+
+  const logout = () => {
+    setIsLoggedIn(false);
+    // Clear JWT cookie or local storage here if needed
+  };
+
+  useEffect(() => {
+    const checkAuthentication = async () => {
+      await centralizedAuthCheck(navigate, pathname === '/signIn');
+      setLoading(false);
+    };
+
+    checkAuthentication();
+  }, [navigate, pathname]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -31,9 +54,11 @@ function App() {
     <Loader />
   ) : (
     <>
+     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
       <Routes>
         <Route
           index
+          path='/SignIn'
           element={
             <>
               <SignIn />
@@ -117,6 +142,7 @@ function App() {
 
 
       </Routes>
+      </AuthContext.Provider>
     </>
   );
 }

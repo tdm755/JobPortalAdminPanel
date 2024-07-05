@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import Logo from '../../../public/AplaKaamLogo.png';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { centralizedAuthCheck } from '../../utils/authUrils';
+import { centralizedAuthCheck } from '../../utils/authUtils';
 import { loginUser } from '../../api/api';
 import { AuthContext } from '../../App';
 import { toast } from 'react-toastify';
