@@ -11,6 +11,7 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import Employers from './pages/Employers/EmployerCards.tsx';
 import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
+import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage2.jsx';
 
 
 
@@ -31,14 +32,14 @@ function App() {
   ) : (
     <>
       <Routes>
-      <Route
+        <Route
           index
           element={
             <>
               <SignIn />
             </>
           }
-        /> 
+        />
         <Route
           path='/dashbordsection'
           element={
@@ -46,7 +47,7 @@ function App() {
               <ECommerce />
             </>
           }
-        />        
+        />
         <Route
           path="/profile"
           element={
@@ -55,7 +56,7 @@ function App() {
             </>
           }
         />
-        
+
         <Route
           path="/settings"
           element={
@@ -87,7 +88,7 @@ function App() {
               <Buttons />
             </>
           }
-        />         
+        />
 
         <Route
           path="/employersdetails"
@@ -96,7 +97,7 @@ function App() {
               <Employers />
             </>
           }
-        /> 
+        />
         <Route
           path="/candidatedetails"
           element={
@@ -104,8 +105,17 @@ function App() {
               <CandidateDetails />
             </>
           }
-        />      
-           
+        />
+        <Route
+          path="/setpakages"
+          element={
+            <>
+              <EmployersPakage2 />
+            </>
+          }
+        />
+
+
       </Routes>
     </>
   );
