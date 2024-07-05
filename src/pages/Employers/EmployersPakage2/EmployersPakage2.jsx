@@ -215,6 +215,7 @@ function EmployersPakage2() {
                                                                          className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                           type="text" 
                                                                           name='price'
+                                                                          value={Prices.Bronze.price}
                                                                           onChange={(e)=>{handlePriceChange(e, 'Bronze')}}
                                                                           />
                                                                           </span>
@@ -223,6 +224,7 @@ function EmployersPakage2() {
                                                                             className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                              type="text"
                                                                              name='days'
+                                                                             value={Prices.Bronze.days}
                                                                              onChange={(e)=>{handlePriceChange(e, 'Bronze')}}
                                                                               />
                                                                               </span>
@@ -239,6 +241,7 @@ function EmployersPakage2() {
                                                                          className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                           type="text" 
                                                                           name='price'
+                                                                          value={Prices.Silver.price}
                                                                           onChange={(e)=>{handlePriceChange(e, 'Silver')}}
                                                                           />
                                                                           </span>
@@ -247,6 +250,7 @@ function EmployersPakage2() {
                                                                             className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                              type="text"
                                                                              name='days'
+                                                                             value={Prices.Silver.days}
                                                                              onChange={(e)=>{handlePriceChange(e, 'Silver')}}
                                                                               />
                                                                               </span>
@@ -263,6 +267,7 @@ function EmployersPakage2() {
                                                                          className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                           type="text" 
                                                                           name='price'
+                                                                          value={Prices.Platinum.price}
                                                                           onChange={(e)=>{handlePriceChange(e, 'Platinum')}}
                                                                           />
                                                                           </span>
@@ -271,6 +276,7 @@ function EmployersPakage2() {
                                                                             className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                              type="text"
                                                                              name='days'
+                                                                             value={Prices.Platinum.days}
                                                                              onChange={(e)=>{handlePriceChange(e, 'Platinum')}}
                                                                               />
                                                                               </span>
@@ -288,6 +294,7 @@ function EmployersPakage2() {
                                                                          className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                           type="text" 
                                                                           name='price'
+                                                                          value={Prices.Gold.price}
                                                                           onChange={(e)=>{handlePriceChange(e, 'Gold')}}
                                                                           />
                                                                           </span>
@@ -296,6 +303,7 @@ function EmployersPakage2() {
                                                                             className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
                                                                              type="text"
                                                                              name='days'
+                                                                             value={Prices.Gold.days}
                                                                              onChange={(e)=>{handlePriceChange(e, 'Gold')}}
                                                                               />
                                                                               </span>

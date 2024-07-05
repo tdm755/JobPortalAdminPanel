@@ -1,8 +1,26 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import DefaultLayout from '../../../layout/DefaultLayout'
 import './EmployerProfile.css';
+import { useParams } from 'react-router-dom';
 
 function EmployerProfile() {
+
+  const {profileId} = useParams();
+
+
+  const baseUrl = `http://localhost:5000/api/admin/employers/profile/:${profileId}`;
+
+  useEffect(()=>{
+    async function fetchData() {
+      const response = await fetch(baseUrl);
+      const data = await response.json();
+      console.log(data);
+    }
+    fetchData();
+  },[])
+
+  // console.log(id);
+  
   return (
     <DefaultLayout>
       <form action="">

@@ -118,7 +118,7 @@ function App() {
         />
 
         <Route path="/employersdetails" element={<Employers />} />
-        <Route path="employersdetails/viewandeditdetails" element={<EmployerProfile />} />
+        <Route path="/viewandeditdetails/:profileId" element={<EmployerProfile />} />
 
         <Route
           path="/candidatedetails"
