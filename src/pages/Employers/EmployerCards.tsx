@@ -93,10 +93,6 @@ function EmployerCards() {
                 </td>
               </tr>
               })}
-            
-
-
-
           </tbody>
         </table>
       </div>
