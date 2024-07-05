@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, createContext } from 'react';
 import { Route, Routes, useLocation } from 'react-router-dom';
 
 import Loader from './common/Loader';
@@ -11,6 +11,8 @@ import Alerts from './pages/UiElements/Alerts';
 import Buttons from './pages/UiElements/Buttons';
 import Employers from './pages/Employers/EmployerCards.tsx';
 import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
+
+
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
@@ -110,3 +112,4 @@ function App() {
 }
 
 export default App;
+
