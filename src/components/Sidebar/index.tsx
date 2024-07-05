@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../../public/AplaKaamLogo.png';
 import packageIcon from '../../images/icon/SetPackage.svg'
 import CandidatesIcon from '../../images/icon/CandidateIcons.svg'
-
+import { AuthContext } from '../../App';
+import { logoutApi } from '../../api/api';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -12,6 +13,24 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  
+  const handleLogout = async () => {
+    try {
+      const response = await logoutApi();
+      if (response.status === 200) {
+        console.log("Logout successful");
+        logout(); // Update the context to reflect the logout state
+        navigate("/SignIn"); // Navigate to the login page after successful logout
+      } else {
+        console.log("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
   const location = useLocation();
   const { pathname } = location;
 
@@ -66,7 +85,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
     >
       {/* <!-- SIDEBAR HEADER --> */}
       <div className="flex items-center justify-center gap-2 px-6 py-5.5 lg:py-6.5">
-        <NavLink to="/">
+        <NavLink to="/SignIn">
           <img className='w-44 ' src={Logo} alt="Logo" />
         </NavLink>
 
@@ -497,9 +516,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
               <li>
                 <NavLink
-                  to="/settings"
-                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white ${pathname.includes('settings') &&
-                    'bg-white  dark:bg-meta-4'
+                  to={"/"} onClick={handleLogout}
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white 
                     }`}
                 >
                   <svg
