@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import DefaultLayout from '../../layout/DefaultLayout.js'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
@@ -7,6 +8,26 @@ import deleteIcon from '../../images/icon/DeleteIcon.svg'
 import './EmployerTable.css';
 
 function EmployerCards() {
+
+  const [employers, setEmployers] = useState([]);
+  const baseUrl = `http://localhost:5000/api/admin/employers`;
+
+  useEffect(()=>{
+    const fetchData = async () =>{
+      try {
+        const response = await fetch(baseUrl);
+        const data = await response.json();
+        setEmployers(data.data.employers)
+      } catch (error) {
+        console.error('Error fetching candidates:', error);
+        
+      }
+    }
+    fetchData();
+  },[])
+
+
+
   return (
    <DefaultLayout>
     <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
@@ -42,34 +63,36 @@ function EmployerCards() {
           <tbody>
 
 
-            <tr className="border-b">
-              <td className="px-4 py-2">34</td>
-              <td className="px-4 py-2">
-                <div className="flex items-center">                  
-                  <div>
-                    <div className="font-medium text-[#1967d2]">Wanda Montgomery</div>
-                    <div className="text-xs sm:text-sm text-gray-500">
-                      New York
+            {employers.map((employer)=>(
+                <tr key={employer.EmployerProfile.eid} className="border-b">
+                <td className="px-4 py-2">{employer.EmployerProfile.eid}</td>
+                <td className="px-4 py-2">
+                  <div className="flex items-center">                  
+                    <div>
+                      <div className="font-medium text-[#1967d2]">{employer.EmployerProfile.company_name}</div>
+                      <div className="text-xs sm:text-sm text-gray-500">
+                      {employer.EmployerProfile.city}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </td>
-              <td className="px-4 py-2">tdm75513@gmail.com</td>
-              <td className="px-4 py-2 text-sm">
-                aplakaam.com                
-              </td>
-              <td className="px-4 py-2">
-                <span className="px-2 py-1 text-xs leading-4 font-semibold rounded-full">
-                  8090****89
-                </span>
-              </td>
-              <td className="px-4 py-2">
-                <div className="flex space-x-2 sm:space-x-3">
-                  <button className=" bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"><img className='w-5' src={viewIcon} alt="" /></button>
-                  <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={deleteIcon} alt=""/></button>
-                </div>
-              </td>
-            </tr>
+                </td>
+                <td className="px-4 py-2">{employer.email}</td>
+                <td className="px-4 py-2 text-sm">
+                  {employer.EmployerProfile.company_website}               
+                </td>
+                <td className="px-4 py-2">
+                  <span className="px-2 py-1 text-xs leading-4 font-semibold rounded-full">
+                    {employer.EmployerProfile.phone_number}
+                  </span>
+                </td>
+                <td className="px-4 py-2">
+                  <div className="flex space-x-2 sm:space-x-3">
+                    <button className=" bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"><img className='w-5' src={viewIcon} alt="" /></button>
+                    <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={deleteIcon} alt=""/></button>
+                  </div>
+                </td>
+              </tr>
+            ))}
             
 
 
