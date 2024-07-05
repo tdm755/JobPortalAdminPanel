@@ -8,7 +8,7 @@ function EmployerProfile() {
   const {profileId} = useParams();
 
 
-  const baseUrl = `http://localhost:5000/api/admin/employers/profile/:${profileId}`;
+  const baseUrl = `http://localhost:5000/api/admin/employers/profile/${profileId}`;
 
   useEffect(()=>{
     async function fetchData() {

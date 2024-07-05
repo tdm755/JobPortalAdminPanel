@@ -24,10 +24,9 @@ api.interceptors.response.use(
   }
 );
 
-// Authentication related API calls
-export const checkAuth = () => {
-  return api.get('/auth/checkAuth').then(response => {
-    const { role } = response.data.user;
+export const checkAdminAuth = () => {
+  return api.get('/auth/checkAdminAuth').then(response => {
+    const { role } = response.data.admin;
     return { ...response, data: { ...response.data, role } };
   });
 };
