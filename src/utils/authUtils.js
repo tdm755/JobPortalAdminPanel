@@ -37,9 +37,9 @@ export const centralizedAuthCheck = async (navigate, isSignInPage = false) => {
         pauseOnHover: true,
         draggable: true,
       });
-      navigate("/signIn");
+      navigate("/");
     } else if (!isSignInPage) {
-      navigate("/signIn"); // Still navigate to sign in page on first visit, but without message
+      navigate("/"); // Still navigate to sign in page on first visit, but without message
     }
     isFirstVisit = false; // Set to false after first auth check
   }

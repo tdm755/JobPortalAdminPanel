@@ -5,25 +5,25 @@ import Logo from '../../../public/AplaKaamLogo.png';
 import DefaultLayout from '../../layout/DefaultLayout';
 import { centralizedAuthCheck } from '../../utils/authUtils';
 import { loginUser } from '../../api/api';
-// import { AuthContext } from '../../App';
+import { AuthContext } from '../../App';
 import { toast } from 'react-toastify';
 
 const SignIn: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // const { login } = useContext(AuthContext);
+  const { login } = useContext(AuthContext);
 
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   centralizedAuthCheck(navigate, true);
-  // }, [navigate]);
+  useEffect(() => {
+    centralizedAuthCheck(navigate, true);
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       await loginUser(email, password);
-      // login();
+      login();
       toast.success('Login successful');
       navigate('/dashbordsection');
     } catch (error) {

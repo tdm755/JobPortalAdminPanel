@@ -15,20 +15,7 @@ import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
 import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage2.jsx';
 import { centralizedAuthCheck } from './utils/authUtils.js';
 
-// Define the shape of your context
-interface AuthContextType {
-  isLoggedIn: boolean;
-  login: () => void;
-  logout: () => void;
-}
-
-// Provide a default value that matches the shape of your context
-export const AuthContext = createContext<AuthContextType>({
-  isLoggedIn: false,
-  login: () => {},
-  logout: () => {},
-});
-
+export const AuthContext = createContext();
 
 
 function App() {
@@ -72,7 +59,7 @@ function App() {
       <Routes>
         <Route
           index
-          path='/SignIn'
+          // path='/SignIn'
           element={
             <>
               <SignIn />
