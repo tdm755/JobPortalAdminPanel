@@ -14,8 +14,9 @@ import Employers from './pages/Employers/EmployerCards.tsx';
 import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
 import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage2.jsx';
 import { centralizedAuthCheck } from './utils/authUtils.js';
+import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 
-export const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 
 function App() {
@@ -59,7 +60,7 @@ function App() {
       <Routes>
         <Route
           index
-          path='/SignIn'
+          // path=''
           element={
             <>
               <SignIn />
@@ -116,14 +117,9 @@ function App() {
           }
         />
 
-        <Route
-          path="/employersdetails"
-          element={
-            <>
-              <Employers />
-            </>
-          }
-        />
+        <Route path="/employersdetails" element={<Employers />} />
+        <Route path="employersdetails/viewandeditdetails" element={<EmployerProfile />} />
+
         <Route
           path="/candidatedetails"
           element={
