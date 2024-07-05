@@ -4,6 +4,7 @@ import { checkAuth } from "../api/api";
 let isAuthChecking = false;
 let lastAuthCheckTime = 0;
 const AUTH_CHECK_COOLDOWN = 5000; // 5 seconds cooldown
+let isFirstVisit = true; // Add this flag
 
 export const centralizedAuthCheck = async (navigate, isSignInPage = false) => {
   const currentTime = Date.now();
@@ -21,12 +22,13 @@ export const centralizedAuthCheck = async (navigate, isSignInPage = false) => {
     if (isSignInPage) {
       navigate("/dashbordsection");
     }
+    isFirstVisit = false; // Set to false after successful auth
   } catch (error) {
     console.error("Authentication failed:", error);
     isAuthChecking = false;
     lastAuthCheckTime = currentTime;
 
-    if (!isSignInPage) {
+    if (!isSignInPage && !isFirstVisit) { // Only show message if not first visit
       toast.info("Please login to access the job portal", {
         position: "top-right",
         autoClose: 5000,
@@ -36,6 +38,9 @@ export const centralizedAuthCheck = async (navigate, isSignInPage = false) => {
         draggable: true,
       });
       navigate("/signIn");
+    } else if (!isSignInPage) {
+      navigate("/signIn"); // Still navigate to sign in page on first visit, but without message
     }
+    isFirstVisit = false; // Set to false after first auth check
   }
 };
