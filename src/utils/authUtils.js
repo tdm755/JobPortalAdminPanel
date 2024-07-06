@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { checkAuth } from "../api/api";
+import { checkAdminAuth } from "../api/api";
 
 let isAuthChecking = false;
 let lastAuthCheckTime = 0;
@@ -16,7 +16,7 @@ export const centralizedAuthCheck = async (navigate, isSignInPage = false) => {
   isAuthChecking = true;
 
   try {
-    await checkAuth();
+    await checkAdminAuth();
     isAuthChecking = false;
     lastAuthCheckTime = currentTime;
     if (isSignInPage) {

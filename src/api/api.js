@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+const API_BASE_URL = 'http://localhost:5000/api/admin';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -24,16 +24,17 @@ api.interceptors.response.use(
   }
 );
 
-// Authentication related API calls
-export const checkAuth = () => {
-  return api.get('/auth/checkAuth').then(response => {
-    const { role } = response.data.user;
+export const checkAdminAuth = () => {
+  return api.get('/checkAdminAuth').then(response => {
+    const { role } = response.data.admin;
     return { ...response, data: { ...response.data, role } };
   });
 };
 
 
-export const loginUser = ( email, password) => api.post(`/admin/login`, { email, password });
-export const logoutApi = () => api.post('/logout');
+export const loginUser = ( email, password) => api.post(`/login`, { email, password });
+export const logoutApi = () => {
+  return api.post('/logout');
+};
 
 export default api;
