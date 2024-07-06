@@ -144,7 +144,7 @@ function EmployersPakage2() {
         setPrices(newValues);
     }
 
-    console.log(Prices);
+    console.log(inclusions);
 
 
     return (
@@ -332,11 +332,20 @@ function EmployersPakage2() {
                                                                return <tr key={index}>
                                                                
                                                                     <th>
-                                                                        <input 
+                                                                        {/* <input 
                                                                         value={item.th}
                                                                         type="text"
                                                                         onChange={(e)=>{HandleInputChange(e, index)}}
-                                                                        />
+                                                                        /> */}
+                                                                        <select value={item.th}  name="" id="" onChange={(e)=>{HandleInputChange(e, index)}}>
+                                                                            <option value="Company Profiles">Company Profiles</option>
+                                                                            <option value="5 candidate profile unlocks">5 candidate profile unlocks</option>
+                                                                            <option value="Resume Database Access">Resume Database Access</option>
+                                                                            <option value="Integration with Other Platforms">Integration with Other Platforms</option>
+                                                                            <option value="Job Posting">Job Posting</option>
+                                                                            <option value="Search And Filters">Search And Filters</option>
+                                                                            <option value="Analytics And Reporting">Analytics And Reporting</option>
+                                                                        </select>
                                                                     </th>
                                                                     <td>
                                                                         <div className="contentInTd">
@@ -447,7 +456,7 @@ function EmployersPakage2() {
                                                 </div>
 
                                                <div className="ActionBTNs mt-8">
-                                               <div className="AddColumn flex justify-end ">
+                                               {/* <div className="AddColumn flex justify-end ">
                                                     <Link
                                                         to="#"
                                                     >
@@ -457,7 +466,7 @@ function EmployersPakage2() {
 
                                                         </button>
                                                     </Link>
-                                                </div>
+                                                </div> */}
                                                 <div className="SayChanges flex justify-end ">
                                                     <Link
                                                         to="#"
