@@ -22,7 +22,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
       if (response.status === 200) {
         console.log("Logout successful");
         logout(); // Update the context to reflect the logout state
-        navigate("/SignIn"); // Navigate to the login page after successful logout
+        navigate("/"); // Navigate to the login page after successful logout
       } else {
         console.log("Logout failed");
       }
