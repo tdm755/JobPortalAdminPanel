@@ -1,22 +1,27 @@
 import React from 'react'
 import DefaultLayout from '../../../layout/DefaultLayout'
 import DeletIcon from '../../../../public/DeleteIcon.svg'
+import { useLocation } from 'react-router-dom'
 
-function UpdateCategories() {
+function UpdateFeturesComponent(props) {
+
+    const location = useLocation();
+    const {pathname} = location;
+
   return (
     <DefaultLayout>
     <div className='bg-white w-full p-6'>
         <div className="flex items-center justify-center ToAddMoreCategories h-30 bg-slate-100">
             <div className="addFeatures">
                 <input className='outline-none px-4 w-90 h-12 rounded-l-md ' type="text" />
-                <button className='bg-[#1967d2] h-12 p-2 text-white ml-1 rounded-r-md'>Add Category</button>
+                <button className='bg-[#1967d2] h-12 p-2 text-white ml-1 rounded-r-md'>Add {pathname.includes('category') ? "Category" : 'Job Type'}</button>
             </div>
         </div>
        <div className="AddedContent mt-10">
        <table>
             <thead>            
                 <tr>
-                  <th className='px-6 text-center'>Categories</th>
+                  <th className='px-6 text-center'>{pathname.includes('category') ? "Categories" : 'Job Types'}</th>
                   <th className='px-6 text-center'>Action</th>
                 </tr>
             </thead>
@@ -34,4 +39,4 @@ function UpdateCategories() {
   )
 }
 
-export default UpdateCategories
+export default UpdateFeturesComponent

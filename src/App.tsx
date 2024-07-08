@@ -18,7 +18,7 @@ import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.j
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
 import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
 import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
-import UpdateCategories from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
+import UpdateFeturesComponent from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
 
 export const AuthContext = createContext(null);
 
@@ -147,10 +147,10 @@ function App() {
           />
 
           <Route
-            path="/updatecategories"
+            path="/updateFeature/:id"
             element={
               <>
-                <UpdateCategories />
+                <UpdateFeturesComponent />
               </>
             }
           />
