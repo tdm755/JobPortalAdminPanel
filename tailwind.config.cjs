@@ -12,6 +12,7 @@ module.exports = {
       '2xsm': '375px',
       xsm: '425px',
       '3xl': '2000px',
+      'tabIn': '1190px',
       ...defaultTheme.screens,
     },
     extend: {

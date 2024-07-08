@@ -4,26 +4,17 @@ import { Link } from 'react-router-dom'
 import DefaultLayout from '../../layout/DefaultLayout.js'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import deleteIcon from '../../images/icon/DeleteIcon.svg'
+import { fetchEmployersData } from '../../api/api.js'
 
 import './EmployerTable.css';
 
 function EmployerCards() {
 
   const [employers, setEmployers] = useState([]);
-  const baseUrl = `http://localhost:5000/api/admin/employers`;
+  // const baseUrl = `http://localhost:5000/api/admin/employers`;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(baseUrl);
-        const data = await response.json();
-        setEmployers(data.data.employers)
-      } catch (error) {
-        console.error('Error fetching candidates:', error);
-
-      }
-    }
-    fetchData();
+  useEffect(() => {    
+    fetchEmployersData(setEmployers);
   }, [])
 
 

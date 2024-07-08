@@ -17,6 +17,8 @@ import { centralizedAuthCheck } from './utils/authUtils.js';
 import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
 import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
+import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
+import UpdateCategories from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
 
 export const AuthContext = createContext(null);
 
@@ -88,63 +90,73 @@ function App() {
           }
         />
 
-        <Route
-          path="/settings"
-          element={
-            <>
-              <Settings />
-            </>
-          }
-        />
-        <Route
-          path="/chart"
-          element={
-            <>
-              <Chart />
-            </>
-          }
-        />
-        <Route
-          path="/alerts"
-          element={
-            <>
-              <Alerts />
-            </>
-          }
-        />
-        <Route
-          path="/ui/buttons"
-          element={
-            <>
-              <Buttons />
-            </>
-          }
-        />
+          <Route
+            path="/settings"
+            element={
+              <>
+                <Settings />
+              </>
+            }
+          />
+          <Route
+            path="/chart"
+            element={
+              <>
+                <Chart />
+              </>
+            }
+          />
+          <Route
+            path="/alerts"
+            element={
+              <>
+                <Alerts />
+              </>
+            }
+          />
+          <Route
+            path="/ui/buttons"
+            element={
+              <>
+                <Buttons />
+              </>
+            }
+          />
 
-        <Route path="/employersdetails" element={<Employers />} />
-        <Route path="/viewandeditdetails/:profileId" element={<EmployerProfile />} />
-        <Route path="/viewandeditdetailsofcandidate/:profileId" element={<CandidateProfile />} />
+          <Route path="/employersdetails" element={<Employers />} />
+          <Route path="/viewandeditdetails/:profileId" element={<EmployerProfile />} />
+          <Route path="/viewandeditdetailsofcandidate/:profileId" element={<CandidateProfile />} />
+
+          <Route path='updatefeatures' element={<UpdateFeatures />} />
+
+          <Route
+            path="/candidatedetails"
+            element={
+              <>
+                <CandidateDetails />
+              </>
+            }
+          />
+          <Route
+            path="/setpakages"
+            element={
+              <>
+                <EmployersPakage2 />
+              </>
+            }
+          />
+
+          <Route
+            path="/updatecategories"
+            element={
+              <>
+                <UpdateCategories />
+              </>
+            }
+          />
 
 
-        <Route
-          path="/candidatedetails"
-          element={
-            <>
-              <CandidateDetails />
-            </>
-          }
-        />
-        <Route
-          path="/setpakages"
-          element={
-            <>
-              <EmployersPakage2 />
-            </>
-          }
-        />
-
-
-      </Routes>
+        </Routes>
       </AuthContext.Provider>
     </>
   );
