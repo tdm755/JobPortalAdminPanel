@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../../../layout/DefaultLayout'
 import DeletIcon from '../../../../public/DeleteIcon.svg'
 import { useLocation } from 'react-router-dom'
@@ -7,6 +7,9 @@ function UpdateFeturesComponent(props) {
 
     const location = useLocation();
     const {pathname} = location;
+
+
+    const [val, setVal] = useState([]);
 
     const baseUrl = `http://localhost:5000/api/admin`;
     useEffect(()=>{
