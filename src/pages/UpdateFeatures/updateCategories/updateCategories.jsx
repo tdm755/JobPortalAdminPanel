@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import DefaultLayout from '../../../layout/DefaultLayout'
 import DeletIcon from '../../../../public/DeleteIcon.svg'
 import { useLocation } from 'react-router-dom'
@@ -7,6 +7,20 @@ function UpdateFeturesComponent(props) {
 
     const location = useLocation();
     const {pathname} = location;
+
+    const baseUrl = `http://localhost:5000/api/admin`;
+    useEffect(()=>{
+        async function fetchDetails() {
+            try {
+                const response = await fetch(`${baseUrl}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`)
+                const data = await response.json();
+                console.log(data);
+            } catch (error) {
+                console.log('Error :', error);
+            }
+        }
+        fetchDetails();
+    },[])
 
   return (
     <DefaultLayout>
