@@ -16,6 +16,7 @@ import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage
 import { centralizedAuthCheck } from './utils/authUtils.js';
 import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
+import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
 
 export const AuthContext = createContext(null);
 
@@ -37,7 +38,8 @@ function App() {
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      await centralizedAuthCheck(navigate, pathname === '/signIn');
+      const bypassAuthCheck = pathname === '/forgot-password';
+      await centralizedAuthCheck(navigate, pathname === '/signIn', bypassAuthCheck);
       setLoading(false);
     };
 
@@ -68,6 +70,7 @@ function App() {
             </>
           }
         />
+        <Route path="/forgot-password" element={<ForgotPassword />} /> 
         <Route
           path='/dashbordsection'
           element={
