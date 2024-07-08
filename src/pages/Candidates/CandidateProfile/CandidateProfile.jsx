@@ -39,6 +39,13 @@ function CandidateProfile() {
     })
   }
 
+
+  function handleInputChangeForRegisEmail(e) {
+    setCanData((PreVal)=>{
+      return {...PreVal, Candidate: {...PreVal.Candidate, email : e.target.value}}
+    })
+  }
+
   console.log(CanData);
 
   
@@ -47,27 +54,67 @@ function CandidateProfile() {
     <DefaultLayout>
       <form action="">
 
-        <div className="EmpProf text-black max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-            <h1 className='text-black font-bold mt-4 ml-4 mb-10 text-2xl Titles'>Candidate Details</h1>
+        <div className="p-6 text-black EmpProf max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+            <h1 className='text-black font-bold mb-10 text-2xl Titles'>Candidate Details</h1>
           <div className="p-4 sm:p-6">
 
             <h1 className='Titles2  mb-10 font-bold text-black '>Personal Details</h1>
 
 
             
+            <div className="UpperPart flex flex-col tabIn:flex-row mb-7 gap-12">
 
-            <div class="mb-14 shadow-4 h-55 w-55 px-6 py-8 sm:p-10 sm:pb-6">
+                <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                   <img className='w-full h-full'  src={CanData.candidate_image ? `data:image/jpeg;base64,${CanData.candidate_image}` : ""} alt="Candidate" />
                   </div>
                 </div>
-            <div className="flex flex-wrap gap-5 Details">
 
-              
-              <div className="w-60 h-12 relative flex rounded-xl">
+                <div className=" flex flex-col gap-7 w-full  w-1/2  tabIn:gap-15 tabIn:mt-7 rightside">
+              <div className="w-full h-12 relative flex  ">
                 <input
                   required
-                  className=" peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
+                  id="email"
+                  type="email"
+                  name='email'
+                  value={CanData.Candidate?.email || ""}
+                  onChange={handleInputChangeForRegisEmail}
+                />
+                <label
+                  className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
+                >
+                  Registered Email Address
+                </label>
+              </div>
+
+              <div className="w-full h-12 relative flex ">
+                <input
+                  required
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
+                  id="email"
+                  type="email"
+                  name='email'
+                  value={CanData.email || ""}
+                  onChange={(e) => { handleInputChange(e) }}
+                />
+                <label
+                  className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
+                >
+                  Profile Email Address
+                </label>
+              </div>
+              </div>
+
+              </div>
+                
+
+
+            <div className="flex flex-wrap gap-y-5 justify-between Details">              
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
+                <input
+                  required
+                  className=" peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="company_name"
                   type="text"
                   name='candidate_name'
@@ -81,10 +128,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="phone"
                   type="text"
                   name='phone_number'
@@ -98,27 +145,12 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
-                <input
-                  required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
-                  id="email"
-                  type="email"
-                  name='email'
-                  value={CanData.email || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
-                />
-                <label
-                  className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
-                >
-                  Email Address
-                </label>
-              </div>
+              
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="website"
                   type="text"
                   name='website'
@@ -133,10 +165,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              {/* <div className="w-60 h-12 relative flex rounded-xl">
+              {/* <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="employees"
                   type="text"
                   name='staffSize'
@@ -150,10 +182,10 @@ function CandidateProfile() {
                 </label>
               </div> */}
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="country"
                   type="text"
                   name='country'
@@ -167,10 +199,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="estSince"
                   type="text"
                   name='dob'
@@ -184,10 +216,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="estSince"
                   type="text"
                   name='experience'
@@ -201,10 +233,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="estSince"
                   type="text"
                   name='gender'
@@ -218,10 +250,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="estSince"
                   type="text"
                   name='jobCategory'
@@ -235,10 +267,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="estSince"
                   type="text"
                   name='jobrole'
@@ -252,10 +284,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="estSince"
                   type="text"
                   name='qualification'
@@ -269,10 +301,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="city"
                   type="text"
                   name='city'
@@ -287,10 +319,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="pincode"
                   type="text"
                   name='pincode'
@@ -305,10 +337,10 @@ function CandidateProfile() {
               </div>
 
 
-              <div className="w-60 h-12 relative flex rounded-xl">
+              <div className="w-full h-12 relative flex">
                 <input
                   required
-                  className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                   id="full_address"
                   type="text"
                   name='fullAddress'
@@ -322,10 +354,10 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              <div className="w-full relative flex rounded-xl">
+              <div className="w-full relative flex">
                 <textarea
                   required
-                  className="peer w-full bg-transparent outline-none px-4 py-2 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                  className="peer w-full bg-transparent outline-none px-4 py-2 text-base bg-white border  border-[#64748b] focus:shadow-md"
                   id="description"
                   rows="3"
                   name='aboutme'
@@ -350,10 +382,10 @@ function CandidateProfile() {
             <div className="panel-body wt-panel-body p-a20">
 
               <div className="flex gap-5 row">
-                <div className="w-60 h-12 relative flex rounded-xl">
+                <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                   <input
                     required
-                    className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                     id="linkedin"
                     type="text"
                     name="linkedIn"
@@ -367,10 +399,10 @@ function CandidateProfile() {
                   </label>
                 </div>
 
-                <div className="w-60 h-12 relative flex rounded-xl">
+                <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                   <input
                     required
-                    className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                     id="github"
                     type="text"
                     name="github"
@@ -384,10 +416,10 @@ function CandidateProfile() {
                   </label>
                 </div>
 
-                {/* <div className="w-60 h-12 relative flex rounded-xl">
+                {/* <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                   <input
                     required
-                    className="peer w-full bg-transparent outline-none px-4 text-base rounded-xl bg-white border border-[#1967d2] focus:shadow-md"
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                     id="instagram"
                     type="text"
                     name="instagram"

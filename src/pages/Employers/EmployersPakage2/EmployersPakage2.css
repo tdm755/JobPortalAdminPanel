@@ -312,7 +312,7 @@ td {
   min-width: 150px;
 }
 
-.EmployerPakage th,
+.EmployerPakage th, .EmployerPakage
 td {
   padding: 10px !important;
   text-align: left !important;

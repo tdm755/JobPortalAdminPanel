@@ -24,6 +24,7 @@ api.interceptors.response.use(
   }
 );
 
+
 export const checkAdminAuth = () => {
   return api.get('/checkAdminAuth').then(response => {
     const { role } = response.data.admin;
@@ -36,5 +37,39 @@ export const loginUser = ( email, password) => api.post(`/login`, { email, passw
 export const logoutApi = () => {
   return api.post('/logout');
 };
+
+
+export const fetchCandidateData = async (prop, arg2) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/candidates`);
+    const data = await response.json();
+    if (prop !== undefined) {
+      prop(data.data.candidates);
+    }    
+    if (arg2) {
+      arg2(data.data.candidates.length);      
+    }
+    
+  } catch (error) {
+    console.error('Error fetching candidates:', error);
+  }
+};
+
+
+export const fetchEmployersData = async (prop, setEmployersCount) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/employers`);
+    const data = await response.json();
+    if (prop !== undefined) {
+      prop(data.data.employers)      
+    }
+    if (setEmployersCount) {
+      setEmployersCount(data.data.employers.length)
+    }
+  } catch (error) {
+    console.error('Error fetching candidates:', error);
+
+  }
+}
 
 export default api;

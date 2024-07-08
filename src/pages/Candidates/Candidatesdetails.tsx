@@ -4,38 +4,27 @@ import DefaultLayout from '../../layout/DefaultLayout.js'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import deleteIcon from '../../images/icon/DeleteIcon.svg'
 // import './EmployerTable.css';
+import { fetchCandidateData } from '../../api/api.js'
 
 function CandidateDetails() {
 
 
   const [candidates, setCandidates] = useState([]);
-  const baseUrl = `http://localhost:5000/api/admin/candidates`;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(baseUrl);
-        const data = await response.json();
-        setCandidates(data.data.candidates);
-      } catch (error) {
-        console.error('Error fetching candidates:', error);
-      }
-    };
-    fetchData();
+  useEffect(() => {    
+    fetchCandidateData(setCandidates);
   }, []);
 
-  // console.log(candidates)
 
   return (
     <DefaultLayout>
       <>
       {/* <form action="#">
  
-</form> */}
-
-        <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
+      </form> */}
+        <div className="text-black max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
         <div className="p-4 sm:p-6">
-          <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+          <h1 className="Titles text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
             All Candidates
           </h1>
           <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
