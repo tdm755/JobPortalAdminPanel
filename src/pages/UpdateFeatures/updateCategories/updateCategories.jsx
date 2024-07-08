@@ -6,9 +6,11 @@ function UpdateCategories() {
   return (
     <DefaultLayout>
     <div className='bg-white w-full p-6'>
-        <div className="ToAddMoreCategories h-30 bg-slate-100">
-            <input type="text" />
-            <button>Add Cate</button>
+        <div className="flex items-center justify-center ToAddMoreCategories h-30 bg-slate-100">
+            <div className="addFeatures">
+                <input className='outline-none px-4 w-90 h-12 rounded-l-md ' type="text" />
+                <button className='bg-[#1967d2] h-12 p-2 text-white ml-1 rounded-r-md'>Add Category</button>
+            </div>
         </div>
        <div className="AddedContent mt-10">
        <table>
