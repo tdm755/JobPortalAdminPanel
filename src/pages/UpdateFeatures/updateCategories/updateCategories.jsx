@@ -15,7 +15,9 @@ function UpdateFeturesComponent(props) {
     useEffect(()=>{
         async function fetchDetails() {
             try {
-                const response = await fetch(`${baseUrl}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`)
+                const response = await fetch(`${baseUrl}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`, {
+                    credentials: 'include',
+                })
                 const data = await response.json();
                 console.log(data);
             } catch (error) {
