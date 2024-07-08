@@ -6,7 +6,11 @@ let lastAuthCheckTime = 0;
 const AUTH_CHECK_COOLDOWN = 5000; // 5 seconds cooldown
 let isFirstVisit = true; // Add this flag
 
-export const centralizedAuthCheck = async (navigate, isSignInPage = false) => {
+export const centralizedAuthCheck = async (navigate, isSignInPage = false, bypassAuthCheck = false) => {
+  if (bypassAuthCheck) {
+    return; // Skip the auth check if bypassAuthCheck is true
+  }
+  
   const currentTime = Date.now();
 
   if (isAuthChecking || (currentTime - lastAuthCheckTime) < AUTH_CHECK_COOLDOWN) {

@@ -247,7 +247,16 @@ const SignIn: React.FC = () => {
                       </svg>
                     </span>
                   </div>
+                  <div className="mt-2 text-right">
+                    <a 
+                      href="/forgot-password" 
+                      className="text-sm font-medium text-primary hover:underline"
+                    >
+                      Forgot Password?
+                    </a>
+                  </div>
                 </div>
+                
 
                 <div className="mb-5">
                   <input

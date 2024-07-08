@@ -16,6 +16,7 @@ import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage
 import { centralizedAuthCheck } from './utils/authUtils.js';
 import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
+import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
 import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
 import UpdateCategories from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
 
@@ -39,7 +40,8 @@ function App() {
 
   useEffect(() => {
     const checkAuthentication = async () => {
-      await centralizedAuthCheck(navigate, pathname === '/signIn');
+      const bypassAuthCheck = pathname === '/forgot-password';
+      await centralizedAuthCheck(navigate, pathname === '/signIn', bypassAuthCheck);
       setLoading(false);
     };
 
@@ -58,34 +60,35 @@ function App() {
     <Loader />
   ) : (
     <>
-      <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
-        <ToastContainer />
-        <Routes>
-          <Route
-            index
-            // path=''
-            element={
-              <>
-                <SignIn />
-              </>
-            }
-          />
-          <Route
-            path='/dashbordsection'
-            element={
-              <>
-                <ECommerce />
-              </>
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              <>
-                <Profile />
-              </>
-            }
-          />
+     <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
+     <ToastContainer />
+      <Routes>
+        <Route
+          index
+          // path=''
+          element={
+            <>
+              <SignIn />
+            </>
+          }
+        />
+        <Route path="/forgot-password" element={<ForgotPassword />} /> 
+        <Route
+          path='/dashbordsection'
+          element={
+            <>
+              <ECommerce />
+            </>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <>
+              <Profile />
+            </>
+          }
+        />
 
           <Route
             path="/settings"
