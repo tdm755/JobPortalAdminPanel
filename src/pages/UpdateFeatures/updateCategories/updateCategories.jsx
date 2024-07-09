@@ -8,6 +8,7 @@ function UpdateFeturesComponent(props) {
     const { pathname } = location;
 
     const [categoryOf, setCategoryOf] = useState({});
+    const [FeatureData, setFeatureData] = useState({});
     const [highlightIndex, setHighlightIndex] = useState(null);
     const newItemRef = useRef(null);
 
@@ -23,15 +24,15 @@ function UpdateFeturesComponent(props) {
                 // console.log('ApiData is : ', dataInsideAPI);
 
                 if (dataInsideAPI && dataInsideAPI.data) {
-                    setCategoryOf(()=>{
+                    setFeatureData(()=>{
                         return {...dataInsideAPI, data : dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, ''))}                        
                     });
                 } else {
                     if (!dataInsideAPI) {
-                        setCategoryOf({}); 
+                        setFeatureData({}); 
                     }
                     else if(!dataInsideAPI.data){
-                        setCategoryOf((preVal)=>{
+                        setFeatureData((preVal)=>{
                             return {...preVal, data : []};
                         })
                     }
@@ -43,13 +44,13 @@ function UpdateFeturesComponent(props) {
         fetchDetails();
     }, [pathname]);
     
-    // console.log(categoryOf);
+    // console.log(FeatureData);
     const InputRef = useRef("");
     
     const handleAddClick = (e) => {
         const Val = InputRef.current.value;
 
-        setCategoryOf((prevVal) => {
+        setFeatureData((prevVal) => {
             let newObj = {...prevVal, data : [...prevVal.data, Val]};
             newObj.data.sort((a, b) => a.localeCompare(b));
             setHighlightIndex(newObj.data.indexOf(Val));
@@ -65,7 +66,7 @@ function UpdateFeturesComponent(props) {
                 setHighlightIndex(null);
             }, 3000);
         }
-    }, [categoryOf]);
+    }, [FeatureData]);
 
     return (
         <DefaultLayout>
@@ -87,8 +88,8 @@ function UpdateFeturesComponent(props) {
                             </tr>
                         </thead>
                         <tbody>
-                            {console.log(categoryOf.data)}
-                            {(categoryOf.data) ? categoryOf.data.map((item, index) => (
+                            {console.log(FeatureData.data)}
+                            {(FeatureData.data) ? FeatureData.data.map((item, index) => (
                                 <tr
                                     key={index}
                                     ref={index === highlightIndex ? newItemRef : null}
