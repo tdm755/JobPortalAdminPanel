@@ -223,7 +223,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 //   }
                 >
                   <img src={CandidatesIcon} alt="" />
-                  Update Job Category
+                  Update Features
                 </NavLink>
               </li>
               {/* <!-- Manage Job Category --> */}  
