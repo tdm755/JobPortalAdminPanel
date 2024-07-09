@@ -14,6 +14,8 @@ function UpdateFeturesComponent(props) {
 
     const baseUrl = `http://localhost:5000/api/admin`;
 
+    
+
     useEffect(() => {
         async function fetchDetails() {
             try {
