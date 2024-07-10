@@ -72,4 +72,33 @@ export const fetchEmployersData = async (prop, setEmployersCount) => {
   }
 }
 
+
+
+export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
+  try {
+      const response = await fetch(`${API_BASE_URL}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`, {
+          credentials: 'include',
+      });
+      const dataInsideAPI = await response.json();
+
+      if (dataInsideAPI && dataInsideAPI.data) {
+          setFeatureData(()=>{
+             let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, '')).sort((a, b) => a.localeCompare(b)).length : '');
+              return {...dataInsideAPI, data : dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, '')).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
+          });
+      } else {
+          if (!dataInsideAPI) {
+              setFeatureData({}); 
+          }
+          else if(!dataInsideAPI.data){
+              setFeatureData((preVal)=>{
+                  return {...preVal, data : []};
+              })
+          }
+      }
+  } catch (error) {
+      console.log('Error:', error);
+  }
+}
+
 export default api;

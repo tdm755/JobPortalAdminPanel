@@ -7,13 +7,32 @@ import { useParams } from 'react-router-dom';
 function CandidateProfile() {
 
   const {profileId} = useParams();
+  const [CanData, setCanData] = useState({});
   
 
 
   const baseUrl = `http://localhost:5000/api/admin/candidates/profile/${profileId}`;
 
 
-  const [CanData, setCanData] = useState({});
+
+   async function HandlePostClick() {
+    try {
+      const response = await fetch(baseUrl, {
+        method : 'PUT',
+        headers : {
+          'Content-Type': 'application/json', 
+        },
+        body :  JSON.stringify(CanData)
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      const result = await response.json();
+      console.log(result);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
 
 
   useEffect(()=>{
@@ -22,7 +41,7 @@ function CandidateProfile() {
         const response = await fetch(baseUrl);
         const data = await response.json();
         setCanData(data.data.candidateProfile);
-        console.log(data.data);
+        // console.log(data.data);
      } catch (error) {
       console.log('Error : ', error);
      }
@@ -46,7 +65,7 @@ function CandidateProfile() {
     })
   }
 
-  console.log(CanData);
+  // console.log(CanData);
 
   
   
@@ -64,11 +83,11 @@ function CandidateProfile() {
             
             <div className="UpperPart flex flex-col tabIn:flex-row mb-7 gap-12">
 
-                <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
+                {/* <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                   <img className='w-full h-full'  src={CanData.candidate_image ? `data:image/jpeg;base64,${CanData.candidate_image}` : ""} alt="Candidate" />
                   </div>
-                </div>
+                </div> */}
 
                 <div className=" flex flex-col gap-7 w-full  w-1/2  tabIn:gap-15 tabIn:mt-7 rightside">
               <div className="w-full h-12 relative flex  ">
@@ -432,11 +451,13 @@ function CandidateProfile() {
                     Instagram
                   </label>
                 </div> */}
+                
               </div>
             </div>
           </div>
         </div>
       </form>
+        <button onClick={HandlePostClick} >Save Changes</button>
 
     </DefaultLayout>
   )
