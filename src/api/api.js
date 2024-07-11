@@ -38,6 +38,14 @@ export const logoutApi = () => {
   return api.post('/logout');
 };
 
+// Package APIs
+export const getAllPackages = () => {
+  return api.get('/packages');
+};
+
+export const updatePackageDetails = (packageId, updates) => {
+  return api.patch('/packages', { packageId, updates });
+};
 
 export const fetchCandidateData = async (prop, arg2) => {
   try {
@@ -83,6 +91,7 @@ export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
 
       if (dataInsideAPI && dataInsideAPI.data) {
           setFeatureData(()=>{
+            console.log(dataInsideAPI);
              let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, '')).sort((a, b) => a.localeCompare(b)).length : '');
               return {...dataInsideAPI, data : dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, '')).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
           });

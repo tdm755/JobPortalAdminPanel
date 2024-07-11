@@ -15,7 +15,8 @@ function EmployerProfile() {
 
 
 
-  async function HandlePostClick() {
+  async function HandlePostClick(e) {
+    e.preventDefault();
     try {
       const response = await fetch(baseUrl, {
         method : 'PUT',
