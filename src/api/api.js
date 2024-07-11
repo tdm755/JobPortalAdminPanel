@@ -83,8 +83,9 @@ export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
 
       if (dataInsideAPI && dataInsideAPI.data) {
           setFeatureData(()=>{
-             let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, '')).sort((a, b) => a.localeCompare(b)).length : '');
-              return {...dataInsideAPI, data : dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, '')).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
+            console.log(dataInsideAPI);
+             let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.length : '');
+              return {...dataInsideAPI, data : dataInsideAPI.data.map(item => item.trim()).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
           });
       } else {
           if (!dataInsideAPI) {

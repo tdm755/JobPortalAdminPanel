@@ -15,7 +15,8 @@ function EmployerProfile() {
 
 
 
-  async function HandlePostClick() {
+  async function HandlePostClick(e) {
+    e.preventDefault();
     try {
       const response = await fetch(baseUrl, {
         method : 'PUT',
@@ -29,7 +30,7 @@ function EmployerProfile() {
       }
       
     } catch (error) {
-      console.log("Error While Uploading Candidate Data : ", error);
+      console.log(error);
     }
     
   }
