@@ -3,26 +3,31 @@ import DefaultLayout from '../../../layout/DefaultLayout'
 // import './EmployerProfile.css';
 import '../../../utils/utils.css'
 import { useParams } from 'react-router-dom';
+import removeUserIcon from '../../../../public/remove-user-24.svg'
+import addUserIcon from '../../../../public/add-user-2-24.svg'
+
+
 
 function CandidateProfile() {
 
-  const {profileId} = useParams();
+  const { profileId } = useParams();
   const [CanData, setCanData] = useState({});
-  
+
 
 
   const baseUrl = `http://localhost:5000/api/admin/candidates/profile/${profileId}`;
 
 
 
-   async function HandlePostClick() {
+  async function HandlePostClick(e) {
+    e.preventDefault();
     try {
       const response = await fetch(baseUrl, {
-        method : 'PUT',
-        headers : {
-          'Content-Type': 'application/json', 
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
         },
-        body :  JSON.stringify(CanData)
+        body: JSON.stringify(CanData)
       });
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
@@ -35,101 +40,102 @@ function CandidateProfile() {
   }
 
 
-  useEffect(()=>{
+  useEffect(() => {
     async function fetchData() {
-     try {
+      try {
         const response = await fetch(baseUrl);
         const data = await response.json();
+        console.log(data);
         setCanData(data.data.candidateProfile);
         // console.log(data.data);
-     } catch (error) {
-      console.log('Error : ', error);
-     }
+      } catch (error) {
+        console.log('Error : ', error);
+      }
     }
     fetchData();
-  },[])
+  }, [])
 
 
 
   function handleInputChange(e) {
     let Val = e.target.value;
-    setCanData((PreVal)=>{
-      return {...PreVal, [e.target.name] : Val};
+    setCanData((PreVal) => {
+      return { ...PreVal, [e.target.name]: Val };
     })
   }
 
 
   function handleInputChangeForRegisEmail(e) {
-    setCanData((PreVal)=>{
-      return {...PreVal, Candidate: {...PreVal.Candidate, email : e.target.value}}
+    setCanData((PreVal) => {
+      return { ...PreVal, Candidate: { ...PreVal.Candidate, email: e.target.value } }
     })
   }
 
   // console.log(CanData);
 
-  
-  
+
+
   return (
     <DefaultLayout>
       <form action="">
 
         <div className="p-6 text-black EmpProf max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-            <h1 className='text-black font-bold mb-10 text-2xl Titles'>Candidate Details</h1>
+          <h1 className='text-black font-bold mb-10 text-2xl Titles'>Candidate Details</h1>
           <div className="p-4 sm:p-6">
 
             <h1 className='Titles2  mb-10 font-bold text-black '>Personal Details</h1>
 
 
-            
+
             <div className="UpperPart flex flex-col tabIn:flex-row mb-7 gap-12">
 
-                {/* <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
+              {/* <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                   <img className='w-full h-full'  src={CanData.candidate_image ? `data:image/jpeg;base64,${CanData.candidate_image}` : ""} alt="Candidate" />
                   </div>
                 </div> */}
 
-                <div className=" flex flex-col gap-7 w-full  w-1/2  tabIn:gap-15 tabIn:mt-7 rightside">
-              <div className="w-full h-12 relative flex  ">
-                <input
-                  required
-                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                  id="email"
-                  type="email"
-                  name='email'
-                  value={CanData.Candidate?.email || ""}
-                  onChange={handleInputChangeForRegisEmail}
-                />
-                <label
-                  className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
-                >
-                  Registered Email Address
-                </label>
+              <div className=" flex flex-col gap-7 w-full  w-1/2  tabIn:gap-15 tabIn:mt-7 rightside">
+                <div className="w-full h-12 relative flex  ">
+                  <input
+                    required
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
+                    id="email"
+                    type="email"
+                    name='email'
+                    value={CanData.Candidate?.email || ""}
+                    onChange={handleInputChangeForRegisEmail}
+                  />
+                  <label
+                    className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
+                  >
+                    Registered Email Address
+                  </label>
+                </div>
+
+                <div className="w-full h-12 relative flex ">
+                  <input
+                    required
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
+                    id="email"
+                    type="email"
+                    name='email'
+                    value={CanData.email || ""}
+                    onChange={(e) => { handleInputChange(e) }}
+                  />
+                  <label
+                    className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
+                  >
+                    Profile Email Address
+                  </label>
+                </div>
               </div>
 
-              <div className="w-full h-12 relative flex ">
-                <input
-                  required
-                  className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                  id="email"
-                  type="email"
-                  name='email'
-                  value={CanData.email || ""}
-                  onChange={(e) => { handleInputChange(e) }}
-                />
-                <label
-                  className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
-                >
-                  Profile Email Address
-                </label>
-              </div>
-              </div>
-
-              </div>
-                
+            </div>
 
 
-            <div className="flex flex-wrap gap-y-5 justify-between Details">              
+
+            <div className="flex flex-wrap gap-y-5 justify-between Details">
               <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
                   required
@@ -138,7 +144,7 @@ function CandidateProfile() {
                   type="text"
                   name='candidate_name'
                   value={CanData.candidate_name || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className=" absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -154,8 +160,8 @@ function CandidateProfile() {
                   id="phone"
                   type="text"
                   name='phone_number'
-                  value={CanData.phone_number|| ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  value={CanData.phone_number || ""}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -164,7 +170,7 @@ function CandidateProfile() {
                 </label>
               </div>
 
-              
+
 
               <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                 <input
@@ -174,8 +180,8 @@ function CandidateProfile() {
                   type="text"
                   name='website'
                   value={CanData.website || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
-                 
+                  onChange={(e) => { handleInputChange(e) }}
+
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -209,7 +215,7 @@ function CandidateProfile() {
                   type="text"
                   name='country'
                   value={CanData.country || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -226,7 +232,7 @@ function CandidateProfile() {
                   type="text"
                   name='dob'
                   value={CanData.dob || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -243,7 +249,7 @@ function CandidateProfile() {
                   type="text"
                   name='experience'
                   value={CanData.experience || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -260,7 +266,7 @@ function CandidateProfile() {
                   type="text"
                   name='gender'
                   value={CanData.gender || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -277,7 +283,7 @@ function CandidateProfile() {
                   type="text"
                   name='jobCategory'
                   value={CanData.jobCategory || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -294,7 +300,7 @@ function CandidateProfile() {
                   type="text"
                   name='jobrole'
                   value={CanData.jobrole || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -311,7 +317,7 @@ function CandidateProfile() {
                   type="text"
                   name='qualification'
                   value={CanData.qualification || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -328,8 +334,8 @@ function CandidateProfile() {
                   type="text"
                   name='city'
                   value={CanData.city || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
-                  
+                  onChange={(e) => { handleInputChange(e) }}
+
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -346,7 +352,7 @@ function CandidateProfile() {
                   type="text"
                   name='pincode'
                   value={CanData.pincode || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -364,7 +370,7 @@ function CandidateProfile() {
                   type="text"
                   name='fullAddress'
                   value={CanData.fullAddress || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -381,7 +387,7 @@ function CandidateProfile() {
                   rows="3"
                   name='aboutme'
                   value={CanData.aboutme || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                  onChange={(e) => { handleInputChange(e) }}
                 >
 
                 </textarea>
@@ -409,7 +415,7 @@ function CandidateProfile() {
                     type="text"
                     name="linkedIn"
                     value={CanData.linkedIn || ""}
-                    onChange={(e)=>{handleInputChange(e)}}
+                    onChange={(e) => { handleInputChange(e) }}
                   />
                   <label
                     className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -426,7 +432,7 @@ function CandidateProfile() {
                     type="text"
                     name="github"
                     value={CanData.github || ""}
-                    onChange={(e)=>{handleInputChange(e)}}
+                    onChange={(e) => { handleInputChange(e) }}
                   />
                   <label
                     className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -435,29 +441,88 @@ function CandidateProfile() {
                   </label>
                 </div>
 
-                {/* <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
+                <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
+                  <input
+                    required
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
+                    id="facebook"
+                    type="text"
+                    name="facebook"
+                    value={CanData.facebook || ""}
+                    onChange={(e) => { handleInputChange(e) }}
+                  />
+                  <label
+                    className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
+                  >
+                    Facebook
+                  </label>
+                </div>
+
+                <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
                   <input
                     required
                     className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
                     id="instagram"
                     type="text"
                     name="instagram"
-                  value={CanData.instagram || ""}
-                  onChange={(e)=>{handleInputChange(e)}}
+                    value={CanData.instagram || ""}
+                    onChange={(e) => { handleInputChange(e) }}
                   />
                   <label
                     className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
                   >
                     Instagram
                   </label>
-                </div> */}
-                
+                </div>
+
+
+                <div className="w-full sm:w-[48%] tabIn:w-[32%] h-12 relative flex">
+                  <input
+                    required
+                    className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
+                    id="twitter"
+                    type="text"
+                    name="twitter"
+                    value={CanData.twitter || ""}
+                    onChange={(e) => { handleInputChange(e) }}
+                  />
+                  <label
+                    className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-base peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
+                  >
+                    Twitter
+                  </label>
+                </div>
+
+
               </div>
             </div>
           </div>
+
+          <div className="Changes flex justify-end gap-3 mt-27">
+
+            <button className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              <span>
+                <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+              </span>
+              Deactivate this account
+            </button>
+
+            <button className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              <span>
+                <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+              </span>
+              Activate this account
+            </button>
+
+            <button onClick={HandlePostClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              Save Changes
+            </button>
+
+          </div>
         </div>
       </form>
-        <button onClick={HandlePostClick} >Save Changes</button>
+
+
 
     </DefaultLayout>
   )
