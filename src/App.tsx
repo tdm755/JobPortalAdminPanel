@@ -19,14 +19,19 @@ import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfi
 import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
 import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
 import UpdateFeturesComponent from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
+import { fetchCandidateData, fetchDetailsOfFeatures } from './api/api.js';
 
 export const AuthContext = createContext(null);
 
+export const FeaturesOfCatType = createContext(null);
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
+  const [FeatureData, setFeatureData] = useState({});
+  
+
   const navigate = useNavigate();
 
   const login = () => {
@@ -62,6 +67,7 @@ function App() {
     <>
      <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
      <ToastContainer />
+     <FeaturesOfCatType.Provider value={{FeatureData, setFeatureData}}>
       <Routes>
         <Route
           index
@@ -157,6 +163,7 @@ function App() {
 
 
         </Routes>
+        </FeaturesOfCatType.Provider>
       </AuthContext.Provider>
     </>
   );

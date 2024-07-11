@@ -6,13 +6,34 @@ import { useParams } from 'react-router-dom';
 function EmployerProfile() {
 
   const { profileId } = useParams();
+  const [EmpData, setEmpData] = useState({});
 
 
 
   const baseUrl = `http://localhost:5000/api/admin/employers/profile/${profileId}`;
 
 
-  const [EmpData, setEmpData] = useState({});
+
+  async function HandlePostClick() {
+    try {
+      const response = await fetch(baseUrl, {
+        method : 'PUT',
+        headers : {
+          'Content-Type': 'application/json', 
+        },
+        body : JSON.stringify(EmpData)
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok ' + response.statusText);
+      }
+      
+    } catch (error) {
+      console.log("Error While Uploading Candidate Data : ", error);
+    }
+    
+  }
+
+
 
 
   useEffect(() => {
@@ -62,11 +83,11 @@ function EmployerProfile() {
 
             <div className="UpperPart flex flex-col tabIn:flex-row mb-7 gap-12">
 
-              <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
+              {/* <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
                 <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                   <img className='w-full h-full' src={EmpData.company_logo ? `data:image/jpeg;base64,${EmpData.company_logo}` : ""} alt="Candidate" />
                 </div>
-              </div>
+              </div> */}
 
               {/* <div class="mb-14 shadow-4 h-55 w-55 px-6 py-8 sm:p-10 sm:pb-6">
 
@@ -351,6 +372,7 @@ function EmployerProfile() {
             </div>
           </div>
         </div>
+        <button onClick={HandlePostClick} >Save Changes</button>
       </form>
 
     </DefaultLayout>

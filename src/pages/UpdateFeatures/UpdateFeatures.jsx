@@ -1,9 +1,14 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import DefaultLayout from '../../layout/DefaultLayout'
 import CategoryIcon from '../../../public/CategoryIcon.jpeg'
 import { Link } from 'react-router-dom'
+import { FeaturesOfCatType } from '../../App'
+import { useContext } from 'react'
 
-function UpdateFeatures() {
+function UpdateFeatures() {  
+  
+  const {FeatureData} = useContext(FeaturesOfCatType);
+
 
   return (
     <>
@@ -16,7 +21,7 @@ function UpdateFeatures() {
                     <img className='h-13 w-15' src={CategoryIcon} alt="" />
 
                       <div className=" TotalCount">
-                        <span className='text-black font-bold text-2xl' >300</span>
+                        <span className='text-black font-bold text-2xl' >{FeatureData.count}</span>
                         <p className='text-sm font-medium' >Total Categories</p>
                       </div>
 
@@ -32,7 +37,7 @@ function UpdateFeatures() {
                     <img className='h-13 w-15' src={CategoryIcon} alt="" />
 
                       <div className=" TotalCount">
-                        <span className='text-black font-bold text-2xl' >250</span>
+                        <span className='text-black font-bold text-2xl' >{FeatureData.count}</span>
                         <p className='text-sm font-medium' >Total Job Types</p>
                       </div>
 

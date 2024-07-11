@@ -16,6 +16,7 @@ function CandidateDetails() {
   }, []);
 
 
+
   return (
     <DefaultLayout>
       <>
