@@ -72,4 +72,21 @@ export const fetchEmployersData = async (prop, setEmployersCount) => {
   }
 }
 
+// In api.js or similar file
+
+// Create or update a package
+export const createOrUpdatePackage = (packageData) => {
+  return api.post('/packages', packageData);
+};
+
+// Get all packages
+export const getAllPackages = () => {
+  return api.get('/packages');
+};
+
+// Update package details
+export const updatePackageDetails = (packageName, updates) => {
+  return api.patch('/packages', { packageName, updates });
+};
+
 export default api;
