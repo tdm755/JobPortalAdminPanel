@@ -43,9 +43,9 @@ export const getAllPackages = () => {
   return api.get('/packages');
 };
 
-export const updatePackageDetails = (packageName, updates) => {
-  console.log('Sending update request:', { packageName, updates });
-  return api.put('/packages', { packageName, updates });
+export const updatePackageDetails = (packageId, updates) => {
+  console.log('Sending update request:', { packageId, updates });
+  return api.put('/packages', { packageId, updates });
 };
 
 export const fetchCandidateData = async (prop, arg2) => {
