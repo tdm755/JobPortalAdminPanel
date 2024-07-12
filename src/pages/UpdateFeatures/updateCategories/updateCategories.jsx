@@ -9,7 +9,7 @@ import { fetchDetailsOfFeatures } from '../../../api/api';
 function UpdateFeturesComponent() {
 
     const {FeatureData, setFeatureData} = useContext(FeaturesOfCatType);
-
+console.log(FeatureData);
     const location = useLocation();
     const { pathname } = location;
 

@@ -32,8 +32,8 @@ function CandidateProfile() {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
-      const result = await response.json();
-      console.log(result);
+      // const result = await response.json();
+      // console.log(result);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -45,7 +45,7 @@ function CandidateProfile() {
       try {
         const response = await fetch(baseUrl);
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setCanData(data.data.candidateProfile);
         // console.log(data.data);
       } catch (error) {
@@ -71,7 +71,7 @@ function CandidateProfile() {
     })
   }
 
-  // console.log(CanData);
+  console.log(CanData);
 
 
 

@@ -30,7 +30,7 @@ function EmployerProfile() {
       }
       
     } catch (error) {
-      console.log("Error While Uploading Candidate Data : ", error);
+      console.log(error);
     }
     
   }
