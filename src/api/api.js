@@ -85,7 +85,7 @@ export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
           setFeatureData(()=>{
             console.log(dataInsideAPI);
              let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.length : '');
-              return {...dataInsideAPI, data : dataInsideAPI.data.map(item => item.trim()).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
+              return {...dataInsideAPI, data : dataInsideAPI.data.map(item => item.trim()).sort((a, b) => a.localeCompare(b))}                        
           });
       } else {
           if (!dataInsideAPI) {

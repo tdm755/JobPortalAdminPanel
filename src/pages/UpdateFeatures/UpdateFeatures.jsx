@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../../layout/DefaultLayout'
 import CategoryIcon from '../../../public/CategoryIcon.jpeg'
 import { Link } from 'react-router-dom'
@@ -8,6 +8,52 @@ import { useContext } from 'react'
 function UpdateFeatures() {  
   
   const {FeatureData} = useContext(FeaturesOfCatType);
+
+  const [counts, setCounts] = useState({
+    CatCount : "",
+    TypeCount : "",
+  });
+
+
+  useEffect(()=>{
+     async function fetchCategoryData() {
+      try {
+        const response = await fetch(`http://localhost:5000/api/admin/jobCategory`, {
+          credentials: 'include',
+        });
+        const dataOfApi = await response.json();
+        setCounts((preVal)=>{
+          return {...preVal, CatCount : dataOfApi.data.length}
+        })
+
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    fetchCategoryData();
+  },[])
+
+  useEffect(()=>{
+    async function fetchCategoryData() {
+     try {
+       const response = await fetch(`http://localhost:5000/api/admin/jobType`, {
+         credentials: 'include',
+       });
+       const dataOfApi = await response.json();
+       setCounts((preVal)=>{
+         return {...preVal, TypeCount : dataOfApi.data.length}
+       })
+
+     } catch (error) {
+       console.log(error);
+     }
+   }
+   fetchCategoryData();
+ },[])
+
+ 
+
+
 
 
   return (
@@ -21,7 +67,7 @@ function UpdateFeatures() {
                     <img className='h-13 w-15' src={CategoryIcon} alt="" />
 
                       <div className=" TotalCount">
-                        <span className='text-black font-bold text-2xl' >{FeatureData.count}</span>
+                        <span className='text-black font-bold text-2xl' >{counts.CatCount}</span>
                         <p className='text-sm font-medium' >Total Categories</p>
                       </div>
 
@@ -37,7 +83,7 @@ function UpdateFeatures() {
                     <img className='h-13 w-15' src={CategoryIcon} alt="" />
 
                       <div className=" TotalCount">
-                        <span className='text-black font-bold text-2xl' >{FeatureData.count}</span>
+                        <span className='text-black font-bold text-2xl' >{counts.TypeCount}</span>
                         <p className='text-sm font-medium' >Total Job Types</p>
                       </div>
 

@@ -229,8 +229,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               {/* <!-- Manage Job Category --> */}  
 
 
-              {/* <!-- Manage Job Category --> */} 
-              {/* <li>
+              {/* <!-- Manage Adds --> */} 
+              <li>
                 <NavLink
                   to="/manageadvertisement"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white `}
@@ -241,8 +241,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <img src={CandidatesIcon} alt="" />
                   Manage Adds
                 </NavLink>
-              </li>  */}
-              {/* <!-- Manage Job Category --> */}   
+              </li> 
+              {/* <!-- Manage Adds --> */}   
 
 
 
