@@ -1,502 +1,299 @@
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import './EmployersPakage2.css';
-// import ScrollToTop from '../../../MINComponents/ScrollToTop/ScrollToTop';
-import CheckIcon from '../../../../public/CheckIcon.svg'
-import CrossIcon from '../../../../public/redCross.svg'
-import deleteIcon from '../../../../public/DeleteIcon.svg'
-import ArrowToRight from '../../../../public/ArrowToRight.svg';
+import CheckIcon from '../../../../public/CheckIcon.svg';
+import CrossIcon from '../../../../public/redCross.svg';
 import DefaultLayout from '../../../layout/DefaultLayout';
+import { getAllPackages, updatePackageDetails } from '../../../api/api';
 
-function EmployersPakage2() {   
+const inclusionDisplayNames = {
+  companyProfiles: "Company Profiles",
+  candidateProfileUnlocks: "5 candidate profile unlocks",
+  resumeDatabaseAccess: "Resume Database Access",
+  integrationWithOtherPlatforms: "Integration with Other Platforms",
+  jobPosting: "Job Posting",
+  searchAndFilters: "Search And Filters",
+  analyticsAndReporting: "Analytics And Reporting"
+};
 
+const inclusionKeys = Object.keys(inclusionDisplayNames);
 
+function EmployersPakage2() {
+  const [packages, setPackages] = useState([]);
+  const [inclusions, setInclusions] = useState([]);
+  const [changes, setChanges] = useState({});
+  const [discountPercentage, setDiscountPercentage] = useState('');
+  const [inputValues, setInputValues] = useState({});
 
-    const [inclusions, setInclusions] = useState([             
-        {
-            position : "",
-            th : "Company Profiles",
-            td1 : "CheckIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        {
-            position : "",
-            th : "5 candidate profile unlocks",
-            td1 : "CheckIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        {
-            position : "",
-            th : "Resume Database Access",
-            td1 : "CrossIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        {
-            position : "",
-            th : "Integration with Other Platforms",
-            td1 : "CrossIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        {
-            position : "",
-            th : "Job Posting",
-            td1 : "CrossIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        {
-            position : "",
-            th : "Search And Filters",
-            td1 : "CrossIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        {
-            position : "",
-            th : "Analytics And Reporting",
-            td1 : "CrossIcon",
-            td2 : "CheckIcon",
-            td3 : "CheckIcon",
-            td4 : "CheckIcon",
-            td5 : "CheckIcon",            
-        },
-        
-    ]);
+  useEffect(() => {
+    fetchPackages();
+  }, []);
 
+  useEffect(() => {
+    updateDiscountedPrices();
+  }, [discountPercentage, changes]);
 
-    function handleAddRowClick() {
-        let newArray = [
-            ...inclusions, 
-            {
-                position : "",
-                th : "",
-                td1 : "",
-                td2 : "",
-                td3 : "",
-                td4 : "",
-                td5 : "",            
-            }
-        ]
-
-        setInclusions(newArray);
+  const fetchPackages = async () => {
+    try {
+      const response = await getAllPackages();
+      setPackages(response.data);
+      initializeInclusions(response.data);
+       // Assuming the first package has the common discount percentage
+       setDiscountPercentage(response.data[0].discountPercentage.toString());
+    } catch (error) {
+      console.error('Failed to fetch packages:', error);
     }
+  };
 
+  const initializeInclusions = (packageData) => {
+    const newInclusions = inclusionKeys.map(key => ({
+      th: inclusionDisplayNames[key],
+      backendKey: key,
+      ...packageData.reduce((acc, pkg) => ({
+        ...acc,
+        [pkg.packageId]: pkg[key] ? "CheckIcon" : "CrossIcon"
+      }), {})
+    }));
+    setInclusions(newInclusions);
+  };
 
-    function removeElement(index) {
-        const newInclusions = inclusions.filter((_, i) => i !== index);
-        setInclusions(newInclusions);
+  const handleChange = (packageId, field, value) => {
+    setInputValues(prev => ({
+      ...prev,
+      [packageId]: {
+        ...prev[packageId],
+        [field]: value
+      }
+    }));
+
+    setChanges(prev => ({
+      ...prev,
+      [packageId]: {
+        ...prev[packageId],
+        [field]: field === 'originalPrice' || field === 'duration' 
+          ? (value === '' ? '' : Number(value))
+          : value
+      }
+    }));
+  };
+
+  const handleInclusionChange = (index, packageId, value) => {
+    const newInclusions = [...inclusions];
+    newInclusions[index][packageId] = value;
+    setInclusions(newInclusions);
+
+    setChanges(prev => ({
+      ...prev,
+      [packageId]: {
+        ...prev[packageId],
+        [newInclusions[index].backendKey]: value === "CheckIcon"
+      }
+    }));
+  };
+
+  const handleDiscountChange = (value) => {
+    const parsedValue = parseFloat(value);
+    if (isNaN(parsedValue)) {
+      setDiscountPercentage('');
+    } else {
+      const clampedValue = Math.min(Math.max(parsedValue, 0), 100);
+      setDiscountPercentage(clampedValue.toString());
     }
+  };
 
+  const calculateDiscountedPrice = (originalPrice) => {
+    if (originalPrice === '' || discountPercentage === '') return '';
+    const discount = parseFloat(discountPercentage) / 100;
+    return Number((Number(originalPrice) * (1 - discount)).toFixed(2));
+  };
 
-
-    function HandleInputChange(e, index) {
-        let newInclusions = [...inclusions];
-        newInclusions[index].th = e.target.value;
-        setInclusions(newInclusions);
-
-    }
-
-
-    const [Prices, setPrices] = useState({
-
-        Free : {
-            price: "",
-            days: "",
-        },
-        Bronze : {
-            price: "199",
-            days: "14",
-        },
-        Silver : {
-            price: "299",
-            days: "20",
-        },
-        Platinum : {
-            price: "499",
-            days: "25",
-        },
-        Gold : {
-            price: "899",
-            days: "30",
-        },
-        
+  const updateDiscountedPrices = () => {
+    const updatedChanges = { ...changes };
+    packages.forEach(pkg => {
+      const originalPrice = changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice;
+      const discountedPrice = originalPrice * (1 - discountPercentage / 100);
+      updatedChanges[pkg.packageId] = {
+        ...updatedChanges[pkg.packageId],
+        discountedPrice: Number(discountedPrice.toFixed(2))
+      };
     });
+    setChanges(updatedChanges);
+  };
 
-    function handlePriceChange(e, field) {
-        const newValues = {...Prices};
-        newValues[field] = {...newValues[field], [e.target.name] : e.target.value}
-        setPrices(newValues);
+
+  const saveChanges = async () => {
+    try {
+      for (const [packageId, updates] of Object.entries(changes)) {
+        const formattedUpdates = {
+          ...updates,
+          discountPercentage: discountPercentage === '' ? 0 : parseFloat(discountPercentage)
+        };
+        await updatePackageDetails(packageId, formattedUpdates);
+      }
+      fetchPackages();
+      setChanges({});
+      alert('Changes saved successfully!');
+    } catch (error) {
+      console.error('Failed to save changes:', error);
+      alert('Failed to save changes. Please try again.');
     }
+  };
 
-    console.log(inclusions);
 
+  const getPackageStyle = (packageName) => {
+    const styles = {
+      'Free': 'circle-blue',
+      'Bronze': 'cirle-lightBlue',
+      'Silver': 'circle-yellow',
+      'Platinum': 'circle-pink',
+      'Gold': 'PremiumColor'
+    };
+    return styles[packageName] || '';
+  };
 
-    return (
-        <>
-            <DefaultLayout>
-                {/* <ScrollToTop /> */}
-                {/* PRICING TABLE SECTION START */}
-                <div className="EmployerPakage EmployerPakage2">
-                    <div className="containerInEmSec">
-                        {/* TITLE START*/}
-                        <div className="section-head left wt-small-separator-outer">
-                            <div className="wt-small-separator site-text-primary">
-                                <div><h1 className='text-4xl mb-13'>Set Your Plan</h1></div>
-                            </div>
+  return (
+    <DefaultLayout>
+      <div className="EmployerPakage EmployerPakage2">
+        <div className="containerInEmSec">
+          <div className="section-head left wt-small-separator-outer mb-4">
+            <div className="wt-small-separator site-text-primary">
+              <h1 className="text-4xl mb-6">Set Your Plan</h1>
+            </div>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="discount" className="block text-sm font-medium text-gray-700 mb-1">
+              Discount Percentage:
+            </label>
+            <input
+              id="discount"
+              type="number"
+              placeholder="Enter %"
+              value={discountPercentage}
+              onChange={(e) => handleDiscountChange(e.target.value)}
+              className="focus:ring-primary-500 focus:border-primary-500 block w-24 sm:w-32 px-3 py-2 border border-gray-300 rounded-md text-sm"
+            />
+          </div>
+
+          <div className="section-content">
+            <div className="pricing-block-outer TableXAuto">
+              <div className="table_responsive_InEmPack2">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>
+                        <div className="ForColorInEmPack2 ForColorInEmPack2Inclusions circle-blue">
+                          <div className="p-table-title">
+                            <h4 className="wt-title p-[25px]">Inclusions</h4>
+                          </div>
                         </div>
-                        {/* TITLE END*/}
-
-                        <div className="section-content">
-                            <div className="twm-tabs-style-1">
-
-                                <div className="tab-content" id="myTab3Content">
-                                    <div
-                                        className="tab-pane fade show active"
-                                        id="home"
-                                        role="tabpanel"
-                                        aria-labelledby="Monthly"
-                                    >
-                                        <div className="pricing-block-outer TableXAuto">
-                                            <div className=" justify-content-center ">
-
-                                                <div className="table_responsive_InEmPack2">
-                                                    <table>
-                                                        <thead>
-                                                        
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 ForColorInEmPack2Inclusions circle-blue">
-
-                                                                    <div className="p-table-title">
-                                                                        <h4 className="wt-title">Inclusions</h4>
-                                                                        <div className="p-table-price h-13">
-                                                                            {/* <span></span>
-                                                                        <span className="original-price" ></span>
-
-                                                                        <p></p> */}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 circle-blue">
-
-                                                                    <div className="p-table-title">
-                                                                        <h4 className="wt-title">Free</h4>
-                                                                        <div className="p-table-price h-13">
-                                                                            <span></span>
-
-                                                                            <p></p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 cirle-lightBlue">
-                                                                    <div className="p-table-title">
-                                                                        <h4 className="wt-title bronzeTitle">Bronze</h4>
-                                                                        <div className= "flex flex-col p-table-price h-13">
-                                                                        <span>₹<input
-                                                                         className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                          type="text" 
-                                                                          name='price'
-                                                                          value={Prices.Bronze.price}
-                                                                          onChange={(e)=>{handlePriceChange(e, 'Bronze')}}
-                                                                          />
-                                                                          </span>
-                                                                        <span>
-                                                                            <input 
-                                                                            className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                             type="text"
-                                                                             name='days'
-                                                                             value={Prices.Bronze.days}
-                                                                             onChange={(e)=>{handlePriceChange(e, 'Bronze')}}
-                                                                              />
-                                                                              </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 circle-yellow">
-                                                                    <div className="p-table-title">
-                                                                        <h4 className="wt-title silverTitle">Silver</h4>
-                                                                        <div className="flex flex-col p-table-price h-13">
-                                                                        <span>₹<input
-                                                                         className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                          type="text" 
-                                                                          name='price'
-                                                                          value={Prices.Silver.price}
-                                                                          onChange={(e)=>{handlePriceChange(e, 'Silver')}}
-                                                                          />
-                                                                          </span>
-                                                                        <span>
-                                                                            <input 
-                                                                            className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                             type="text"
-                                                                             name='days'
-                                                                             value={Prices.Silver.days}
-                                                                             onChange={(e)=>{handlePriceChange(e, 'Silver')}}
-                                                                              />
-                                                                              </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 circle-pink">
-                                                                    <div className="p-table-title">
-                                                                        <h4 className="wt-title platinumTitle">Platinum</h4>
-                                                                        <div className="flex flex-col p-table-price h-13">
-                                                                        <span>₹<input
-                                                                         className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                          type="text" 
-                                                                          name='price'
-                                                                          value={Prices.Platinum.price}
-                                                                          onChange={(e)=>{handlePriceChange(e, 'Platinum')}}
-                                                                          />
-                                                                          </span>
-                                                                        <span>
-                                                                            <input 
-                                                                            className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                             type="text"
-                                                                             name='days'
-                                                                             value={Prices.Platinum.days}
-                                                                             onChange={(e)=>{handlePriceChange(e, 'Platinum')}}
-                                                                              />
-                                                                              </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 PremiumColor">
-
-                                                                    <div className="p-table-title PremiumOf">
-                                                                        <h4 className="pakageColor wt-title">Gold</h4>
-                                                                        <div className="flex flex-col p-table-price h-13">
-                                                                        <span>₹<input
-                                                                         className='w-19 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                          type="text" 
-                                                                          name='price'
-                                                                          value={Prices.Gold.price}
-                                                                          onChange={(e)=>{handlePriceChange(e, 'Gold')}}
-                                                                          />
-                                                                          </span>
-                                                                        <span>
-                                                                            <input 
-                                                                            className='w-15 border border-[#8db5d8] outline-none px-1 bg-transparent'
-                                                                             type="text"
-                                                                             name='days'
-                                                                             value={Prices.Gold.days}
-                                                                             onChange={(e)=>{handlePriceChange(e, 'Gold')}}
-                                                                              />
-                                                                              </span>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                            <th>
-                                                                <div className="ForColorInEmPack2 PremiumColor">
-
-                                                                    <div className="p-table-title PremiumOf">
-                                                                        <h4 className="pakageColor wt-title">Action</h4>
-                                                                        <div className="p-table-price h-13">
-                                                                            <span className=""></span>
-                                                                            <p></p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </th>
-                                                   
-                                        
-                                                        </thead>
-                                                        <tbody>
-                                                            
-                                                            {inclusions.map((item, index)=>{
-                                                               return <tr key={index}>
-                                                               
-                                                                    <th>
-                                                                        {/* <input 
-                                                                        value={item.th}
-                                                                        type="text"
-                                                                        onChange={(e)=>{HandleInputChange(e, index)}}
-                                                                        /> */}
-                                                                        <select value={item.th}  name="" id="" onChange={(e)=>{HandleInputChange(e, index)}}>
-                                                                            <option value="Company Profiles">Company Profiles</option>
-                                                                            <option value="5 candidate profile unlocks">5 candidate profile unlocks</option>
-                                                                            <option value="Resume Database Access">Resume Database Access</option>
-                                                                            <option value="Integration with Other Platforms">Integration with Other Platforms</option>
-                                                                            <option value="Job Posting">Job Posting</option>
-                                                                            <option value="Search And Filters">Search And Filters</option>
-                                                                            <option value="Analytics And Reporting">Analytics And Reporting</option>
-                                                                        </select>
-                                                                    </th>
-                                                                    <td>
-                                                                        <div className="contentInTd">
-                                                                            {item.td1 === "CheckIcon" ? <img src={CheckIcon} alt=''></img> : <img src={CrossIcon} alt=''></img> }
-                                                                            <select 
-                                                                            style={item.td1 === 'CrossIcon' ? {border : "1px solid red"} : {border : "1px solid green"}}
-                                                                            value={item.td1} 
-                                                                            onChange={(e)=>{
-                                                                                const newInclusions = [...inclusions];
-                                                                                newInclusions[index].td1 = e.target.value; 
-                                                                                setInclusions(newInclusions);
-                                                                            }} 
-                                                                            name="" 
-                                                                            id="">
-                                                                                <option value="CheckIcon">check</option>
-                                                                                <option value="CrossIcon">Cross</option>
-                                                                            </select>
-                                                                        </div>
-                                                                    </td>
-
-                                                                    <td>
-                                                                    <div className="contentInTd">
-                                                                    {item.td2 === "CheckIcon" ? <img src={CheckIcon} alt=''></img> : <img src={CrossIcon} alt=''></img> }
-                                                                        <select 
-                                                                        style={item.td2 === 'CrossIcon' ? {border : "1px solid red"} : {border : "1px solid green"}}
-                                                                        value={item.td2} 
-                                                                        onChange={(e)=>{
-                                                                            const newInclusions = [...inclusions];
-                                                                            newInclusions[index].td2 = e.target.value; 
-                                                                            setInclusions(newInclusions);
-                                                                        }} 
-                                                                        name="" 
-                                                                        id="">
-                                                                        
-                                                                            <option value="CheckIcon">Check</option>
-                                                                            <option value="CrossIcon">Cross</option>
-                                                                        </select>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                    <div className="contentInTd">
-                                                                    {item.td3 === "CheckIcon" ? <img src={CheckIcon} alt=''></img> : <img src={CrossIcon} alt=''></img> }
-                                                                        <select 
-                                                                        style={item.td3 === 'CrossIcon' ? {border : "1px solid red"} : {border : "1px solid green"}}
-                                                                        value={item.td3} 
-                                                                        onChange={(e)=>{
-                                                                            
-                                                                            const newInclusions = [...inclusions];
-                                                                            newInclusions[index].td3 = e.target.value; 
-                                                                            setInclusions(newInclusions);
-                                                                        }} 
-                                                                        name="" 
-                                                                        id="">
-                                                                            <option value="CheckIcon">Check <img src={CheckIcon} alt="" /></option>
-                                                                            <option value="CrossIcon">Cross</option>
-                                                                        </select>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                    <div className="contentInTd">
-                                                                    {item.td4 === "CheckIcon" ? <img src={CheckIcon} alt=''></img> : <img src={CrossIcon} alt=''></img> }
-                                                                        <select 
-                                                                        style={item.td4 === 'CrossIcon' ? {border : "1px solid red"} : {border : "1px solid green"}}
-                                                                        value={item.td4} 
-                                                                        onChange={(e)=>{
-                                                                            
-                                                                            const newInclusions = [...inclusions];
-                                                                            newInclusions[index].td4 = e.target.value; 
-                                                                            setInclusions(newInclusions);
-                                                                        }} 
-                                                                        name="" 
-                                                                        id="">
-                                                                            <option value="CheckIcon">Check <img src={CheckIcon} alt="" /></option>
-                                                                            <option value="CrossIcon">Cross</option>
-                                                                        </select>
-                                                                        </div>
-                                                                    </td>
-                                                                    <td>
-                                                                    <div className="contentInTd">
-                                                                    {item.td5 === "CheckIcon" ? <img src={CheckIcon} alt=''></img> : <img src={CrossIcon} alt=''></img> }
-                                                                        <select 
-                                                                        style={item.td5 === 'CrossIcon' ? {border : "1px solid red"} : {border : "1px solid green"}}
-                                                                        value={item.td5} 
-                                                                        onChange={(e)=>{
-                                                                            
-                                                                            const newInclusions = [...inclusions];
-                                                                            newInclusions[index].td5 = e.target.value; 
-                                                                            setInclusions(newInclusions);
-                                                                        }} 
-                                                                        name="" 
-                                                                        id="">
-                                                                            <option value="CheckIcon">Check <img src={CheckIcon} alt="" /></option>
-                                                                            <option value="CrossIcon">Cross</option>
-                                                                        </select>
-                                                                        </div>
-                                                                    </td>
-                                                                    
-                                                                    <td>
-                                                                        <button onClick={()=>{removeElement(index)}} >
-                                                                            <img src={deleteIcon} alt="" />
-                                                                        </button>
-                                                                    </td>
-                                                               
-                                                                </tr>
-                                                            })}                                                            
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                               <div className="ActionBTNs mt-8">
-                                               {/* <div className="AddColumn flex justify-end ">
-                                                    <Link
-                                                        to="#"
-                                                    >
-                                                        <button onClick={handleAddRowClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
-
-                                                            Add Row
-
-                                                        </button>
-                                                    </Link>
-                                                </div> */}
-                                                <div className="SayChanges flex justify-end ">
-                                                    <Link
-                                                        to="#"
-                                                    >
-                                                        <button className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
-
-                                                            Save Changes
-
-                                                        </button>
-                                                    </Link>
-                                                </div>
-
-                                               </div>
-
-
-
-                                            </div>
-                                        </div>
-                                    </div>
-
-
+                      </th>
+                      {packages.map(pkg => (
+                        <th key={pkg.packageId}>
+                          <div className={`ForColorInEmPack2 ${getPackageStyle(pkg.packageName)}`}>
+                            <div className="p-table-title">
+                              <h4 className={`wt-title ${pkg.packageName.toLowerCase()}Title ${pkg.packageName === 'Free' ? 'p-[25px]' : ''}`}>{pkg.packageName}</h4>
+                              {pkg.packageName !== 'Free' && (
+                                <div className="flex flex-col p-table-price">
+                                  <div className="flex flex-row items-center p-table-price">
+                                    <span className="text-lg mr-2">
+                                      ₹{calculateDiscountedPrice(changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice)} /
+                                    </span>
+                                    <span className="text-sm line-through  decoration-red-400 italic">
+                                      ₹{changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
+                                    </span>
+                                  </div>
+                                  <span className="text-sm">{changes[pkg.packageId]?.duration ?? pkg.duration} {changes[pkg.packageId]?.durationType ?? pkg.durationType}</span>
                                 </div>
-                            </div> 
-                        </div>
-
-                    </div>
-                </div>
-            </DefaultLayout>
-        </>
-    )
+                              )}
+                            </div>
+                          </div>
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr>
+                    <th>Original Price</th>
+                    {packages.map(pkg => (
+                      <td key={pkg.packageId}>
+                        {pkg.packageName !== 'Free' && (
+                          <input
+                            type="number"
+                            value={inputValues[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
+                            onChange={(e) => handleChange(pkg.packageId, 'originalPrice', e.target.value)}
+                            className="w-full border border-[#8db5d8] outline-none px-1 bg-transparent"
+                            min="0"
+                            max="100"
+                            step="0.01"
+                          />
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                  <tr>
+                    <th>Duration</th>
+                    {packages.map(pkg => (
+                      <td key={pkg.packageId}>
+                        {pkg.packageName !== 'Free' && (
+                          <div className="flex items-center">
+                            <input 
+                              type="number"
+                              value={inputValues[pkg.packageId]?.duration ?? pkg.duration}
+                              onChange={(e) => handleChange(pkg.packageId, 'duration', e.target.value)}
+                              className="w-1/2 border border-[#8db5d8] outline-none px-1 bg-transparent"
+                            />
+                            <select
+                              value={changes[pkg.packageId]?.durationType ?? pkg.durationType}
+                              onChange={(e) => handleChange(pkg.packageId, 'durationType', e.target.value)}
+                              className="w-1/2 ml-1 border border-[#8db5d8] outline-none px-1 bg-transparent"
+                            >
+                              <option value="days">Days</option>
+                              <option value="months">Months</option>
+                              <option value="years">Years</option>
+                            </select>
+                          </div>
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                    {inclusions.map((inclusion, index) => (
+                      <tr key={index}>
+                        <th>{inclusion.th}</th>
+                        {packages.map(pkg => (
+                          <td key={pkg.packageId}>
+                            <div className="contentInTd">
+                              {inclusion[pkg.packageId] === "CheckIcon" ? <img src={CheckIcon} alt='Check' /> : <img src={CrossIcon} alt='Cross' />}
+                              <select 
+                                style={inclusion[pkg.packageId] === 'CrossIcon' ? {border: "1px solid red"} : {border: "1px solid green"}}
+                                value={inclusion[pkg.packageId]} 
+                                onChange={(e) => handleInclusionChange(index, pkg.packageId, e.target.value)}
+                              >
+                                <option value="CheckIcon">Check</option>
+                                <option value="CrossIcon">Cross</option>
+                              </select>
+                            </div>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="ActionBTNs mt-8">
+        <div className="SayChanges flex justify-end ">
+          <button 
+            onClick={saveChanges}
+            className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+          >
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </DefaultLayout>
+  );
 }
 
-export default EmployersPakage2
+export default EmployersPakage2;
