@@ -325,3 +325,10 @@ td {
     width: 100% !important;
   }
 }
+
+
+.inactive-row {
+  text-decoration: line-through;
+  color: #ff0000;
+  opacity: 0.5;
+}
