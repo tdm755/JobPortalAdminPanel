@@ -47,7 +47,7 @@ const ECommerce: React.FC = () => {
             height="25"
             src={employerIcon} alt="" />
         </CardDataStats>
-        <CardDataStats title="Total Profit" total="$2.450" rate="2.59%" levelUp>
+        <CardDataStats title="Total Profit" total="₹2.450" rate="2.59%" levelUp>
           <svg
             className="fill-primary dark:fill-white"
             width="22"
@@ -73,11 +73,11 @@ const ECommerce: React.FC = () => {
             src={TotalUsers} alt="" />
         </CardDataStats>
         
-        <div className="bg-white shadow-3 h-50 w-100 px-6 py-8 sm:p-10 sm:pb-6">
+        {/* <div className="bg-white shadow-3 h-50 w-100 px-6 py-8 sm:p-10 sm:pb-6">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
-                  {/* <img className='w-full h-full'  src={CanData.candidate_image ? `data:image/jpeg;base64,${CanData.candidate_image}` : ""} alt="Candidate" /> */}
+                
                   </div>
-                </div>
+                </div> */}
         
         
       </div>

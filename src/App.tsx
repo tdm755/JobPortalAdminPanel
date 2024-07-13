@@ -17,6 +17,7 @@ import { centralizedAuthCheck } from './utils/authUtils.js';
 import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
 import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
+import ResetPassword from './pages/Authentication/ResetPassword.tsx';
 import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
 import UpdateFeturesComponent from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
 import { fetchCandidateData, fetchDetailsOfFeatures } from './api/api.js';
@@ -79,6 +80,7 @@ function App() {
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} /> 
+        <Route path="/reset-password" element={<ResetPassword />}/>
         <Route
           path='/dashbordsection'
           element={

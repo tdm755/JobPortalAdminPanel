@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../../../layout/DefaultLayout'
 import './EmployerProfile.css';
 import { useParams } from 'react-router-dom';
+import removeUserIcon from '../../../../public/remove-user-24.svg'
+import addUserIcon from '../../../../public/add-user-2-24.svg'
 
 function EmployerProfile() {
 
@@ -373,8 +375,29 @@ function EmployerProfile() {
               </div>
             </div>
           </div>
+        <div className="Changes flex justify-end gap-3 mt-27">
+
+            <button className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              <span>
+                <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+              </span>
+              Deactivate this account
+            </button>
+
+            <button className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              <span>
+                <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+              </span>
+              Activate this account
+            </button>
+
+            <button onClick={HandlePostClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              Save Changes
+            </button>
+
+          </div>
         </div>
-        <button onClick={HandlePostClick} >Save Changes</button>
+        {/* <button onClick={HandlePostClick} >Save Changes</button> */}
       </form>
 
     </DefaultLayout>

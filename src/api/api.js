@@ -38,6 +38,10 @@ export const logoutApi = () => {
   return api.post('/logout');
 };
 
+export const requestPasswordReset = (email) => api.post('/request-password-reset', { email });
+
+export const resetPassword = (token, newPassword) => api.post('/reset-password', { token, newPassword });
+
 // Package APIs
 export const getAllPackages = () => {
   return api.get('/packages');

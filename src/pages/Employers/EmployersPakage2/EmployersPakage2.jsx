@@ -170,6 +170,9 @@ function EmployersPakage2() {
               value={discountPercentage}
               onChange={(e) => handleDiscountChange(e.target.value)}
               className="focus:ring-primary-500 focus:border-primary-500 block w-24 sm:w-32 px-3 py-2 border border-gray-300 rounded-md text-sm"
+              min="0"
+              max="100"
+              step="0.01"
             />
           </div>
 
@@ -221,9 +224,6 @@ function EmployersPakage2() {
                             value={inputValues[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
                             onChange={(e) => handleChange(pkg.packageId, 'originalPrice', e.target.value)}
                             className="w-full border border-[#8db5d8] outline-none px-1 bg-transparent"
-                            min="0"
-                            max="100"
-                            step="0.01"
                           />
                         )}
                       </td>
