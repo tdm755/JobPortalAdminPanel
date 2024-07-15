@@ -26,6 +26,8 @@ export const AuthContext = createContext(null);
 
 export const FeaturesOfCatType = createContext(null);
 
+
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,14 +45,14 @@ function App() {
     setIsLoggedIn(false);
     // Clear JWT cookie or local storage here if needed
   };
-
+  
   useEffect(() => {
     const checkAuthentication = async () => {
-      const bypassAuthCheck = pathname === '/forgot-password';
+      const bypassAuthCheck = pathname === '/forgot-password' || pathname === '/reset-password';
       await centralizedAuthCheck(navigate, pathname === '/signIn', bypassAuthCheck);
       setLoading(false);
     };
-
+  
     checkAuthentication();
   }, [navigate, pathname]);
 
