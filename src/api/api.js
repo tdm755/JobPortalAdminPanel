@@ -42,6 +42,9 @@ export const requestPasswordReset = (email) => api.post('/request-password-reset
 
 export const resetPassword = (token, newPassword) => api.post('/reset-password', { token, newPassword });
 
+export const changeAdminPassword = (currentPassword, newPassword) => 
+  api.post('/change-password', { currentPassword, newPassword });
+
 // Package APIs
 export const getAllPackages = () => {
   return api.get('/packages');

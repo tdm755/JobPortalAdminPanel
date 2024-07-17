@@ -1,8 +1,35 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import userThree from '../images/user/user-03.png';
 import DefaultLayout from '../layout/DefaultLayout';
+import { changeAdminPassword } from '../api/api';
+import { useState } from 'react';
 
 const Settings = () => {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      // Handle password mismatch error
+      console.error('New password and confirm password do not match');
+      return;
+    }
+    try {
+      const response = await changeAdminPassword(currentPassword, newPassword);
+      console.log('Password changed successfully', response.data);
+      // Handle successful password change (e.g., show a success message)
+      // Reset form fields
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error) {
+      console.error('Failed to change password', error);
+      // Handle error (e.g., show an error message)
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="mx-auto max-w-270">
@@ -235,12 +262,12 @@ const Settings = () => {
                 </h3>
               </div>
               <div className="p-7">
-                <form action="#">
+                <form onSubmit={handleChangePassword}>
                   <div className="mb-5.5 flex flex-col gap-5.5 sm:flex-row">
                     <div className="w-full sm:w-1/2">
                       <label
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
-                        htmlFor="OldPassword"
+                        htmlFor="currentPassword"
                       >
                         Previous Password
                       </label>
@@ -273,10 +300,11 @@ const Settings = () => {
                         <input
                           className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                           type="password"
-                          name="OldPassword"
-                          id="OldPassword"
-                          placeholder="Enter Your Previous password"
-                          
+                          name="currentPassword"
+                          id="currentPassword"
+                          placeholder="Enter your current password"
+                          value={currentPassword}
+                          onChange={(e) => setCurrentPassword(e.target.value)}
                         />
                       </div>
                     </div>
@@ -284,16 +312,18 @@ const Settings = () => {
                     <div className="w-full sm:w-1/2">
                       <label
                         className="mb-3 block text-sm font-medium text-black dark:text-white"
-                        htmlFor="NewPassword"
+                        htmlFor="newPassword"
                       >
                         New Password
                       </label>
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 px-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="password"
-                        name="NewPassword"
-                        id="NewPassword"
-                        placeholder="Enter New Password"
+                        name="newPassword"
+                        id="newPassword"
+                        placeholder="Enter new password"
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
                       />
                     </div>
                   </div>
@@ -301,7 +331,7 @@ const Settings = () => {
                   <div className="mb-5.5">
                     <label
                       className="mb-3 block text-sm font-medium text-black dark:text-white"
-                      htmlFor="conPassword"
+                      htmlFor="confirmPassword"
                     >
                       Confirm Password
                     </label>
@@ -334,9 +364,11 @@ const Settings = () => {
                       <input
                         className="w-full rounded border border-stroke bg-gray py-3 pl-11.5 pr-4.5 text-black focus:border-primary focus-visible:outline-none dark:border-strokedark dark:bg-meta-4 dark:text-white dark:focus:border-primary"
                         type="password"
-                        name="conPassword"
-                        id="conPassword"
-                        placeholder="Confirm Your New Password"
+                        name="confirmPassword"
+                        id="confirmPassword"
+                        placeholder="Confirm your new password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </div>
                   </div>
