@@ -9,11 +9,15 @@ import { fetchCandidateData } from '../../api/api.js'
 function CandidateDetails() {
   const [candidates, setCandidates] = useState([]);
   const [totalCandidates, setTotalCandidates] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit, setLimit] = useState(5);
   const [sortOrder, setSortOrder] = useState('ASC');
+  const [search, setSearch] = useState('');
   
   useEffect(() => {    
-    fetchCandidateData(setCandidates, setTotalCandidates, sortOrder);
-  }, [sortOrder]);
+    fetchCandidateData(setCandidates, setTotalCandidates, setTotalPages, sortOrder, search, currentPage, limit);
+  }, [sortOrder, search, currentPage, limit]);
 
   const toggleSort = () => {
     setSortOrder(prevOrder => prevOrder === 'ASC' ? 'DESC' : 'ASC');
@@ -21,6 +25,20 @@ function CandidateDetails() {
 
   const getSortIndicator = () => {
     return sortOrder === 'ASC' ? ' ▲' : ' ▼';
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  const handleLimitChange = (e) => {
+    setLimit(parseInt(e.target.value));
+    setCurrentPage(1); // Reset to first page when changing limit
+  };
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
   };
 
   return (
@@ -37,14 +55,22 @@ function CandidateDetails() {
           <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-2">
               <span>Show</span>
-              <select className="border rounded px-2 py-1">
-                <option>5</option>
+              <select 
+                className="border rounded px-2 py-1" 
+                value={limit} 
+                onChange={handleLimitChange}
+              >
+                <option value="1">1</option>
+                <option value="5">5</option>
+                <option value="10">10</option>
+                <option value="20">20</option>
+                <option value="30">30</option>
               </select>
               <span>entries</span>
             </div>
             <div className="flex items-center space-x-2">
               <span>Search:</span>
-              <input type="text" className="border rounded px-2 py-1 flex-grow" />
+              <input type="text" className="border rounded px-2 py-1 flex-grow" value={search} onChange={handleSearch}/>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -106,6 +132,32 @@ function CandidateDetails() {
 
               </tbody>
             </table>
+          </div>
+          <div className="mt-4 flex justify-between items-center">
+            <div>
+              Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, totalCandidates)} of {totalCandidates} entries
+            </div>
+            <div className="flex items-center">
+              {totalPages > 1 && currentPage > 1 && (
+                <button 
+                  onClick={() => handlePageChange(currentPage - 1)} 
+                  className="px-3 py-1 border rounded mr-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
+                >
+                  Previous
+                </button>
+              )}
+              {totalPages > 1 && (
+                <span className="text-sm text-gray-700">{currentPage} of {totalPages}</span>
+              )}
+              {totalPages > 1 && currentPage < totalPages && (
+                <button 
+                  onClick={() => handlePageChange(currentPage + 1)} 
+                  className="px-3 py-1 border rounded ml-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
+                >
+                  Next
+                </button>
+              )}
+            </div>
           </div>
         </div>
         </div>

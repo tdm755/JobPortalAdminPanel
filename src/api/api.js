@@ -52,25 +52,9 @@ export const updatePackageDetails = (packageId, updates) => {
   return api.put('/packages', { packageId, updates });
 };
 
-// export const fetchCandidateData = async (prop, arg2) => {
-//   try {
-//     const response = await fetch(`${API_BASE_URL}/candidates`);
-//     const data = await response.json();
-//     if (prop !== undefined) {
-//       prop(data.data.candidates);
-//     }    
-//     if (arg2) {
-//       arg2(data.data.candidates.length);      
-//     }
-    
-//   } catch (error) {
-//     console.error('Error fetching candidates:', error);
-//   }
-// };
-
-export const fetchCandidateData = async (prop, arg2, sortOrder = 'ASC') => {
+export const fetchCandidateData = async (setCandidates, setTotalCandidates, setTotalPages, sortOrder = 'ASC', search = '', page = 1, limit = 5) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}`);
+    const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
     
     if (data.data && data.data.candidates) {
@@ -83,13 +67,9 @@ export const fetchCandidateData = async (prop, arg2, sortOrder = 'ASC') => {
         }
       });
 
-      if (prop !== undefined) {
-        prop(sortedCandidates);
-      }
-      
-      if (arg2) {
-        arg2(sortedCandidates.length);
-      }
+      setCandidates(sortedCandidates);
+      setTotalCandidates(data.data.totalCandidates);
+      setTotalPages(data.data.totalPages);
     } else {
       console.error('Unexpected data structure:', data);
     }
@@ -98,51 +78,31 @@ export const fetchCandidateData = async (prop, arg2, sortOrder = 'ASC') => {
   }
 };
 
-export const fetchEmployersData = async (prop, setEmployersCount) => {
+export const fetchEmployersData = async (setEmployers, setTotalEmployers, setTotalPages, sortOrder = 'ASC', search = '', page = 1, limit = 5) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/employers`);
+    const response = await fetch(`${API_BASE_URL}/employers?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
-    if (prop !== undefined) {
-      prop(data.data.employers)      
-    }
-    if (setEmployersCount) {
-      setEmployersCount(data.data.employers.length)
+
+    if (data.data && data.data.employers) {
+      // Sort the employers based on the sortOrder
+      const sortedEmployers = data.data.employers.sort((a, b) => {
+        if (sortOrder === 'ASC') {
+          return a.EmployerProfile.eid - b.EmployerProfile.eid;
+        } else {
+          return b.EmployerProfile.eid - a.EmployerProfile.eid;
+        }
+      });
+
+      setEmployers(sortedEmployers);
+      setTotalEmployers(data.data.totalEmployers);
+      setTotalPages(data.data.totalPages);
+    } else {
+      console.error('Unexpected data structure:', data);
     }
   } catch (error) {
-    console.error('Error fetching candidates:', error);
-
+    console.error('Error fetching employers:', error);
   }
-}
-
-
-
-// export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
-//   try {
-//       const response = await fetch(`${API_BASE_URL}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`, {
-//           credentials: 'include',
-//       });
-//       const dataInsideAPI = await response.json();
-
-//       if (dataInsideAPI && dataInsideAPI.data) {
-//           setFeatureData(()=>{
-//             console.log(dataInsideAPI);
-//              let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.length : '');
-//               return {...dataInsideAPI, data : dataInsideAPI.data.map(item => item.trim()).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
-//           });
-//       } else {
-//           if (!dataInsideAPI) {
-//               setFeatureData({}); 
-//           }
-//           else if(!dataInsideAPI.data){
-//               setFeatureData((preVal)=>{
-//                   return {...preVal, data : []};
-//               })
-//           }
-//       }
-//   } catch (error) {
-//       console.log('Error:', error);
-//   }
-// }
+};
 
 export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
   try {
