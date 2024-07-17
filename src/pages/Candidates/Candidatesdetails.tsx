@@ -7,15 +7,21 @@ import deleteIcon from '../../images/icon/DeleteIcon.svg'
 import { fetchCandidateData } from '../../api/api.js'
 
 function CandidateDetails() {
-
-
   const [candidates, setCandidates] = useState([]);
-
+  const [totalCandidates, setTotalCandidates] = useState(0);
+  const [sortOrder, setSortOrder] = useState('ASC');
+  
   useEffect(() => {    
-    fetchCandidateData(setCandidates);
-  }, []);
+    fetchCandidateData(setCandidates, setTotalCandidates, sortOrder);
+  }, [sortOrder]);
 
+  const toggleSort = () => {
+    setSortOrder(prevOrder => prevOrder === 'ASC' ? 'DESC' : 'ASC');
+  };
 
+  const getSortIndicator = () => {
+    return sortOrder === 'ASC' ? ' ▲' : ' ▼';
+  };
 
   return (
     <DefaultLayout>
@@ -45,7 +51,9 @@ function CandidateDetails() {
             <table className="w-full">
               <thead>
                 <tr className="bg-gray-50">
-                <th className="px-4 py-2 text-left"> id </th>              
+                <th className="px-4 py-2 text-left cursor-pointer" onClick={toggleSort}>
+                    id {getSortIndicator()}
+                  </th>            
                 <th className="px-4 py-2 text-left">Name</th>
                 <th className="px-4 py-2 text-left">Email Id</th>
                 <th className="px-4 py-2 text-left">Qualification</th>

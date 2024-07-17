@@ -52,22 +52,51 @@ export const updatePackageDetails = (packageId, updates) => {
   return api.put('/packages', { packageId, updates });
 };
 
-export const fetchCandidateData = async (prop, arg2) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}/candidates`);
-    const data = await response.json();
-    if (prop !== undefined) {
-      prop(data.data.candidates);
-    }    
-    if (arg2) {
-      arg2(data.data.candidates.length);      
-    }
+// export const fetchCandidateData = async (prop, arg2) => {
+//   try {
+//     const response = await fetch(`${API_BASE_URL}/candidates`);
+//     const data = await response.json();
+//     if (prop !== undefined) {
+//       prop(data.data.candidates);
+//     }    
+//     if (arg2) {
+//       arg2(data.data.candidates.length);      
+//     }
     
+//   } catch (error) {
+//     console.error('Error fetching candidates:', error);
+//   }
+// };
+
+export const fetchCandidateData = async (prop, arg2, sortOrder = 'ASC') => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}`);
+    const data = await response.json();
+    
+    if (data.data && data.data.candidates) {
+      // Sort the candidates based on the sortOrder
+      const sortedCandidates = data.data.candidates.sort((a, b) => {
+        if (sortOrder === 'ASC') {
+          return a.CandidateProfile.cid - b.CandidateProfile.cid;
+        } else {
+          return b.CandidateProfile.cid - a.CandidateProfile.cid;
+        }
+      });
+
+      if (prop !== undefined) {
+        prop(sortedCandidates);
+      }
+      
+      if (arg2) {
+        arg2(sortedCandidates.length);
+      }
+    } else {
+      console.error('Unexpected data structure:', data);
+    }
   } catch (error) {
     console.error('Error fetching candidates:', error);
   }
 };
-
 
 export const fetchEmployersData = async (prop, setEmployersCount) => {
   try {
