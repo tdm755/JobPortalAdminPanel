@@ -9,7 +9,7 @@ function EmployerProfile() {
 
   const { profileId } = useParams();
   const [EmpData, setEmpData] = useState({});
-
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
 
   const baseUrl = `http://localhost:5000/api/admin/employers/profile/${profileId}`;
@@ -21,20 +21,23 @@ function EmployerProfile() {
     e.preventDefault();
     try {
       const response = await fetch(baseUrl, {
-        method : 'PUT',
-        headers : {
+        method: 'PUT',
+        headers: {
           'Content-Type': 'application/json', 
         },
-        body : JSON.stringify(EmpData)
+        body: JSON.stringify({
+          ...EmpData,
+          registeredEmail: registeredEmail
+        })
       });
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
-      
+      // Handle successful update
+      console.log('Profile updated successfully');
     } catch (error) {
       console.log(error);
     }
-    
   }
 
 
@@ -46,6 +49,7 @@ function EmployerProfile() {
         const response = await fetch(baseUrl);
         const data = await response.json();
         setEmpData(data.data.employerProfile);
+        setRegisteredEmail(data.data.employerProfile.Employer.email);
         console.log(data.message);
       } catch (error) {
         console.log('Error : ', error);
@@ -63,11 +67,8 @@ function EmployerProfile() {
     })
   }
 
-  function handleInputChangeForRegisEmail(e) {
-    let Val = e.target.value;
-    setEmpData((PreVal) => {
-      return {...PreVal, Employer: {...PreVal.Employer, email : Val,},};
-    });
+  function handleRegisteredEmailChange(e) {
+    setRegisteredEmail(e.target.value);
   }
 
   console.log(EmpData);
@@ -102,11 +103,11 @@ function EmployerProfile() {
                 <input
                   required
                   className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                  id="email"
+                  id="registeredEmail"
                   type="email"
-                  name='email'
-                  value={EmpData.Employer?.email || ""}
-                  onChange={handleInputChangeForRegisEmail}
+                  name='registeredEmail'
+                  value={registeredEmail}
+                  onChange={handleRegisteredEmailChange}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -119,11 +120,11 @@ function EmployerProfile() {
                 <input
                   required
                   className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                  id="email"
+                  id="profileEmail"
                   type="email"
                   name='email'
                   value={EmpData.email || ""}
-                  onChange={(e) => { handleInputChange(e) }}
+                  onChange={handleInputChange}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"

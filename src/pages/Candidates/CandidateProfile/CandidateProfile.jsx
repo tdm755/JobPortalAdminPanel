@@ -12,7 +12,7 @@ function CandidateProfile() {
 
   const { profileId } = useParams();
   const [CanData, setCanData] = useState({});
-
+  const [registeredEmail, setRegisteredEmail] = useState("");
 
 
   const baseUrl = `http://localhost:5000/api/admin/candidates/profile/${profileId}`;
@@ -27,27 +27,27 @@ function CandidateProfile() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(CanData)
+        body: JSON.stringify({
+          ...CanData,
+          registeredEmail: registeredEmail
+        })
       });
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
-      // const result = await response.json();
-      // console.log(result);
+      // Handle successful update
     } catch (error) {
       console.error('Error:', error);
     }
   }
-
 
   useEffect(() => {
     async function fetchData() {
       try {
         const response = await fetch(baseUrl);
         const data = await response.json();
-        // console.log(data);
         setCanData(data.data.candidateProfile);
-        // console.log(data.data);
+        setRegisteredEmail(data.data.candidateProfile.Candidate.email);
       } catch (error) {
         console.log('Error : ', error);
       }
@@ -64,6 +64,9 @@ function CandidateProfile() {
     })
   }
 
+  function handleRegisteredEmailChange(e) {
+    setRegisteredEmail(e.target.value);
+  }
 
   function handleInputChangeForRegisEmail(e) {
     setCanData((PreVal) => {
@@ -100,11 +103,11 @@ function CandidateProfile() {
                   <input
                     required
                     className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                    id="email"
+                    id="registeredEmail"
                     type="email"
-                    name='email'
-                    value={CanData.Candidate?.email || ""}
-                    onChange={handleInputChangeForRegisEmail}
+                    name='registeredEmail'
+                    value={registeredEmail}
+                    onChange={handleRegisteredEmailChange}
                   />
                   <label
                     className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -117,11 +120,11 @@ function CandidateProfile() {
                   <input
                     required
                     className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                    id="email"
+                    id="profileEmail"
                     type="email"
                     name='email'
                     value={CanData.email || ""}
-                    onChange={(e) => { handleInputChange(e) }}
+                    onChange={handleInputChange}
                   />
                   <label
                     className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
