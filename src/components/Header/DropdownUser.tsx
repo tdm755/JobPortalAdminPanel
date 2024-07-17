@@ -4,10 +4,12 @@ import { Link, useNavigate, NavLink } from 'react-router-dom';
 import UserOne from '../../images/user/user-01.png';
 import companyIcon from '../../../public/AplaKaamFavicon.png';
 import { AuthContext } from '../../App';
-import { logoutApi } from '../../api/api';
+import { logoutApi, getAdminProfileImage } from '../../api/api';
 
 const DropdownUser = () => {
   const { logout } = useContext(AuthContext);
+  const [profileImage, setProfileImage] = useState(null);
+
   const navigate = useNavigate();
 
   const handleLogout = async () => {
@@ -22,6 +24,19 @@ const DropdownUser = () => {
       }
     } catch (error) {
       console.error("Error during logout:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileImage();
+  }, []);
+
+  const fetchProfileImage = async () => {
+    try {
+      const imageUrl = await getAdminProfileImage();
+      setProfileImage(imageUrl);
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
     }
   };
 
@@ -72,7 +87,13 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+         {profileImage ? (
+                    <img src={profileImage} alt="User" className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <div className="h-full w-full bg-gray-300 rounded-full flex items-center justify-center">
+                     <img src={UserOne} alt="User" />
+                    </div>
+                  )}
         </span>
 
         <svg

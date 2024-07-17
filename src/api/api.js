@@ -45,6 +45,30 @@ export const resetPassword = (token, newPassword) => api.post('/reset-password',
 export const changeAdminPassword = (currentPassword, newPassword) => 
   api.post('/change-password', { currentPassword, newPassword });
 
+export const uploadAdminProfileImage = (imageFile) => {
+  const formData = new FormData();
+  formData.append('profileImage', imageFile);
+  return api.post('/upload-profile-image', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const getAdminProfileImage = () => {
+  return api.get('/profile-image', {
+    responseType: 'blob',
+  }).then(response => {
+    return URL.createObjectURL(response.data);
+  });
+};
+
+// Updated activate and deactivate functions
+export const deactivateCandidate = (candidateId) => api.put(`/candidates/${candidateId}/deactivate`);
+export const activateCandidate = (candidateId) => api.put(`/candidates/${candidateId}/activate`);
+export const deactivateEmployer = (employerId) => api.put(`/employers/${employerId}/deactivate`);
+export const activateEmployer = (employerId) => api.put(`/employers/${employerId}/activate`);
+
 // Package APIs
 export const getAllPackages = () => {
   return api.get('/packages');

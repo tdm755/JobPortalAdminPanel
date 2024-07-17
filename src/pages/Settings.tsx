@@ -1,13 +1,15 @@
 import Breadcrumb from '../components/Breadcrumbs/Breadcrumb';
 import userThree from '../images/user/user-03.png';
+import UserOne from '../images/user/user-01.png';
 import DefaultLayout from '../layout/DefaultLayout';
-import { changeAdminPassword } from '../api/api';
-import { useState } from 'react';
+import { changeAdminPassword, getAdminProfileImage, uploadAdminProfileImage } from '../api/api';
+import { useState, useEffect } from 'react';
 
 const Settings = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [profileImage, setProfileImage] = useState(null);
 
   const handleChangePassword = async (e) => {
     e.preventDefault();
@@ -27,6 +29,30 @@ const Settings = () => {
     } catch (error) {
       console.error('Failed to change password', error);
       // Handle error (e.g., show an error message)
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileImage();
+  }, []);
+
+  const fetchProfileImage = async () => {
+    try {
+      const imageUrl = await getAdminProfileImage();
+      setProfileImage(imageUrl);
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
+    }
+  };
+
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    try {
+      await uploadAdminProfileImage(file);
+      // Refresh the profile image after successful upload
+      fetchProfileImage();
+    } catch (error) {
+      console.error('Error uploading profile image:', error);
     }
   };
 
@@ -176,7 +202,14 @@ const Settings = () => {
                 <form action="#">
                   <div className="mb-4 flex items-center gap-3">
                     <div className="h-14 w-14 rounded-full">
-                      <img src={userThree} alt="User" />
+                    {profileImage ? (
+                    <img src={profileImage} alt="User" className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <div className="h-full w-full bg-gray-300 rounded-full flex items-center justify-center">
+                     <img src={UserOne} alt="User" />
+                    </div>
+                  )}
+                      
                     </div>
                     <div>
                       <span className="mb-1.5 text-black dark:text-white">
@@ -200,6 +233,7 @@ const Settings = () => {
                     <input
                       type="file"
                       accept="image/*"
+                      onChange={handleImageUpload}
                       className="absolute inset-0 z-50 m-0 h-full w-full cursor-pointer p-0 opacity-0 outline-none"
                     />
                     <div className="flex flex-col items-center justify-center space-y-3">
