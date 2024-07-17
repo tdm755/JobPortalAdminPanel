@@ -7,41 +7,52 @@ import ChatCard from '../../components/Chat/ChatCard';
 import MapOne from '../../components/Maps/MapOne';
 // import TableOne from '../../components/Tables/TableOne';
 import DefaultLayout from '../../layout/DefaultLayout';
-import { fetchCandidateData } from '../../api/api';
-import { fetchEmployersData } from '../../api/api';
-
+import { getTotalCounts } from '../../api/api';
 import candidateIcon from '../../../public/5856.jpg'
 import TotalUsers from '../../../public/5879.jpg'
 import employerIcon from '../../../public/preview.jpg'
 
+interface Counts {
+  totalCandidates: number;
+  totalEmployers: number;
+  totalUsers: number;
+}
 
 const ECommerce: React.FC = () => {
+  const [counts, setCounts] = useState<Counts>({
+    totalCandidates: 0,
+    totalEmployers: 0,
+    totalUsers: 0,
+  });
 
-  const [CandidateCount, setCandidateCounts] = useState(null);
-  const [EmployerCount, setEmployerCount] = useState(null);
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const response = await getTotalCounts();
+        setCounts(response.data); // Assuming response.data is of type Counts
+      } catch (error) {
+        console.error('Error fetching total counts:', error);
+      }
+    };
 
+    fetchCounts();
+  }, []);
 
-  useEffect(()=>{
-       fetchCandidateData(undefined, setCandidateCounts);
-  }, [CandidateCount]);
-
-  useEffect(()=>{
-       fetchEmployersData(undefined, setEmployerCount);
-  }, [CandidateCount]);
   
 
 
 
   return (
     <DefaultLayout>
+     
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 xl:grid-cols-4 2xl:gap-7.5">
-        <CardDataStats title="Total Candidate's" total={CandidateCount} rate="0.43%" levelUp>
+      <CardDataStats title="Total Candidate's" total={counts.totalCandidates} rate="0.43%" levelUp>
           <img className="mix-blend-multiply  fill-primary dark:fill-white"
             width="22"
             height="25"
             src={candidateIcon} alt="" />
         </CardDataStats>
-        <CardDataStats title="Total Employer's" total={EmployerCount} rate="4.35%" levelUp>
+        <CardDataStats title="Total Employer's" total={counts.totalEmployers} rate="4.35%" levelUp>
         <img className="mix-blend-multiply  fill-primary dark:fill-white"
             width="24"
             height="25"
@@ -66,7 +77,7 @@ const ECommerce: React.FC = () => {
             />
           </svg>
         </CardDataStats>
-        <CardDataStats title="Total Users" total={CandidateCount + EmployerCount} rate="0.95%" levelDown>
+        <CardDataStats title="Total Users" total={counts.totalUsers} rate="0.95%" levelDown>
         <img className=" mix-blend-multiply fill-primary dark:fill-white"
             width="32"
             height="37"

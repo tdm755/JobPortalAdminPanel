@@ -55,6 +55,14 @@ export const updatePackageDetails = (packageId, updates) => {
   return api.put('/packages', { packageId, updates });
 };
 
+export const getTotalCounts = () => {
+  return api.get('/total-counts')
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+};
+
 export const fetchCandidateData = async (setCandidates, setTotalCandidates, setTotalPages, sortOrder = 'ASC', search = '', page = 1, limit = 5) => {
   try {
     const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
@@ -69,10 +77,11 @@ export const fetchCandidateData = async (setCandidates, setTotalCandidates, setT
           return b.CandidateProfile.cid - a.CandidateProfile.cid;
         }
       });
-
+      
       setCandidates(sortedCandidates);
       setTotalCandidates(data.data.totalCandidates);
       setTotalPages(data.data.totalPages);
+     
     } else {
       console.error('Unexpected data structure:', data);
     }
