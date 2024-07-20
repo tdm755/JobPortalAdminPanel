@@ -69,14 +69,14 @@ export const activateCandidate = (candidateId) => api.put(`/candidates/${candida
 export const deactivateEmployer = (employerId) => api.put(`/employers/${employerId}/deactivate`);
 export const activateEmployer = (employerId) => api.put(`/employers/${employerId}/activate`);
 
-// Package APIs
+// // Package APIs
 export const getAllPackages = () => {
   return api.get('/packages');
 };
 
-export const updatePackageDetails = (packageId, updates) => {
-  console.log('Sending update request:', { packageId, updates });
-  return api.put('/packages', { packageId, updates });
+export const updatePackageDetails = (updates) => {
+  console.log('Sending update request:', updates);
+  return api.put('/packages', updates);
 };
 
 export const getTotalCounts = () => {

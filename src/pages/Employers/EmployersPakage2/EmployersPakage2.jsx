@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './EmployersPakage2.css';
 import CheckIcon from '../../../../public/CheckIcon.svg';
 import CrossIcon from '../../../../public/redCross.svg';
@@ -24,25 +24,20 @@ function EmployersPakage2() {
   const [discountPercentage, setDiscountPercentage] = useState('');
   const [inputValues, setInputValues] = useState({});
 
-  useEffect(() => {
-    fetchPackages();
-  }, []);
-
-  useEffect(() => {
-    updateDiscountedPrices();
-  }, [discountPercentage, changes]);
-
-  const fetchPackages = async () => {
+  const fetchPackages = useCallback(async () => {
     try {
       const response = await getAllPackages();
       setPackages(response.data);
       initializeInclusions(response.data);
-       // Assuming the first package has the common discount percentage
-       setDiscountPercentage(response.data[0].discountPercentage.toString());
+      setDiscountPercentage(response.data[0].discountPercentage.toString());
     } catch (error) {
       console.error('Failed to fetch packages:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPackages();
+  }, [fetchPackages]);
 
   const initializeInclusions = (packageData) => {
     const newInclusions = inclusionKeys.map(key => ({
@@ -56,6 +51,26 @@ function EmployersPakage2() {
     setInclusions(newInclusions);
   };
 
+  // const handleChange = (packageId, field, value) => {
+  //   setInputValues(prev => ({
+  //     ...prev,
+  //     [packageId]: {
+  //       ...prev[packageId],
+  //       [field]: value
+  //     }
+  //   }));
+
+  //   setChanges(prev => ({
+  //     ...prev,
+  //     [packageId]: {
+  //       ...prev[packageId],
+  //       [field]: field === 'originalPrice' || field === 'duration' 
+  //         ? (value === '' ? '' : Number(value))
+  //         : value
+  //     }
+  //   }));
+  // };
+  
   const handleChange = (packageId, field, value) => {
     setInputValues(prev => ({
       ...prev,
@@ -64,7 +79,7 @@ function EmployersPakage2() {
         [field]: value
       }
     }));
-
+  
     setChanges(prev => ({
       ...prev,
       [packageId]: {
@@ -77,15 +92,20 @@ function EmployersPakage2() {
   };
 
   const handleInclusionChange = (index, packageId, value) => {
-    const newInclusions = [...inclusions];
-    newInclusions[index][packageId] = value;
-    setInclusions(newInclusions);
+    setInclusions(prevInclusions => {
+      const newInclusions = [...prevInclusions];
+      newInclusions[index] = {
+        ...newInclusions[index],
+        [packageId]: value
+      };
+      return newInclusions;
+    });
 
     setChanges(prev => ({
       ...prev,
       [packageId]: {
         ...prev[packageId],
-        [newInclusions[index].backendKey]: value === "CheckIcon"
+        [inclusions[index].backendKey]: value === "CheckIcon"
       }
     }));
   };
@@ -97,47 +117,58 @@ function EmployersPakage2() {
     } else {
       const clampedValue = Math.min(Math.max(parsedValue, 0), 100);
       setDiscountPercentage(clampedValue.toString());
+      setChanges(prev => ({
+        ...prev,
+        discountPercentage: clampedValue
+      }));
     }
   };
 
-  const calculateDiscountedPrice = (originalPrice) => {
+  const calculateDiscountedPrice = useCallback((originalPrice) => {
     if (originalPrice === '' || discountPercentage === '') return '';
     const discount = parseFloat(discountPercentage) / 100;
     return Number((Number(originalPrice) * (1 - discount)).toFixed(2));
-  };
+  }, [discountPercentage]);
 
-  const updateDiscountedPrices = () => {
-    const updatedChanges = { ...changes };
-    packages.forEach(pkg => {
-      const originalPrice = changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice;
-      const discountedPrice = originalPrice * (1 - discountPercentage / 100);
-      updatedChanges[pkg.packageId] = {
-        ...updatedChanges[pkg.packageId],
-        discountedPrice: Number(discountedPrice.toFixed(2))
-      };
+  const updateDiscountedPrices = useCallback(() => {
+    setChanges(prevChanges => {
+      const updatedChanges = { ...prevChanges };
+      packages.forEach(pkg => {
+        const originalPrice = prevChanges[pkg.packageId]?.originalPrice ?? pkg.originalPrice;
+        const discountedPrice = calculateDiscountedPrice(originalPrice);
+        updatedChanges[pkg.packageId] = {
+          ...updatedChanges[pkg.packageId],
+          discountedPrice
+        };
+      });
+      return updatedChanges;
     });
-    setChanges(updatedChanges);
-  };
+  }, [packages, calculateDiscountedPrice]);
 
+  useEffect(() => {
+    updateDiscountedPrices();
+  }, [updateDiscountedPrices]);
 
   const saveChanges = async () => {
     try {
-      for (const [packageId, updates] of Object.entries(changes)) {
-        const formattedUpdates = {
+      const updatesPayload = Object.entries(changes).reduce((acc, [packageId, updates]) => {
+        acc[packageId] = {
           ...updates,
-          discountPercentage: discountPercentage === '' ? 0 : parseFloat(discountPercentage)
+          discountPercentage: discountPercentage === '' ? null : parseFloat(discountPercentage)
         };
-        await updatePackageDetails(packageId, formattedUpdates);
-      }
+        return acc;
+      }, {});
+  
+      const response = await updatePackageDetails(updatesPayload);
+      console.log(response);
       fetchPackages();
       setChanges({});
-      alert('Changes saved successfully!');
+      // alert('Changes saved successfully!');
     } catch (error) {
       console.error('Failed to save changes:', error);
       alert('Failed to save changes. Please try again.');
     }
   };
-
 
   const getPackageStyle = (packageName) => {
     const styles = {
@@ -196,11 +227,11 @@ function EmployersPakage2() {
                               <h4 className={`wt-title ${pkg.packageName.toLowerCase()}Title ${pkg.packageName === 'Free' ? 'p-[25px]' : ''}`}>{pkg.packageName}</h4>
                               {pkg.packageName !== 'Free' && (
                                 <div className="flex flex-col p-table-price">
-                                  <div className="flex flex-row items-center p-table-price">
+                                 <div className="flex flex-row items-center p-table-price">
                                     <span className="text-lg mr-2">
-                                      ₹{calculateDiscountedPrice(changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice)} /
+                                      ₹{changes[pkg.packageId]?.discountedPrice ?? calculateDiscountedPrice(pkg.originalPrice)} /
                                     </span>
-                                    <span className="text-sm line-through  decoration-red-400 italic">
+                                    <span className="text-sm line-through decoration-red-400 italic">
                                       ₹{changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
                                     </span>
                                   </div>
@@ -214,47 +245,47 @@ function EmployersPakage2() {
                     </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <th>Original Price</th>
-                    {packages.map(pkg => (
-                      <td key={pkg.packageId}>
-                        {pkg.packageName !== 'Free' && (
-                          <input
-                            type="number"
-                            value={inputValues[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
-                            onChange={(e) => handleChange(pkg.packageId, 'originalPrice', e.target.value)}
-                            className="w-full border border-[#8db5d8] outline-none px-1 bg-transparent"
-                          />
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <th>Duration</th>
-                    {packages.map(pkg => (
-                      <td key={pkg.packageId}>
-                        {pkg.packageName !== 'Free' && (
-                          <div className="flex items-center">
-                            <input 
+                    <tr>
+                      <th>Original Price</th>
+                      {packages.map(pkg => (
+                        <td key={pkg.packageId}>
+                          {pkg.packageName !== 'Free' && (
+                            <input
                               type="number"
-                              value={inputValues[pkg.packageId]?.duration ?? pkg.duration}
-                              onChange={(e) => handleChange(pkg.packageId, 'duration', e.target.value)}
-                              className="w-1/2 border border-[#8db5d8] outline-none px-1 bg-transparent"
+                              value={inputValues[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
+                              onChange={(e) => handleChange(pkg.packageId, 'originalPrice', e.target.value)}
+                              className="w-full border border-[#8db5d8] outline-none px-1 bg-transparent"
                             />
-                            <select
-                              value={changes[pkg.packageId]?.durationType ?? pkg.durationType}
-                              onChange={(e) => handleChange(pkg.packageId, 'durationType', e.target.value)}
-                              className="w-1/2 ml-1 border border-[#8db5d8] outline-none px-1 bg-transparent"
-                            >
-                              <option value="days">Days</option>
-                              <option value="months">Months</option>
-                              <option value="years">Years</option>
-                            </select>
-                          </div>
-                        )}
-                      </td>
-                    ))}
-                  </tr>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                    <tr>
+                      <th>Duration</th>
+                      {packages.map(pkg => (
+                        <td key={pkg.packageId}>
+                          {pkg.packageName !== 'Free' && (
+                            <div className="flex items-center">
+                              <input 
+                                type="number"
+                                value={inputValues[pkg.packageId]?.duration ?? pkg.duration}
+                                onChange={(e) => handleChange(pkg.packageId, 'duration', e.target.value)}
+                                className="w-1/2 border border-[#8db5d8] outline-none px-1 bg-transparent"
+                              />
+                              <select
+                                value={changes[pkg.packageId]?.durationType ?? pkg.durationType}
+                                onChange={(e) => handleChange(pkg.packageId, 'durationType', e.target.value)}
+                                className="w-1/2 ml-1 border border-[#8db5d8] outline-none px-1 bg-transparent"
+                              >
+                                <option value="days">Days</option>
+                                <option value="months">Months</option>
+                                <option value="years">Years</option>
+                              </select>
+                            </div>
+                          )}
+                        </td>
+                      ))}
+                    </tr>
                     {inclusions.map((inclusion, index) => (
                       <tr key={index}>
                         <th>{inclusion.th}</th>
