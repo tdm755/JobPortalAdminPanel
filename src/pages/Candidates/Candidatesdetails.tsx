@@ -5,6 +5,7 @@ import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import deleteIcon from '../../images/icon/DeleteIcon.svg'
 // import './EmployerTable.css';
 import { fetchCandidateData } from '../../api/api.js'
+import PopupCard from '../../utils/PopupCard.jsx'
 
 function CandidateDetails() {
   const [candidates, setCandidates] = useState([]);
@@ -14,6 +15,8 @@ function CandidateDetails() {
   const [limit, setLimit] = useState(5);
   const [sortOrder, setSortOrder] = useState('ASC');
   const [search, setSearch] = useState('');
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [candidateToDelete, setCandidateToDelete] = useState(null);
   
   useEffect(() => {    
     fetchCandidateData(setCandidates, setTotalCandidates, setTotalPages, sortOrder, search, currentPage, limit);
@@ -40,6 +43,19 @@ function CandidateDetails() {
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
+
+  const handleDeleteClick = (candidate) => {
+    setCandidateToDelete(candidate);
+    setShowDeletePopup(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Implement your delete logic here
+    console.log(`Deleting candidate with ID: ${candidateToDelete.CandidateProfile.cid}`);
+    setShowDeletePopup(false);
+    setCandidateToDelete(null);
+  };
+
 
   return (
     <DefaultLayout>
@@ -122,7 +138,13 @@ function CandidateDetails() {
                       </button>
                       </Link>
 
-                      <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={deleteIcon} alt=""/></button>
+                      {/* <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={deleteIcon} alt=""/></button> */}
+                      <button 
+                  className="bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"
+                  onClick={() => handleDeleteClick(candidate)}
+                >
+                  <img className='w-4' src={deleteIcon} alt=""/>
+                </button>
                     </div>
                   </td>
                 </tr>
@@ -162,6 +184,37 @@ function CandidateDetails() {
         </div>
         </div>
       </>
+      {showDeletePopup && (
+      <PopupCard
+        icon={<img src={deleteIcon} alt="Delete" className="w-8 h-8" />}
+        heading="Confirm Deletion"
+        description={`Are you sure you want to delete the candidate ${candidateToDelete.CandidateProfile.candidate_name}?`}
+        buttons={[
+          {
+            text: "Cancel",
+            primary: false,
+            onClick: () => setShowDeletePopup(false)
+          },
+          {
+            text: "Delete",
+            primary: true,
+            onClick: handleConfirmDelete
+          }
+        ]}
+        onClose={() => setShowDeletePopup(false)}
+        bgColor="bg-white"
+        headingHoverColor="hover:text-red-600"
+        descriptionColor="text-gray-700"
+        descriptionHoverOpacity="hover:opacity-90"
+        primaryButtonColor="bg-red-600"
+        primaryButtonHoverColor="hover:bg-red-600"
+        primaryButtonFocusRingColor="focus:ring-red-500"
+        secondaryButtonColor="bg-gray-200"
+        secondaryButtonTextColor="text-gray-700"
+        secondaryButtonHoverColor="hover:bg-gray-300"
+        secondaryButtonFocusRingColor="focus:ring-gray-400"
+      />
+    )}
     </DefaultLayout>
   
   )

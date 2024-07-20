@@ -4,6 +4,8 @@ import CheckIcon from '../../../../public/CheckIcon.svg';
 import CrossIcon from '../../../../public/redCross.svg';
 import DefaultLayout from '../../../layout/DefaultLayout';
 import { getAllPackages, updatePackageDetails } from '../../../api/api';
+import { toast } from 'react-toastify';
+import CustomToastContainer from '../../../utils/CustomToastContainer';
 
 const inclusionDisplayNames = {
   companyProfiles: "Company Profiles",
@@ -163,10 +165,10 @@ function EmployersPakage2() {
       console.log(response);
       fetchPackages();
       setChanges({});
-      // alert('Changes saved successfully!');
+      toast.success('Changes saved successfully!');
     } catch (error) {
       console.error('Failed to save changes:', error);
-      alert('Failed to save changes. Please try again.');
+      toast.error('Failed to save changes. Please try again.');
     }
   };
 
@@ -182,6 +184,8 @@ function EmployersPakage2() {
   };
 
   return (
+    <>
+    <CustomToastContainer/>
     <DefaultLayout>
       <div className="EmployerPakage EmployerPakage2">
         <div className="containerInEmSec">
@@ -324,6 +328,7 @@ function EmployersPakage2() {
         </div>
       </div>
     </DefaultLayout>
+    </>
   );
 }
 

@@ -4,6 +4,7 @@ import DefaultLayout from '../../layout/DefaultLayout.js'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import deleteIcon from '../../images/icon/DeleteIcon.svg'
 import { fetchEmployersData } from '../../api/api.js'
+import PopupCard from '../../utils/PopupCard.jsx'
 
 function EmployerCards() {
   const [employers, setEmployers] = useState([]);
@@ -13,6 +14,8 @@ function EmployerCards() {
   const [limit, setLimit] = useState(5);
   const [sortOrder, setSortOrder] = useState('ASC');
   const [search, setSearch] = useState('');
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [employerToDelete, setEmployerToDelete] = useState(null);
   
   useEffect(() => {    
     fetchEmployersData(setEmployers, setTotalEmployers, setTotalPages, sortOrder, search, currentPage, limit);
@@ -38,6 +41,18 @@ function EmployerCards() {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+  };
+
+  const handleDeleteClick = (candidate) => {
+    setEmployerToDelete(candidate);
+    setShowDeletePopup(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Implement your delete logic here
+    console.log(`Deleting employer with ID: ${employerToDelete.EmployerProfile.eid}`);
+    setShowDeletePopup(false);
+    setEmployerToDelete(null);
   };
 
   return (
@@ -112,9 +127,12 @@ function EmployerCards() {
                             <img className='w-5' src={viewIcon} alt="" />
                           </button>
                         </Link>
-                        <button className="bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md">
-                          <img className='w-4' src={deleteIcon} alt=""/>
-                        </button>
+                        <button 
+                  className="bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"
+                  onClick={() => handleDeleteClick(employer)}
+                >
+                  <img className='w-4' src={deleteIcon} alt=""/>
+                </button>
                       </div>
                     </td>
                   </tr>
@@ -150,6 +168,37 @@ function EmployerCards() {
           </div>
         </div>
       </div>
+      {showDeletePopup && (
+      <PopupCard
+        icon={<img src={deleteIcon} alt="Delete" className="w-8 h-8" />}
+        heading="Confirm Deletion"
+        description={`Are you sure you want to delete the candidate ${employerToDelete.EmployerProfile.company_name}?`}
+        buttons={[
+          {
+            text: "Cancel",
+            primary: false,
+            onClick: () => setShowDeletePopup(false)
+          },
+          {
+            text: "Delete",
+            primary: true,
+            onClick: handleConfirmDelete
+          }
+        ]}
+        onClose={() => setShowDeletePopup(false)}
+        bgColor="bg-white"
+        headingHoverColor="hover:text-red-600"
+        descriptionColor="text-gray-700"
+        descriptionHoverOpacity="hover:opacity-90"
+        primaryButtonColor="bg-red-600"
+        primaryButtonHoverColor="hover:bg-red-600"
+        primaryButtonFocusRingColor="focus:ring-red-500"
+        secondaryButtonColor="bg-gray-200"
+        secondaryButtonTextColor="text-gray-700"
+        secondaryButtonHoverColor="hover:bg-gray-300"
+        secondaryButtonFocusRingColor="focus:ring-gray-400"
+      />
+    )}
     </DefaultLayout>
   )
 }
