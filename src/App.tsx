@@ -1,7 +1,5 @@
 import { useEffect, useState, createContext } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import Loader from './common/Loader';
 import SignIn from './pages/Authentication/SignIn';
 import Chart from './pages/Chart';
@@ -26,6 +24,7 @@ import UpdateLocation from './pages/UpdateFeatures/UpdateLocation/UpdateLocation
 import ManageAds from './pages/ManageAdds/ManageAdds.jsx';
 import StatesComponent from './pages/UpdateFeatures/StatesComponent.jsx';
 import CityComponent from './pages/UpdateFeatures/CityComponent.jsx';
+import CustomToastContainer from './utils/CustomToastContainer.jsx';
 
 export const AuthContext = createContext(null);
 
@@ -74,7 +73,7 @@ function App() {
   ) : (
     <>
      <AuthContext.Provider value={{ isLoggedIn, login, logout }}>
-     <ToastContainer />
+     <CustomToastContainer />
      <FeaturesOfCatType.Provider value={{FeatureData, setFeatureData}}>
       <Routes>
         <Route
