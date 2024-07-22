@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DefaultLayout from '../../layout/DefaultLayout.js'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
-import deleteIcon from '../../images/icon/DeleteIcon.svg'
+import settingIcon from '../../images/icon/SettingIcon.svg'
 // import './EmployerTable.css';
 import { fetchCandidateData } from '../../api/api.js'
 import PopupCard from '../../utils/PopupCard.jsx'
@@ -138,12 +138,12 @@ function CandidateDetails() {
                       </button>
                       </Link>
 
-                      {/* <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={deleteIcon} alt=""/></button> */}
+                      {/* <button className=" bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"><img className='w-4' src={settingIcon} alt=""/></button> */}
                       <button 
                   className="bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"
                   onClick={() => handleDeleteClick(candidate)}
                 >
-                  <img className='w-4' src={deleteIcon} alt=""/>
+                  <img className='w-4' src={settingIcon} alt=""/>
                 </button>
                     </div>
                   </td>
@@ -186,7 +186,7 @@ function CandidateDetails() {
       </>
       {showDeletePopup && (
       <PopupCard
-        icon={<img src={deleteIcon} alt="Delete" className="w-8 h-8" />}
+        icon={<img src={settingIcon} alt="Delete" className="w-8 h-8" />}
         heading="Confirm Deletion"
         description={`Are you sure you want to delete the candidate ${candidateToDelete.CandidateProfile.candidate_name}?`}
         buttons={[

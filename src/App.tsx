@@ -13,6 +13,7 @@ import Buttons from './pages/UiElements/Buttons';
 import Employers from './pages/Employers/EmployerCards.tsx';
 import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
 import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage2.jsx';
+import ContactUs from './pages/ContactUs/ContactUs';
 import { centralizedAuthCheck } from './utils/authUtils.js';
 import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
@@ -161,6 +162,15 @@ function App() {
             element={
               <>
                 <UpdateFeturesComponent />
+              </>
+            }
+          />
+
+          <Route
+            path="/contactus"
+            element={
+              <>
+                <ContactUs />
               </>
             }
           />

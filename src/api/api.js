@@ -187,4 +187,49 @@ export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
   }
 }
 
+export const fetchContactMessages = async (setMessages, setTotalMessages, setTotalPages, sortBy, sortOrder, search, page, limit) => {
+  try {
+    const response = await api.get('/contact', {
+      params: {
+        sortBy,
+        sortOrder,
+        search,
+        page,
+        limit,
+      }
+    });
+    const data = response.data;
+
+    if (data.data && data.data.messages) {
+      setMessages(data.data.messages);
+      setTotalMessages(data.data.totalMessages);
+      setTotalPages(data.data.totalPages);
+    } else {
+      console.error('Unexpected data structure:', data);
+    }
+  } catch (error) {
+    console.error('Error fetching contact messages:', error);
+  }
+};
+
+export const deleteContactMessageById = async (id) => {
+  try {
+    const response = await api.delete(`/contact/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting contact message with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+export const deleteAllContactMessages = async () => {
+  try {
+    const response = await api.delete('/contact');
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting all contact messages:', error);
+    throw error;
+  }
+};
+
 export default api;

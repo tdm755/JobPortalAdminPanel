@@ -4,6 +4,7 @@ import SidebarLinkGroup from './SidebarLinkGroup';
 import Logo from '../../../public/AplaKaamLogo.png';
 import packageIcon from '../../images/icon/SetPackage.svg'
 import CandidatesIcon from '../../images/icon/CandidateIcons.svg'
+import ContactUs from '../../images/icon/ContactUs.svg'
 import { AuthContext } from '../../App';
 import { logoutApi } from '../../api/api';
 
@@ -263,6 +264,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 </NavLink>
               </li>
               {/* <!-- set Packages --> */}
+
+
+              {/* <!-- contact Message --> */}
+              <li>
+                <NavLink
+                  to="/contactus"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out  hover:bg-graydark hover:bg-white ${pathname.includes('setpakages') && 'bg-white  dark:bg-meta-4'
+                  }`}
+                // ${pathname.includes('') &&
+                //   'bg-white  dark:bg-meta-4'
+                //   }
+                >
+                  <img src={ContactUs} alt="" />
+                  Contact Us
+                </NavLink>
+              </li>
+              {/* <!-- contact Message --> */}
 
 
             </ul>
