@@ -7,6 +7,10 @@ import CandidatesIcon from '../../images/icon/CandidateIcons.svg'
 import ContactUs from '../../images/icon/ContactUs.svg'
 import { AuthContext } from '../../App';
 import { logoutApi } from '../../api/api';
+import FeatureIcon from '../../../public/FeaturesIcon.png';
+import AdsIcon from '../../../public/AdsIcon.png';
+
+import './index.css';
 
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -214,7 +218,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
 
               {/* <!-- Manage Job Category --> */}                  
-              <li>
+              <li className='ToMakeBlend'>
                 <NavLink
                   to="/updatefeatures"
                   className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-black duration-300 ease-in-out hover:bg-graydark hover:bg-white ${pathname.includes('updatefeatures') && 'bg-white  dark:bg-meta-4'
@@ -223,7 +227,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 //   'bg-white  dark:bg-meta-4'
                 //   }
                 >
-                  <img src={CandidatesIcon} alt="" />
+                  <img src={FeatureIcon} alt="" />
                   Update Features
                 </NavLink>
               </li>
@@ -231,7 +235,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
 
 
               {/* <!-- Manage Adds --> */} 
-              <li>
+              <li className='ToMakeBlend'>
                 {/* <NavLink
                   to="/manageadvertisement" */}
                   <NavLink
@@ -241,7 +245,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 //   'bg-white  dark:bg-meta-4'
                 //   }
                 >
-                  <img src={CandidatesIcon} alt="" />
+                  <img src={AdsIcon} alt="" />
                   Manage Adds
                 </NavLink>
               </li> 
