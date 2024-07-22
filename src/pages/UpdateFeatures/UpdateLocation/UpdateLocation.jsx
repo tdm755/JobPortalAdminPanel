@@ -46,7 +46,7 @@ const FileInput = ({ onChange }) => {
   };
 
   return (
-    <div className="flex items-center space-x-4 border p-0.5 rounded-md w-72">
+    <div className="flex items-center space-x-4 border p-0.5 rounded-md w-[]100%">
       <label className="bg-blue-600 text-white text-sm font-semibold py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 cursor-pointer">
         Choose File
         <input
@@ -113,7 +113,7 @@ const UpdateLocation = () => {
       <p className="text-xl text-gray-600 text-center mb-8">
         Find your favourite jobs and get the benefits of yourself
       </p>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 tabOut:grid-cols-3 tabUlu:grid-cols-4 gap-6">
 
         {locations.map((location, index) => (
 
