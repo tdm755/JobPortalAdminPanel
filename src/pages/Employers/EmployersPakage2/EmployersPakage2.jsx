@@ -235,7 +235,7 @@ function EmployersPakage2() {
                                     <span className="text-lg mr-2">
                                       ₹{changes[pkg.packageId]?.discountedPrice ?? calculateDiscountedPrice(pkg.originalPrice)} /
                                     </span>
-                                    <span className="text-sm line-through decoration-red-400 italic">
+                                    <span  className="text-sm text-[#dc2626] line-through decoration-[#dc2626] italic">
                                       ₹{changes[pkg.packageId]?.originalPrice ?? pkg.originalPrice}
                                     </span>
                                   </div>

@@ -73,8 +73,9 @@ td {
 .EmployerPakage table thead th {
   span {
     font-weight: 300 !important;
-    font-size: 18px !important;
+    /* font-size: 18px !important; */
     /* color: #424852 !important; */
+    
   }
 
   span:nth-child(2) {
