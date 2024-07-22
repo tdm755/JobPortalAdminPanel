@@ -9,10 +9,13 @@ module.exports = {
       satoshi: ['Satoshi', 'sans-serif'],
     },
     screens: {
+      'sms': '420px',
       '2xsm': '375px',
       xsm: '425px',
       '3xl': '2000px',
       'tabIn': '1190px',
+      'tabOut': '1200px',
+      'tabUlu' : '1450px',
       ...defaultTheme.screens,
     },
     extend: {

@@ -1,3 +1,14 @@
 tbody tr td{
     text-align: center;
+    padding: 12px;
+    color: black;
+    img{
+        cursor: pointer;
+    }
 }
+
+
+thead tr th{
+    color: black;
+}
+

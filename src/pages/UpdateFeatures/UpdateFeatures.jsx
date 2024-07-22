@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../../layout/DefaultLayout'
-import CategoryIcon from '../../../public/CategoryIcon.jpeg'
+import CategoryIcon from '../../../public/JobCateIcon.svg'
+import JobTypeIcon from '../../../public/JobIcon.svg'
+import cityIcon from '../../../public/CityIcon.svg'
+import LocationIcon from '../../../public/LocationIcon.svg'
+
+
+import stateIcon from '../../../public/stateIcon.svg';
 import { Link } from 'react-router-dom'
 import { FeaturesOfCatType } from '../../App'
 import { useContext } from 'react'
@@ -80,7 +86,7 @@ function UpdateFeatures() {
           <Link to={`/updateFeature/${"category"}`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
-                <img className='h-13 w-15' src={CategoryIcon} alt="" />
+                <img className='h-10 w-15' src={CategoryIcon} alt="" />
 
                 <div className=" TotalCount">
                   <span className='text-black font-bold text-2xl' >{counts.CatCount}</span>
@@ -96,7 +102,7 @@ function UpdateFeatures() {
           <Link to={`/updateFeature/${"jobtype"}`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
-                <img className='h-13 w-15' src={CategoryIcon} alt="" />
+                <img className='h-10 w-15' src={JobTypeIcon} alt="" />
 
                 <div className=" TotalCount">
                   <span className='text-black font-bold text-2xl' >{counts.TypeCount}</span>
@@ -112,16 +118,16 @@ function UpdateFeatures() {
           <Link to={`/states`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
-                <img className='h-13 w-15' src={CategoryIcon} alt="" />
+                <img className='h-10 w-15' src={stateIcon} alt="" />
 
                 <div className=" TotalCount">
-                  <span className='text-black font-bold text-2xl' ></span>
-                  <p className='text-sm font-medium' >States</p>
+                  <span className='text-black font-bold text-2xl' >States</span>
+                  <p className='text-sm font-medium' >update</p>
                 </div>
 
 
               </div>
-              <div className='flex items-end justify-end text-[#10b981] cursor-pointer'>States</div>
+              <div className='flex items-end justify-end text-[#10b981] cursor-pointer'>Update States</div>
             </div>
           </Link>
 
@@ -129,11 +135,11 @@ function UpdateFeatures() {
           <Link to={`/cities`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
-                <img className='h-13 w-15' src={CategoryIcon} alt="" />
+                <img className='h-10 w-15' src={cityIcon} alt="" />
 
                 <div className=" TotalCount">
-                  <span className='text-black font-bold text-2xl' ></span>
-                  <p className='text-sm font-medium' >Cities</p>
+                  <span className='text-black font-bold text-2xl' >Cities</span>
+                  <p className='text-sm font-medium' >update</p>
                 </div>
 
 
@@ -146,10 +152,10 @@ function UpdateFeatures() {
           <Link to={`/updatelocation`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
-                <img className='h-13 w-15' src={CategoryIcon} alt="" />
+                <img className='h-10 w-15' src={LocationIcon} alt="" />
 
                 <div className=" TotalCount">
-                  <span className='text-black font-bold text-2xl' ></span>
+                  <span className='text-black font-bold text-2xl' >By Location</span>
                   <p className='text-sm font-medium' >Job Search By Location</p>
                 </div>
               </div>

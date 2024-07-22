@@ -3,105 +3,62 @@ import { Link } from 'react-router-dom'
 import DefaultLayout from '../../layout/DefaultLayout'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import deleteIcon from '../../images/icon/DeleteIcon.svg'
-import './ManageAdds.css';
 
 function ManageAds() {
   return (
     <DefaultLayout>
-      <>
-        <div className="max-w-6xl mx-auto bg-white shadow-md rounded-lg overflow-hidden">
-          <div className="p-4 sm:p-6">
-            <h1 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
-              Adds
-            </h1>
-            <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
-              <div className="flex items-center space-x-2">
-                <span>Show</span>
-                <select className="border rounded px-2 py-1">
-                  <option>5</option>
-                </select>
-                <span>entries</span>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-gray-50">
-                    <th className="text-center px-4 py-2 text-left">Placement</th>
-                    <th className="text-center px-4 py-2 text-left">Price</th>
-                    <th className="text-center px-4 py-2 text-left">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Image-Top(720x90)</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <div>
-                          25/day
-                        </div>
+          <h1 className="Titles text-black text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+            Manage Ads
+          </h1>
+      <div className="max-w-6xl mx-auto bg-white shadow-md -lg overflow-hidden">
+        <div className="p-4 sm:p-6">
+          <div className="h-30 bg-[#f1f5f9]">
+          </div>
+          
+          <div className="overflow-x-auto mt-8">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr className="bg-gray-100">
+                  <th className="text-left px-4 py-2 font-semibold">Placement</th>
+                  <th className="text-left px-4 py-2 font-semibold">Price</th>
+                  <th className="text-center px-4 py-2 font-semibold">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[1, 2, 3].map((_, index) => (
+                  <tr key={index} className="border-b hover:bg-gray-50">
+                    <td className="px-4 py-2">
+                      <input 
+                        className="w-full border  px-2 py-1" 
+                        type="text" 
+                        defaultValue="Image-Top(720x90)"
+                      />
+                    </td>
+                    <td className="px-4 py-2">
+                      <div className="flex items-center">
+                        <input 
+                          className="w-20 border  px-2 py-1 mr-2" 
+                          type="number" 
+                          placeholder="25"
+                        />
+                        <span className="text-gray-600">/days</span>
                       </div>
                     </td>
-                    <td>
-                      <div className="d-flex">
-                        <span>view</span>
-                        {/* Uncomment and use appropriate paths for icons */}
-                        {/* <button className="btn btn-light btn-sm"><img className='w-5' src={viewIcon} alt="" /></button> */}
-                        {/* <button className="btn btn-light btn-sm"><img className='w-4' src={deleteIcon} alt=""/></button> */}
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-
-                    <td>Image-Top(720x90)</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <div>
-                          25/day
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="d-flex">
-                        <span>view</span>
-                        {/* Uncomment and use appropriate paths for icons */}
-                        {/* <button className="btn btn-light btn-sm"><img className='w-5' src={viewIcon} alt="" /></button> */}
-                        {/* <button className="btn btn-light btn-sm"><img className='w-4' src={deleteIcon} alt=""/></button> */}
+                    <td className="px-4 py-2">
+                      <div className="flex justify-center">
+                        <button className="p-1 hover:bg-gray-200 ">
+                          <img className="w-5 h-5" src={deleteIcon} alt="Delete" />
+                        </button>
                       </div>
                     </td>
                   </tr>
-
-                  <tr>
-
-                    <td>Image-Top(720x90)</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <div>
-                          25/day
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="d-flex">
-                        <span>view</span>
-                        {/* Uncomment and use appropriate paths for icons */}
-                        {/* <button className="btn btn-light btn-sm"><img className='w-5' src={viewIcon} alt="" /></button> */}
-                        {/* <button className="btn btn-light btn-sm"><img className='w-4' src={deleteIcon} alt=""/></button> */}
-                      </div>
-                    </td>
-                  </tr>
-
-
-
-                </tbody>
-              </table>
-            </div>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-      </>
+      </div>
     </DefaultLayout>
-
   )
 }
 
