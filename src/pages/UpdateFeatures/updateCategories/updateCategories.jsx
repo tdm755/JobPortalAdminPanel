@@ -8,8 +8,8 @@ import { fetchDetailsOfFeatures } from '../../../api/api';
 
 function UpdateFeturesComponent() {
 
-    const {FeatureData, setFeatureData} = useContext(FeaturesOfCatType);
-console.log(FeatureData);
+    const { FeatureData, setFeatureData } = useContext(FeaturesOfCatType);
+    console.log(FeatureData);
     const location = useLocation();
     const { pathname } = location;
 
@@ -18,49 +18,53 @@ console.log(FeatureData);
 
     const baseUrl = `http://localhost:5000/api/admin`;
     const isCategory = pathname.includes('category');
-    const endpoint = isCategory ? '/jobCategory' : '/jobType';
-    
+    const isJobType = pathname.includes('jobtype');
+    const isJobLocation = pathname.includes('jobLocation');
 
-    useEffect(() => {        
+    const endpoint = isCategory ? '/jobCategory' : (isJobType ? '/jobType' : '/jobLocation');
+
+
+
+    useEffect(() => {
         fetchDetailsOfFeatures(setFeatureData, pathname);
     }, [pathname]);
-    
+
     // console.log(FeatureData);
-    const InputRef = useRef("");    
+    const InputRef = useRef("");
 
-    
+
     const handleAddClick = async () => {
-                const val = InputRef.current.value.trim();
-                if (!val) return;
-        
-                try {
-                    const response = await fetch(`${baseUrl}${endpoint}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        credentials: 'include',
-                        body: JSON.stringify({
-                            [isCategory ? 'jobCategory' : 'jobType']: [...FeatureData.data, val]
-                        }),
-                    });
-        
-                    if (response.ok) {
-                        setFeatureData(prevVal => {
-                            const newData = [...prevVal.data, val].sort((a, b) => a.localeCompare(b));
-                            setHighlightIndex(newData.indexOf(val));
-                            return { ...prevVal, data: newData };
-                        });
-                        InputRef.current.value = '';
-                    } else {
-                        console.log('Failed to add item');
-                    }
-                } catch (error) {
-                    console.log('Error:', error);
-                }
-            };
+        const val = InputRef.current.value.trim();
+        if (!val) return;
 
-        const handleDeleteClick = async (index) => {
+        try {
+            const response = await fetch(`${baseUrl}${endpoint}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    [isCategory ? 'jobCategory' : (isJobType ? 'jobType' : 'jobLocation')]: [...FeatureData.data, val]
+                }),
+            });
+
+            if (response.ok) {
+                setFeatureData(prevVal => {
+                    const newData = [...prevVal.data, val].sort((a, b) => a.localeCompare(b));
+                    setHighlightIndex(newData.indexOf(val));
+                    return { ...prevVal, data: newData };
+                });
+                InputRef.current.value = '';
+            } else {
+                console.log('Failed to add item');
+            }
+        } catch (error) {
+            console.log('Error:', error);
+        }
+    };
+
+    const handleDeleteClick = async (index) => {
         try {
             const newData = FeatureData.data.filter((_, i) => i !== index);
             const response = await fetch(`${baseUrl}${endpoint}`, {
@@ -70,8 +74,10 @@ console.log(FeatureData);
                 },
                 credentials: 'include',
                 body: JSON.stringify({
-                    [isCategory ? 'jobCategory' : 'jobType']: newData
+                    [pathname.includes('category') ? 'jobCategory' : 
+                     pathname.includes('jobType') ? 'jobType' : 'jobLocation']: newData
                 }),
+    
             });
 
             if (response.ok) {
@@ -98,9 +104,9 @@ console.log(FeatureData);
             <div className='bg-white w-full p-6'>
                 <div className="flex items-center justify-center ToAddMoreCategories h-30 bg-slate-100">
                     <div className="addFeatures">
-                        <input ref={InputRef}  className='outline-none px-4 w-90 h-12 rounded-l-md' type="text" />
+                        <input ref={InputRef} className='outline-none px-4 w-90 h-12 rounded-l-md' type="text" />
                         <button onClick={handleAddClick} className='bg-[#1967d2] h-12 p-2 text-white ml-1 rounded-r-md'>
-                            Add {pathname.includes('category') ? "Category" : 'Job Type'}
+                            Add {isCategory ? "Category" : (isJobType ? 'Job Type' : 'Job Location')}
                         </button>
                     </div>
                 </div>
@@ -108,7 +114,9 @@ console.log(FeatureData);
                     <table>
                         <thead>
                             <tr>
-                                <th className='px-6 text-center'>{pathname.includes('category') ? "Categories" : 'Job Types'}</th>
+                                <th className='px-6 text-center'>
+                                    {isCategory ? "Categories" : (isJobType ? 'Job Types' : 'Job Locations')}
+                                </th>
                                 <th className='px-6 text-center'>Action</th>
                             </tr>
                         </thead>
@@ -121,7 +129,7 @@ console.log(FeatureData);
                                     style={index === highlightIndex ? { backgroundColor: '#f0f6fe', transition: 'background-color 1s' } : {}}
                                 >
                                     <td className='px-6 text-center'>{item}</td>
-                                    <td onClick={()=>{handleDeleteClick(index)}} className='px-6 py-3 cursor-pointer text-center flex justify-center items-center'>
+                                    <td onClick={() => { handleDeleteClick(index) }} className='px-6 py-3 cursor-pointer text-center flex justify-center items-center'>
                                         <img src={DeleteIcon} alt="" />
                                     </td>
                                 </tr>
@@ -167,8 +175,8 @@ export default UpdateFeturesComponent;
 
 //             if (dataInsideAPI && dataInsideAPI.data) {
 //                 setFeatureData({
-//                     data: Array.isArray(dataInsideAPI.data) 
-//                         ? dataInsideAPI.data 
+//                     data: Array.isArray(dataInsideAPI.data)
+//                         ? dataInsideAPI.data
 //                         : dataInsideAPI.data.split(',').map(item => item.trim().replace(/[\[\]\"]/g, ''))
 //                 });
 //             } else {

@@ -91,6 +91,12 @@ export const fetchCandidateData = async (setCandidates, setTotalCandidates, setT
   try {
     const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
+    if (prop !== undefined) {
+      prop(data.data.candidates);
+    }    
+    if (arg2) {
+      arg2(data.data.candidates ? data.data.candidates.length : 0);      
+    }
     
     if (data.data && data.data.candidates) {
       // Sort the candidates based on the sortOrder
@@ -142,7 +148,15 @@ export const fetchEmployersData = async (setEmployers, setTotalEmployers, setTot
 
 export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
   try {
-    const response = await fetch(`${API_BASE_URL}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`, {
+
+    const endpoint = pathname.includes('category') 
+      ? '/jobCategory' 
+      : pathname.includes('jobtype') 
+        ? '/jobType' 
+        : '/jobLocation';
+
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       credentials: 'include',
     });
     const dataInsideAPI = await response.json();

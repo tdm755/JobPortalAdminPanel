@@ -22,6 +22,8 @@ import ResetPassword from './pages/Authentication/ResetPassword.tsx';
 import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
 import UpdateFeturesComponent from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
 import { fetchCandidateData, fetchDetailsOfFeatures } from './api/api.js';
+import UpdateLocation from './pages/UpdateFeatures/UpdateLocation/UpdateLocation.jsx';
+import ManageAds from './pages/ManageAdds/ManageAdds.jsx';
 
 export const AuthContext = createContext(null);
 
@@ -167,6 +169,24 @@ function App() {
           />
 
           <Route
+            path="/updatelocation"
+            element={
+              <>
+                <UpdateLocation />
+              </>
+            }
+          />
+
+          <Route
+            path="/manageadvertisement"
+            element={
+              <>
+                <ManageAds />
+              </>
+            }
+          />
+
+          <Route
             path="/contactus"
             element={
               <>
@@ -174,6 +194,7 @@ function App() {
               </>
             }
           />
+
 
 
         </Routes>
