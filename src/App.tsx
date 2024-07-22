@@ -13,10 +13,12 @@ import Buttons from './pages/UiElements/Buttons';
 import Employers from './pages/Employers/EmployerCards.tsx';
 import CandidateDetails from './pages/Candidates/Candidatesdetails.tsx';
 import EmployersPakage2 from './pages/Employers/EmployersPakage2/EmployersPakage2.jsx';
+import ContactUs from './pages/ContactUs/ContactUs';
 import { centralizedAuthCheck } from './utils/authUtils.js';
 import EmployerProfile from './pages/Employers/EmployerProfile/EmployerProfile.jsx';
 import CandidateProfile from './pages/Candidates/CandidateProfile/CandidateProfile.jsx';
 import ForgotPassword from './pages/Authentication/ForgotPassword.tsx';
+import ResetPassword from './pages/Authentication/ResetPassword.tsx';
 import UpdateFeatures from './pages/UpdateFeatures/UpdateFeatures.jsx';
 import UpdateFeturesComponent from './pages/UpdateFeatures/updateCategories/updateCategories.jsx';
 import { fetchCandidateData, fetchDetailsOfFeatures } from './api/api.js';
@@ -26,6 +28,8 @@ import ManageAds from './pages/ManageAdds/ManageAdds.jsx';
 export const AuthContext = createContext(null);
 
 export const FeaturesOfCatType = createContext(null);
+
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -44,14 +48,14 @@ function App() {
     setIsLoggedIn(false);
     // Clear JWT cookie or local storage here if needed
   };
-
+  
   useEffect(() => {
     const checkAuthentication = async () => {
-      const bypassAuthCheck = pathname === '/forgot-password';
+      const bypassAuthCheck = pathname === '/forgot-password' || pathname === '/reset-password';
       await centralizedAuthCheck(navigate, pathname === '/signIn', bypassAuthCheck);
       setLoading(false);
     };
-
+  
     checkAuthentication();
   }, [navigate, pathname]);
 
@@ -81,6 +85,7 @@ function App() {
           }
         />
         <Route path="/forgot-password" element={<ForgotPassword />} /> 
+        <Route path="/reset-password" element={<ResetPassword />}/>
         <Route
           path='/dashbordsection'
           element={
@@ -164,6 +169,7 @@ function App() {
           />
 
           <Route
+<<<<<<< HEAD
             path="/updatelocation"
             element={
               <>
@@ -177,6 +183,12 @@ function App() {
             element={
               <>
                 <ManageAds />
+=======
+            path="/contactus"
+            element={
+              <>
+                <ContactUs />
+>>>>>>> 9b389de3ba92f73323995ba1217346696860103e
               </>
             }
           />

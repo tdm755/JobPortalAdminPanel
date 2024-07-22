@@ -1,10 +1,45 @@
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useEffect, useRef, useState, useContext } from 'react';
+import { Link, useNavigate, NavLink } from 'react-router-dom';
 
 import UserOne from '../../images/user/user-01.png';
 import companyIcon from '../../../public/AplaKaamFavicon.png';
+import { AuthContext } from '../../App';
+import { logoutApi, getAdminProfileImage } from '../../api/api';
 
 const DropdownUser = () => {
+  const { logout } = useContext(AuthContext);
+  const [profileImage, setProfileImage] = useState(null);
+
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      const response = await logoutApi();
+      if (response.status === 200) {
+        console.log("Logout successful");
+        logout(); // Update the context to reflect the logout state
+        navigate("/"); // Navigate to the login page after successful logout
+      } else {
+        console.log("Logout failed");
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfileImage();
+  }, []);
+
+  const fetchProfileImage = async () => {
+    try {
+      const imageUrl = await getAdminProfileImage();
+      setProfileImage(imageUrl);
+    } catch (error) {
+      console.error('Error fetching profile image:', error);
+    }
+  };
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const trigger = useRef<any>(null);
@@ -52,7 +87,13 @@ const DropdownUser = () => {
         </span>
 
         <span className="h-12 w-12 rounded-full">
-          <img src={UserOne} alt="User" />
+         {profileImage ? (
+                    <img src={profileImage} alt="User" className="h-full w-full object-cover rounded-full" />
+                  ) : (
+                    <div className="h-full w-full bg-gray-300 rounded-full flex items-center justify-center">
+                     <img src={UserOne} alt="User" />
+                    </div>
+                  )}
         </span>
 
         <svg
@@ -134,7 +175,7 @@ const DropdownUser = () => {
             </Link>
           </li>
         </ul>
-        <button className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
+        <NavLink to={"/"} onClick={handleLogout} className="flex items-center gap-3.5 px-6 py-4 text-sm font-medium duration-300 ease-in-out hover:text-primary lg:text-base">
           <svg
             className="fill-current"
             width="22"
@@ -153,7 +194,7 @@ const DropdownUser = () => {
             />
           </svg>
           Log Out
-        </button>
+        </NavLink>
       </div>
       {/* <!-- Dropdown End --> */}
     </div>

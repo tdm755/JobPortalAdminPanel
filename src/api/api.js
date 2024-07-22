@@ -38,78 +38,124 @@ export const logoutApi = () => {
   return api.post('/logout');
 };
 
-// Package APIs
+export const requestPasswordReset = (email) => api.post('/request-password-reset', { email });
+
+export const resetPassword = (token, newPassword) => api.post('/reset-password', { token, newPassword });
+
+export const changeAdminPassword = (currentPassword, newPassword) => 
+  api.post('/change-password', { currentPassword, newPassword });
+
+export const uploadAdminProfileImage = (imageFile) => {
+  const formData = new FormData();
+  formData.append('profileImage', imageFile);
+  return api.post('/upload-profile-image', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+};
+
+export const getAdminProfileImage = () => {
+  return api.get('/profile-image', {
+    responseType: 'blob',
+  }).then(response => {
+    return URL.createObjectURL(response.data);
+  });
+};
+
+// Updated activate and deactivate functions
+export const deactivateCandidate = (candidateId) => api.put(`/candidates/${candidateId}/deactivate`);
+export const activateCandidate = (candidateId) => api.put(`/candidates/${candidateId}/activate`);
+export const deactivateEmployer = (employerId) => api.put(`/employers/${employerId}/deactivate`);
+export const activateEmployer = (employerId) => api.put(`/employers/${employerId}/activate`);
+
+// // Package APIs
 export const getAllPackages = () => {
   return api.get('/packages');
 };
 
-export const updatePackageDetails = (packageId, updates) => {
-  console.log('Sending update request:', { packageId, updates });
-  return api.put('/packages', { packageId, updates });
+export const updatePackageDetails = (updates) => {
+  console.log('Sending update request:', updates);
+  return api.put('/packages', updates);
 };
 
-export const fetchCandidateData = async (prop, arg2) => {
+export const getTotalCounts = () => {
+  return api.get('/total-counts')
+    .then(response => response.data)
+    .catch(error => {
+      throw error;
+    });
+};
+
+export const fetchCandidateData = async (setCandidates, setTotalCandidates, setTotalPages, sortOrder = 'ASC', search = '', page = 1, limit = 5) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/candidates`);
+    const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
+<<<<<<< HEAD
     if (prop !== undefined) {
       prop(data.data.candidates);
     }    
     if (arg2) {
       arg2(data.data.candidates ? data.data.candidates.length : 0);      
     }
+=======
+>>>>>>> 9b389de3ba92f73323995ba1217346696860103e
     
+    if (data.data && data.data.candidates) {
+      // Sort the candidates based on the sortOrder
+      const sortedCandidates = data.data.candidates.sort((a, b) => {
+        if (sortOrder === 'ASC') {
+          return a.CandidateProfile.cid - b.CandidateProfile.cid;
+        } else {
+          return b.CandidateProfile.cid - a.CandidateProfile.cid;
+        }
+      });
+      
+      setCandidates(sortedCandidates);
+      setTotalCandidates(data.data.totalCandidates);
+      setTotalPages(data.data.totalPages);
+     
+    } else {
+      console.error('Unexpected data structure:', data);
+    }
   } catch (error) {
     console.error('Error fetching candidates:', error);
   }
 };
 
-
-export const fetchEmployersData = async (prop, setEmployersCount) => {
+export const fetchEmployersData = async (setEmployers, setTotalEmployers, setTotalPages, sortOrder = 'ASC', search = '', page = 1, limit = 5) => {
   try {
-    const response = await fetch(`${API_BASE_URL}/employers`);
+    const response = await fetch(`${API_BASE_URL}/employers?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
+<<<<<<< HEAD
     if (prop !== undefined) {
       prop(data.data.employers)      
     }
     if (setEmployersCount) {
       setEmployersCount(data.data.employers ? data.data.employers.length : 0)
+=======
+
+    if (data.data && data.data.employers) {
+      // Sort the employers based on the sortOrder
+      const sortedEmployers = data.data.employers.sort((a, b) => {
+        if (sortOrder === 'ASC') {
+          return a.EmployerProfile.eid - b.EmployerProfile.eid;
+        } else {
+          return b.EmployerProfile.eid - a.EmployerProfile.eid;
+        }
+      });
+
+      setEmployers(sortedEmployers);
+      setTotalEmployers(data.data.totalEmployers);
+      setTotalPages(data.data.totalPages);
+    } else {
+      console.error('Unexpected data structure:', data);
+>>>>>>> 9b389de3ba92f73323995ba1217346696860103e
     }
   } catch (error) {
-    console.error('Error fetching candidates:', error);
-
+    console.error('Error fetching employers:', error);
   }
-}
-
-
-
-// export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
-//   try {
-//       const response = await fetch(`${API_BASE_URL}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`, {
-//           credentials: 'include',
-//       });
-//       const dataInsideAPI = await response.json();
-
-//       if (dataInsideAPI && dataInsideAPI.data) {
-//           setFeatureData(()=>{
-//             console.log(dataInsideAPI);
-//              let lengthOfData = (dataInsideAPI.data ? dataInsideAPI.data.length : '');
-//               return {...dataInsideAPI, data : dataInsideAPI.data.map(item => item.trim()).sort((a, b) => a.localeCompare(b)), Ccount : lengthOfData}                        
-//           });
-//       } else {
-//           if (!dataInsideAPI) {
-//               setFeatureData({}); 
-//           }
-//           else if(!dataInsideAPI.data){
-//               setFeatureData((preVal)=>{
-//                   return {...preVal, data : []};
-//               })
-//           }
-//       }
-//   } catch (error) {
-//       console.log('Error:', error);
-//   }
-// }
+};
 
 export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
   try {
@@ -165,5 +211,50 @@ export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
     console.log('Error:', error);
   }
 }
+
+export const fetchContactMessages = async (setMessages, setTotalMessages, setTotalPages, sortBy, sortOrder, search, page, limit) => {
+  try {
+    const response = await api.get('/contact', {
+      params: {
+        sortBy,
+        sortOrder,
+        search,
+        page,
+        limit,
+      }
+    });
+    const data = response.data;
+
+    if (data.data && data.data.messages) {
+      setMessages(data.data.messages);
+      setTotalMessages(data.data.totalMessages);
+      setTotalPages(data.data.totalPages);
+    } else {
+      console.error('Unexpected data structure:', data);
+    }
+  } catch (error) {
+    console.error('Error fetching contact messages:', error);
+  }
+};
+
+export const deleteContactMessageById = async (id) => {
+  try {
+    const response = await api.delete(`/contact/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Error deleting contact message with ID ${id}:`, error);
+    throw error;
+  }
+};
+
+export const deleteAllContactMessages = async () => {
+  try {
+    const response = await api.delete('/contact');
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting all contact messages:', error);
+    throw error;
+  }
+};
 
 export default api;

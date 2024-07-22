@@ -2,37 +2,63 @@ import React, { useEffect, useState } from 'react'
 import DefaultLayout from '../../../layout/DefaultLayout'
 import './EmployerProfile.css';
 import { useParams } from 'react-router-dom';
+import removeUserIcon from '../../../../public/remove-user-24.svg'
+import addUserIcon from '../../../../public/add-user-2-24.svg'
+import { deactivateEmployer, activateEmployer } from '../../../api/api'
 
 function EmployerProfile() {
 
   const { profileId } = useParams();
   const [EmpData, setEmpData] = useState({});
-
-
+  const [registeredEmail, setRegisteredEmail] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
   const baseUrl = `http://localhost:5000/api/admin/employers/profile/${profileId}`;
 
+  async function handleDeactivate() {
+    try {
+      await deactivateEmployer(profileId);
+      setIsActive(false);
+      // You might want to show a success message here
+    } catch (error) {
+      console.error('Error deactivating candidate:', error);
+      // You might want to show an error message here
+    }
+  }
 
+  async function handleActivate() {
+    try {
+      await activateEmployer(profileId);
+      setIsActive(true);
+      // You might want to show a success message here
+    } catch (error) {
+      console.error('Error activating candidate:', error);
+      // You might want to show an error message here
+    }
+  }
 
 
   async function HandlePostClick(e) {
     e.preventDefault();
     try {
       const response = await fetch(baseUrl, {
-        method : 'PUT',
-        headers : {
+        method: 'PUT',
+        headers: {
           'Content-Type': 'application/json', 
         },
-        body : JSON.stringify(EmpData)
+        body: JSON.stringify({
+          ...EmpData,
+          registeredEmail: registeredEmail
+        })
       });
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
-      
+      // Handle successful update
+      console.log('Profile updated successfully');
     } catch (error) {
       console.log(error);
     }
-    
   }
 
 
@@ -44,6 +70,7 @@ function EmployerProfile() {
         const response = await fetch(baseUrl);
         const data = await response.json();
         setEmpData(data.data.employerProfile);
+        setRegisteredEmail(data.data.employerProfile.Employer.email);
         console.log(data.message);
       } catch (error) {
         console.log('Error : ', error);
@@ -61,11 +88,8 @@ function EmployerProfile() {
     })
   }
 
-  function handleInputChangeForRegisEmail(e) {
-    let Val = e.target.value;
-    setEmpData((PreVal) => {
-      return {...PreVal, Employer: {...PreVal.Employer, email : Val,},};
-    });
+  function handleRegisteredEmailChange(e) {
+    setRegisteredEmail(e.target.value);
   }
 
   console.log(EmpData);
@@ -100,11 +124,11 @@ function EmployerProfile() {
                 <input
                   required
                   className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                  id="email"
+                  id="registeredEmail"
                   type="email"
-                  name='email'
-                  value={EmpData.Employer?.email || ""}
-                  onChange={handleInputChangeForRegisEmail}
+                  name='registeredEmail'
+                  value={registeredEmail}
+                  onChange={handleRegisteredEmailChange}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -117,11 +141,11 @@ function EmployerProfile() {
                 <input
                   required
                   className="peer w-full bg-transparent outline-none px-4 text-lg  bg-white border border-[#64748b] focus:shadow-md"
-                  id="email"
+                  id="profileEmail"
                   type="email"
                   name='email'
                   value={EmpData.email || ""}
-                  onChange={(e) => { handleInputChange(e) }}
+                  onChange={handleInputChange}
                 />
                 <label
                   className="absolute top-1/2 translate-y-[-50%] bg-white left-4 px-2 peer-focus:top-0 peer-focus:left-3 font-light text-lg peer-focus:text-sm peer-focus:text-[#4070f4] peer-valid:-top-0 peer-valid:left-3 peer-valid:text-sm peer-valid:text-[#4070f4] duration-150"
@@ -373,8 +397,37 @@ function EmployerProfile() {
               </div>
             </div>
           </div>
+        <div className="Changes flex justify-end gap-3 mt-27">
+
+        {isActive ? (
+  <button 
+    onClick={handleDeactivate} 
+    className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10"
+  >
+    <span>
+      <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+    </span>
+    Deactivate this account
+  </button>
+) : (
+  <button 
+    onClick={handleActivate}
+    className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10"
+  >
+    <span>
+      <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+    </span>
+    Activate this account
+  </button>
+)}
+
+            <button onClick={HandlePostClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+              Save Changes
+            </button>
+
+          </div>
         </div>
-        <button onClick={HandlePostClick} >Save Changes</button>
+        {/* <button onClick={HandlePostClick} >Save Changes</button> */}
       </form>
 
     </DefaultLayout>
