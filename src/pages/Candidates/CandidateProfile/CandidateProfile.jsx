@@ -5,6 +5,8 @@ import '../../../utils/utils.css'
 import { useParams } from 'react-router-dom';
 import removeUserIcon from '../../../../public/remove-user-24.svg'
 import addUserIcon from '../../../../public/add-user-2-24.svg'
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 
 
@@ -32,6 +34,7 @@ function CandidateProfile() {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
+      toast.success('Profile Updated Successfully!')
       // const result = await response.json();
       // console.log(result);
     } catch (error) {

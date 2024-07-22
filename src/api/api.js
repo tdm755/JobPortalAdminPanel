@@ -56,7 +56,7 @@ export const fetchCandidateData = async (prop, arg2) => {
       prop(data.data.candidates);
     }    
     if (arg2) {
-      arg2(data.data.candidates.length);      
+      arg2(data.data.candidates ? data.data.candidates.length : 0);      
     }
     
   } catch (error) {
@@ -73,7 +73,7 @@ export const fetchEmployersData = async (prop, setEmployersCount) => {
       prop(data.data.employers)      
     }
     if (setEmployersCount) {
-      setEmployersCount(data.data.employers.length)
+      setEmployersCount(data.data.employers ? data.data.employers.length : 0)
     }
   } catch (error) {
     console.error('Error fetching candidates:', error);
@@ -113,7 +113,15 @@ export const fetchEmployersData = async (prop, setEmployersCount) => {
 
 export async function fetchDetailsOfFeatures(setFeatureData, pathname) {
   try {
-    const response = await fetch(`${API_BASE_URL}${pathname.includes('category') ? '/jobCategory' : '/jobType'}`, {
+
+    const endpoint = pathname.includes('category') 
+      ? '/jobCategory' 
+      : pathname.includes('jobtype') 
+        ? '/jobType' 
+        : '/jobLocation';
+
+
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       credentials: 'include',
     });
     const dataInsideAPI = await response.json();
