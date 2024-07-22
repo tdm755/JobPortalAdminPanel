@@ -240,4 +240,39 @@ export const deleteAllContactMessages = async () => {
   }
 };
 
+export const addState = async (stateData) => {
+  try {
+    const response = await api.post('/states', stateData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllStates = async () => {
+  try {
+    const response = await api.get('/states');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateState = async (StateId, stateData) => {
+  try {
+    const response = await api.put(`/states/${StateId}`, stateData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteState = async (StateId) => {
+  try {
+    const response = await api.delete(`/states/${StateId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
 export default api;
