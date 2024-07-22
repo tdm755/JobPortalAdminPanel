@@ -24,6 +24,8 @@ import UpdateFeturesComponent from './pages/UpdateFeatures/updateCategories/upda
 import { fetchCandidateData, fetchDetailsOfFeatures } from './api/api.js';
 import UpdateLocation from './pages/UpdateFeatures/UpdateLocation/UpdateLocation.jsx';
 import ManageAds from './pages/ManageAdds/ManageAdds.jsx';
+import StatesComponent from './pages/UpdateFeatures/StatesComponent.jsx';
+import CityComponent from './pages/UpdateFeatures/CityComponent.jsx';
 
 export const AuthContext = createContext(null);
 
@@ -191,6 +193,24 @@ function App() {
             element={
               <>
                 <ContactUs />
+              </>
+            }
+          />
+
+          <Route
+            path="/states"
+            element={
+              <>
+                <StatesComponent />
+              </>
+            }
+          />
+
+          <Route
+            path="/cities"
+            element={
+              <>
+                <CityComponent />
               </>
             }
           />

@@ -115,7 +115,7 @@ function UpdateFeatures() {
             </div>
           </Link>
 
-          <Link to={`/updateFeature/${"jobLocation"}`} >
+          <Link to={`/states`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
                 <img className='h-10 w-15' src={stateIcon} alt="" />
@@ -132,7 +132,7 @@ function UpdateFeatures() {
           </Link>
 
 
-          <Link to={`/updateFeature/${"jobLocation"}`} >
+          <Link to={`/cities`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
                 <img className='h-10 w-15' src={cityIcon} alt="" />
