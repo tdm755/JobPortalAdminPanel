@@ -13,7 +13,7 @@ function ContactMessages() {
   const [search, setSearch] = useState('');
   const [expandedMessageId, setExpandedMessageId] = useState(null);
 
-  useEffect(() => {    
+  useEffect(() => {
     fetchContactMessages(setMessages, setTotalMessages, setTotalPages, sortBy, sortOrder, search, currentPage, limit);
   }, [sortBy, sortOrder, search, currentPage, limit]);
 
@@ -47,8 +47,9 @@ function ContactMessages() {
     setCurrentPage(newPage);
   };
 
+
   const toggleMessageExpansion = (id) => {
-    setExpandedMessageId(expandedMessageId === id ? null : id);
+    setExpandedMessageId(prevId => prevId === id ? null : id);
   };
 
   return (
@@ -61,9 +62,9 @@ function ContactMessages() {
           <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
             <div className="flex items-center space-x-2">
               <span>Show</span>
-              <select 
-                className="border rounded px-2 py-1" 
-                value={limit} 
+              <select
+                className="border rounded px-2 py-1"
+                value={limit}
                 onChange={handleLimitChange}
               >
                 <option value="5">5</option>
@@ -75,7 +76,7 @@ function ContactMessages() {
             </div>
             <div className="flex items-center space-x-2">
               <span>Search:</span>
-              <input type="text" className="border rounded px-2 py-1 flex-grow" value={search} onChange={handleSearch}/>
+              <input type="text" className="border rounded px-2 py-1 flex-grow" value={search} onChange={handleSearch} />
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -84,7 +85,7 @@ function ContactMessages() {
                 <tr className="bg-gray-50">
                   <th className="px-4 py-2 text-left cursor-pointer" onClick={() => toggleSort('createdAt')}>
                     Date {getSortIndicator('createdAt')}
-                  </th>            
+                  </th>
                   <th className="px-4 py-2 text-left cursor-pointer" onClick={() => toggleSort('name')}>
                     Name {getSortIndicator('name')}
                   </th>
@@ -106,25 +107,29 @@ function ContactMessages() {
                       <td className="px-4 py-2">{message.email}</td>
                       <td className="px-4 py-2">{message.subject}</td>
                       <td className="px-4 py-2">
-                        <button 
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+                        <button
+                          className="bg-blue-500 w-17 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
                           onClick={() => toggleMessageExpansion(message.id)}
                         >
                           {expandedMessageId === message.id ? 'Close' : 'View'}
                         </button>
                       </td>
                     </tr>
-                    {expandedMessageId === message.id && (
-                      <tr>
-                        <td colSpan="5" className="px-4 py-2 bg-gray-100">
-                          <div className="font-bold mb-2">Message:</div>
-                          <div>{message.message}</div>
-                          <div className="mt-2">
-                            <span className="font-bold">Phone:</span> {message.phoneNumber}
+                    <tr className='toMakeBlaB'>
+                      <td colSpan="5" className="border">
+                        <div
+                          className={`border rounded-br-3xl rounded-bl-3xl border-[#64748b] border-t-0 overflow-hidden transition-all duration-1000 ease-out ${expandedMessageId === message.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
+                        >
+                          <div className="rounded-br-3xl rounded-bl-3xl p-4 space-y-2">
+                            <div className="font-bold">Message:</div>
+                            <div>{message.message}</div>
+                            <div>
+                              <span className="font-bold">Phone:</span> {message.phoneNumber}
+                            </div>
                           </div>
-                        </td>
-                      </tr>
-                    )}
+                        </div>
+                      </td>
+                    </tr>
                   </React.Fragment>
                 ))}
               </tbody>
@@ -136,8 +141,8 @@ function ContactMessages() {
             </div>
             <div className="flex items-center">
               {totalPages > 1 && currentPage > 1 && (
-                <button 
-                  onClick={() => handlePageChange(currentPage - 1)} 
+                <button
+                  onClick={() => handlePageChange(currentPage - 1)}
                   className="px-3 py-1 border rounded mr-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
                 >
                   Previous
@@ -147,8 +152,8 @@ function ContactMessages() {
                 <span className="text-sm text-gray-700">{currentPage} of {totalPages}</span>
               )}
               {totalPages > 1 && currentPage < totalPages && (
-                <button 
-                  onClick={() => handlePageChange(currentPage + 1)} 
+                <button
+                  onClick={() => handlePageChange(currentPage + 1)}
                   className="px-3 py-1 border rounded ml-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
                 >
                   Next
