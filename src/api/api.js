@@ -91,15 +91,12 @@ export const fetchCandidateData = async (setCandidates, setTotalCandidates, setT
   try {
     const response = await fetch(`${API_BASE_URL}/candidates?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
-<<<<<<< HEAD
     if (prop !== undefined) {
       prop(data.data.candidates);
     }    
     if (arg2) {
       arg2(data.data.candidates ? data.data.candidates.length : 0);      
     }
-=======
->>>>>>> 9b389de3ba92f73323995ba1217346696860103e
     
     if (data.data && data.data.candidates) {
       // Sort the candidates based on the sortOrder
@@ -127,13 +124,6 @@ export const fetchEmployersData = async (setEmployers, setTotalEmployers, setTot
   try {
     const response = await fetch(`${API_BASE_URL}/employers?sortOrder=${sortOrder}&search=${encodeURIComponent(search)}&page=${page}&limit=${limit}`);
     const data = await response.json();
-<<<<<<< HEAD
-    if (prop !== undefined) {
-      prop(data.data.employers)      
-    }
-    if (setEmployersCount) {
-      setEmployersCount(data.data.employers ? data.data.employers.length : 0)
-=======
 
     if (data.data && data.data.employers) {
       // Sort the employers based on the sortOrder
@@ -150,7 +140,6 @@ export const fetchEmployersData = async (setEmployers, setTotalEmployers, setTot
       setTotalPages(data.data.totalPages);
     } else {
       console.error('Unexpected data structure:', data);
->>>>>>> 9b389de3ba92f73323995ba1217346696860103e
     }
   } catch (error) {
     console.error('Error fetching employers:', error);

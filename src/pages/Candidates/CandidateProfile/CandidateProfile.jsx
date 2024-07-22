@@ -5,13 +5,10 @@ import '../../../utils/utils.css'
 import { useParams } from 'react-router-dom';
 import removeUserIcon from '../../../../public/remove-user-24.svg'
 import addUserIcon from '../../../../public/add-user-2-24.svg'
-<<<<<<< HEAD
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-=======
 import { deactivateCandidate, activateCandidate } from '../../../api/api' 
->>>>>>> 9b389de3ba92f73323995ba1217346696860103e
 
 
 function CandidateProfile() {
@@ -61,13 +58,9 @@ function CandidateProfile() {
       if (!response.ok) {
         throw new Error('Network response was not ok ' + response.statusText);
       }
-<<<<<<< HEAD
       toast.success('Profile Updated Successfully!')
       // const result = await response.json();
       // console.log(result);
-=======
-      // Handle successful update
->>>>>>> 9b389de3ba92f73323995ba1217346696860103e
     } catch (error) {
       console.error('Error:', error);
     }

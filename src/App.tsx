@@ -169,7 +169,6 @@ function App() {
           />
 
           <Route
-<<<<<<< HEAD
             path="/updatelocation"
             element={
               <>
@@ -183,15 +182,19 @@ function App() {
             element={
               <>
                 <ManageAds />
-=======
+              </>
+            }
+          />
+
+          <Route
             path="/contactus"
             element={
               <>
                 <ContactUs />
->>>>>>> 9b389de3ba92f73323995ba1217346696860103e
               </>
             }
           />
+
 
 
         </Routes>
