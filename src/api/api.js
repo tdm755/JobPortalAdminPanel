@@ -275,4 +275,41 @@ export const deleteState = async (StateId) => {
     throw error;
   }
 };
+
+export const addCity = async (cityData) => {
+  try {
+    const response = await api.post('/cities', cityData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getAllCities = async () => {
+  try {
+    const response = await api.get('/cities');
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const updateCity = async (CityId, cityData) => {
+  try {
+    const response = await api.put(`/cities/${CityId}`, cityData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const deleteCity = async (CityId) => {
+  try {
+    const response = await api.delete(`/cities/${CityId}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export default api;
