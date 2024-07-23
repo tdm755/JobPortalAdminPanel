@@ -1,8 +1,23 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, totalItems }) => {
+  const [inputPage, setInputPage] = useState(currentPage);
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
+
+  const handleInputChange = (e) => {
+    setInputPage(e.target.value);
+  };
+
+  const handleInputSubmit = (e) => {
+    e.preventDefault();
+    const pageNumber = parseInt(inputPage, 10);
+    if (pageNumber >= 1 && pageNumber <= totalPages) {
+      onPageChange(pageNumber);
+    } else {
+      setInputPage(currentPage);
+    }
+  };
 
   return (
     <div className="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
@@ -41,9 +56,19 @@ const Pagination = ({ currentPage, totalPages, onPageChange, itemsPerPage, total
                 <path fillRule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clipRule="evenodd" />
               </svg>
             </button>
-            <span className="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-offset-0">
-              {currentPage} of {totalPages}
-            </span>
+            <form onSubmit={handleInputSubmit} className="flex items-center">
+              <input
+                type="text"
+                value={inputPage}
+                onChange={handleInputChange}
+                onBlur={handleInputSubmit}
+                className="relative w-16 inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 focus:outline-offset-0"
+                pattern="\d*"
+                min="1"
+                max={totalPages}
+              />
+              <span className="px-2">of {totalPages}</span>
+            </form>
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}

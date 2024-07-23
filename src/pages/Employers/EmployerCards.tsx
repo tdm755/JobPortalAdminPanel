@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import DefaultLayout from '../../layout/DefaultLayout.js'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import settingIcon from '../../images/icon/SettingIcon.svg'
-import { fetchEmployersData } from '../../api/api.js'
+import { fetchEmployersData, deactivateEmployer, activateEmployer, getEmployerStatus } from '../../api/api.js'
 import PopupCard from '../../utils/PopupCard.jsx'
+import { toast } from 'react-toastify'
+import Pagination from '../../components/Pagination.jsx'
 
 function EmployerCards() {
   const [employers, setEmployers] = useState([]);
@@ -14,9 +16,10 @@ function EmployerCards() {
   const [limit, setLimit] = useState(5);
   const [sortOrder, setSortOrder] = useState('ASC');
   const [search, setSearch] = useState('');
-  const [showDeletePopup, setShowDeletePopup] = useState(false);
-  const [employerToDelete, setEmployerToDelete] = useState(null);
-  
+  const [showStatusPopup, setShowStatusPopup] = useState(false);
+  const [employerToToggle, setEmployerToToggle] = useState(null);
+  const [employerStatuses, setEmployerStatuses] = useState({});
+
   useEffect(() => {    
     fetchEmployersData(setEmployers, setTotalEmployers, setTotalPages, sortOrder, search, currentPage, limit);
   }, [sortOrder, search, currentPage, limit]);
@@ -43,17 +46,50 @@ function EmployerCards() {
     setCurrentPage(newPage);
   };
 
-  const handleDeleteClick = (candidate) => {
-    setEmployerToDelete(candidate);
-    setShowDeletePopup(true);
+  useEffect(() => {
+    employers.forEach(employer => {
+      fetchEmployerStatus(employer.EmployerProfile.eid);
+    });
+  }, [employers]);
+
+  const fetchEmployerStatus = async (employerId) => {
+    try {
+      const response = await getEmployerStatus(employerId);
+      setEmployerStatuses(prev => ({...prev, [employerId]: response.data.data.isDeactive}));
+    } catch (error) {
+      console.error('Error fetching employer status:', error);
+    }
   };
 
-  const handleConfirmDelete = () => {
-    // Implement your delete logic here
-    console.log(`Deleting employer with ID: ${employerToDelete.EmployerProfile.eid}`);
-    setShowDeletePopup(false);
-    setEmployerToDelete(null);
+  const handleStatusClick = async (employer) => {
+    setEmployerToToggle(employer);
+    setShowStatusPopup(true);
   };
+
+  const handleConfirmStatusChange = async () => {
+    if (!employerToToggle) return;
+
+    try {
+      const currentStatus = employerStatuses[employerToToggle.EmployerProfile.eid];
+      if (currentStatus) {
+        await activateEmployer(employerToToggle.EmployerProfile.eid);
+        toast.success('Employer activated successfully');
+      } else {
+        await deactivateEmployer(employerToToggle.EmployerProfile.eid);
+        toast.success('Employer deactivated successfully');
+      }
+
+      fetchEmployersData(setEmployers, setTotalEmployers, setTotalPages, sortOrder, search, currentPage, limit);
+      fetchEmployerStatus(employerToToggle.EmployerProfile.eid);
+      
+      setShowStatusPopup(false);
+      setEmployerToToggle(null);
+    } catch (error) {
+      console.error('Error changing employer status:', error);
+      toast.error('Failed to change employer status. Please try again.');
+    }
+  };
+
 
   return (
     <DefaultLayout>
@@ -95,6 +131,7 @@ function EmployerCards() {
                   <th className="px-4 py-2 text-left">Website Link</th>
                   <th className="px-4 py-2 text-left">Phone Number</th>
                   <th className="px-4 py-2 text-left">Action</th>
+                  <th className="px-4 py-2 text-left">Current Status</th>
                 </tr>
               </thead>
               <tbody>
@@ -121,84 +158,82 @@ function EmployerCards() {
                       </span>
                     </td>
                     <td className="px-4 py-2">
-                      <div className="flex space-x-2 sm:space-x-3">
-                        <Link to={`/viewandeditdetails/${employer.EmployerProfile.eid}`}>
-                          <button className="bg-gray hover:bg-[#e2ebf4] p-1 rounded-md">
-                            <img className='w-5' src={viewIcon} alt="" />
-                          </button>
-                        </Link>
-                        <button 
-                  className="bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md"
-                  onClick={() => handleDeleteClick(employer)}
+              <div className="flex space-x-2 sm:space-x-3">
+                <Link to={`/viewandeditdetails/${employer.EmployerProfile.eid}`}>
+                  <button className="bg-gray hover:bg-[#e2ebf4] p-1 rounded-md">
+                    <img className='w-5' src={viewIcon} alt="" />
+                  </button>
+                </Link>
+                <button
+                  className={`bg-gray hover:bg-[#e2ebf4] py-1 px-2 rounded-md ${
+                    employerStatuses[employer.EmployerProfile.eid] ? 'text-red-500' : 'text-green-500'
+                  }`}
+                  onClick={() => handleStatusClick(employer)}
                 >
-                  <img className='w-4' src={settingIcon} alt=""/>
+                  <img className='w-4' src={settingIcon} alt="" />
                 </button>
-                      </div>
-                    </td>
+              </div>
+            </td>
+            <td className="px-4 py-2">
+              <div className="flex items-center justify-center"> 
+                <span className={`text-sm ${
+                  employerStatuses[employer.EmployerProfile.eid] ? 'text-red-500' : 'text-green-500'
+                }`}>
+                  {employerStatuses[employer.EmployerProfile.eid] ? 'Deactivated' : 'Active'}
+                </span>
+              </div>
+            </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex justify-between items-center">
-            <div>
-              Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, totalEmployers)} of {totalEmployers} entries
-            </div>
-            <div className="flex items-center">
-              {totalPages > 1 && currentPage > 1 && (
-                <button 
-                  onClick={() => handlePageChange(currentPage - 1)} 
-                  className="px-3 py-1 border rounded mr-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
-                >
-                  Previous
-                </button>
-              )}
-              {totalPages > 1 && (
-                <span className="text-sm text-gray-700">{currentPage} of {totalPages}</span>
-              )}
-              {totalPages > 1 && currentPage < totalPages && (
-                <button 
-                  onClick={() => handlePageChange(currentPage + 1)} 
-                  className="px-3 py-1 border rounded ml-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
-                >
-                  Next
-                </button>
-              )}
-            </div>
-          </div>
+          <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              itemsPerPage={limit}
+              totalItems={totalEmployers}
+            />
         </div>
       </div>
-      {showDeletePopup && (
-      <PopupCard
-        icon={<img src={settingIcon} alt="Delete" className="w-8 h-8" />}
-        heading="Confirm Deletion"
-        description={`Are you sure you want to delete the candidate ${employerToDelete.EmployerProfile.company_name}?`}
-        buttons={[
-          {
-            text: "Cancel",
-            primary: false,
-            onClick: () => setShowDeletePopup(false)
-          },
-          {
-            text: "Delete",
-            primary: true,
-            onClick: handleConfirmDelete
-          }
-        ]}
-        onClose={() => setShowDeletePopup(false)}
-        bgColor="bg-white"
-        headingHoverColor="hover:text-red-600"
-        descriptionColor="text-gray-700"
-        descriptionHoverOpacity="hover:opacity-90"
-        primaryButtonColor="bg-red-600"
-        primaryButtonHoverColor="hover:bg-red-600"
-        primaryButtonFocusRingColor="focus:ring-red-500"
-        secondaryButtonColor="bg-gray-200"
-        secondaryButtonTextColor="text-gray-700"
-        secondaryButtonHoverColor="hover:bg-gray-300"
-        secondaryButtonFocusRingColor="focus:ring-gray-400"
-      />
-    )}
+      {showStatusPopup && (
+        <PopupCard
+          icon={<img src={settingIcon} alt="Status" className="w-8 h-8" />}
+          heading={`Confirm ${employerStatuses[employerToToggle?.EmployerProfile.eid] ? 'Activation' : 'Deactivation'}`}
+          description={`Are you sure you want to ${employerStatuses[employerToToggle?.EmployerProfile.eid] ? 'activate' : 'deactivate'} the employer ${employerToToggle?.EmployerProfile.company_name}?`}
+          buttons={[
+            {
+              text: "Cancel",
+              primary: false,
+              onClick: () => {
+                setShowStatusPopup(false);
+                setEmployerToToggle(null);
+              }
+            },
+            {
+              text: employerStatuses[employerToToggle?.EmployerProfile.eid] ? "Activate" : "Deactivate",
+              primary: true,
+              onClick: handleConfirmStatusChange,
+            }
+          ]}
+          onClose={() => {
+            setShowStatusPopup(false);
+            setEmployerToToggle(null);
+          }}
+          bgColor="bg-white"
+          headingHoverColor="hover:text-red-600"
+          descriptionColor="text-gray-700"
+          descriptionHoverOpacity="hover:opacity-90"
+          primaryButtonColor={employerStatuses[employerToToggle?.EmployerProfile.eid] ? "bg-green-600" : "bg-red-600"}
+          primaryButtonHoverColor={employerStatuses[employerToToggle?.EmployerProfile.eid] ? "hover:bg-green-700" : "hover:bg-red-700"}
+          primaryButtonFocusRingColor={employerStatuses[employerToToggle?.EmployerProfile.eid] ? "focus:ring-green-500" : "focus:ring-red-500"}
+          secondaryButtonColor="bg-gray-200"
+          secondaryButtonTextColor="text-gray-700"
+          secondaryButtonHoverColor="hover:bg-gray-300"
+          secondaryButtonFocusRingColor="focus:ring-gray-400"
+        />
+      )}
     </DefaultLayout>
   )
 }

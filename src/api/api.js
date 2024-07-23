@@ -66,8 +66,10 @@ export const getAdminProfileImage = () => {
 // Updated activate and deactivate functions
 export const deactivateCandidate = (candidateId) => api.put(`/candidates/${candidateId}/deactivate`);
 export const activateCandidate = (candidateId) => api.put(`/candidates/${candidateId}/activate`);
+export const getCandidateStatus = (candidateId) => api.get(`/candidates/${candidateId}/status`);
 export const deactivateEmployer = (employerId) => api.put(`/employers/${employerId}/deactivate`);
 export const activateEmployer = (employerId) => api.put(`/employers/${employerId}/activate`);
+export const getEmployerStatus = (employerId) => api.get(`/employers/${employerId}/status`);
 
 // // Package APIs
 export const getAllPackages = () => {

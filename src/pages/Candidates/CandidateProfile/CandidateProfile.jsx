@@ -5,10 +5,8 @@ import '../../../utils/utils.css'
 import { useParams } from 'react-router-dom';
 import removeUserIcon from '../../../../public/remove-user-24.svg'
 import addUserIcon from '../../../../public/add-user-2-24.svg'
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import { deactivateCandidate, activateCandidate } from '../../../api/api' 
+import { toast} from "react-toastify";
+import { deactivateCandidate, activateCandidate, getCandidateStatus } from '../../../api/api' 
 
 
 function CandidateProfile() {
@@ -20,25 +18,46 @@ function CandidateProfile() {
 
   const baseUrl = `http://localhost:5000/api/admin/candidates/profile/${profileId}`;
 
-  async function handleDeactivate() {
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetch(baseUrl);
+        const data = await response.json();
+        setCanData(data.data.candidateProfile);
+        setRegisteredEmail(data.data.candidateProfile.Candidate.email);
+
+        // Fetch the candidate's status
+        const statusResponse = await getCandidateStatus(profileId);
+        setIsActive(!statusResponse.data.data.isDeactive);
+      } catch (error) {
+        console.log('Error : ', error);
+      }
+    }
+    fetchData();
+  }, [])
+
+
+  async function handleDeactivate(e) {
+    e.preventDefault();
     try {
       await deactivateCandidate(profileId);
       setIsActive(false);
-      // You might want to show a success message here
+      toast.success('Candidate deactivated successfully');
     } catch (error) {
       console.error('Error deactivating candidate:', error);
-      // You might want to show an error message here
+      toast.error('Failed to deactivate candidate');
     }
   }
 
-  async function handleActivate() {
+  async function handleActivate(e) {
+    e.preventDefault();
     try {
       await activateCandidate(profileId);
       setIsActive(true);
-      // You might want to show a success message here
+      toast.success('Candidate activated successfully');
     } catch (error) {
       console.error('Error activating candidate:', error);
-      // You might want to show an error message here
+      toast.error('Failed to activate candidate');
     }
   }
 
@@ -65,22 +84,6 @@ function CandidateProfile() {
       console.error('Error:', error);
     }
   }
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(baseUrl);
-        const data = await response.json();
-        setCanData(data.data.candidateProfile);
-        setRegisteredEmail(data.data.candidateProfile.Candidate.email);
-      } catch (error) {
-        console.log('Error : ', error);
-      }
-    }
-    fetchData();
-  }, [])
-
-
 
   function handleInputChange(e) {
     let Val = e.target.value;
@@ -117,11 +120,11 @@ function CandidateProfile() {
 
             <div className="UpperPart flex flex-col tabIn:flex-row mb-7 gap-12">
 
-              {/* <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
+              <div class="shadow-3 h-50 w-55 px-6 py-8 sm:p-10 sm:pb-6">
                   <div className="grid items-center justify-center w-full grid-cols-1 text-left">
                   <img className='w-full h-full'  src={CanData.candidate_image ? `data:image/jpeg;base64,${CanData.candidate_image}` : ""} alt="Candidate" />
                   </div>
-                </div> */}
+                </div>
 
               <div className=" flex flex-col gap-7 w-full  w-1/2  tabIn:gap-15 tabIn:mt-7 rightside">
                 <div className="w-full h-12 relative flex  ">
@@ -527,33 +530,31 @@ function CandidateProfile() {
           </div>
 
           <div className="Changes flex justify-end gap-3 mt-27">
-
-          {isActive ? (
-            <button 
-              onClick={handleDeactivate} 
-              className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              <span>
-                <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
-              </span>
-              Deactivate this account
-            </button>
-          ) : (
-            <button 
-              onClick={handleActivate}
-              className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10"
-            >
-              <span>
-                <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
-              </span>
-              Activate this account
-            </button>
-          )}
-            <button onClick={HandlePostClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
-              Save Changes
-            </button>
-
-          </div>
+        {isActive ? (
+          <button 
+            onClick={handleDeactivate} 
+            className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10"
+          >
+            <span>
+              <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+            </span>
+            Deactivate this account
+          </button>
+        ) : (
+          <button 
+            onClick={handleActivate}
+            className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10"
+          >
+            <span>
+              <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+            </span>
+            Activate this account
+          </button>
+        )}
+        <button onClick={HandlePostClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+          Save Changes
+        </button>
+      </div>
         </div>
       </form>
 

@@ -18,7 +18,7 @@ const PopupCard = ({
   secondaryButtonColor = 'bg-gray-200',
   secondaryButtonTextColor = 'text-gray-700',
   secondaryButtonHoverColor = 'hover:bg-gray-300',
-  secondaryButtonFocusRingColor = 'focus:ring-gray-400'
+  secondaryButtonFocusRingColor = 'focus:ring-gray-400',
 }) => {
   const cardRef = useRef(null);
 
@@ -54,7 +54,7 @@ const PopupCard = ({
           {buttons.map((button, index) => (
             <button
               key={index}
-              className={`w-20 h-8 transition-all duration-200 border-none cursor-pointer font-semibold rounded-full transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 
+              className={`auto px-4 py-2 transition-all duration-200 border-none cursor-pointer font-semibold rounded-full transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2
                 ${button.primary
                   ? `${primaryButtonColor} text-white ${primaryButtonHoverColor} ${primaryButtonFocusRingColor}`
                   : `${secondaryButtonColor} ${secondaryButtonTextColor} ${secondaryButtonHoverColor} ${secondaryButtonFocusRingColor}`

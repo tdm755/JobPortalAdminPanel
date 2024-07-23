@@ -4,7 +4,8 @@ import './EmployerProfile.css';
 import { useParams } from 'react-router-dom';
 import removeUserIcon from '../../../../public/remove-user-24.svg'
 import addUserIcon from '../../../../public/add-user-2-24.svg'
-import { deactivateEmployer, activateEmployer } from '../../../api/api'
+import { deactivateEmployer, activateEmployer, getEmployerStatus } from '../../../api/api'
+import { toast } from 'react-toastify';
 
 function EmployerProfile() {
 
@@ -14,29 +15,6 @@ function EmployerProfile() {
   const [isActive, setIsActive] = useState(true);
 
   const baseUrl = `http://localhost:5000/api/admin/employers/profile/${profileId}`;
-
-  async function handleDeactivate() {
-    try {
-      await deactivateEmployer(profileId);
-      setIsActive(false);
-      // You might want to show a success message here
-    } catch (error) {
-      console.error('Error deactivating candidate:', error);
-      // You might want to show an error message here
-    }
-  }
-
-  async function handleActivate() {
-    try {
-      await activateEmployer(profileId);
-      setIsActive(true);
-      // You might want to show a success message here
-    } catch (error) {
-      console.error('Error activating candidate:', error);
-      // You might want to show an error message here
-    }
-  }
-
 
   async function HandlePostClick(e) {
     e.preventDefault();
@@ -71,13 +49,41 @@ function EmployerProfile() {
         const data = await response.json();
         setEmpData(data.data.employerProfile);
         setRegisteredEmail(data.data.employerProfile.Employer.email);
-        console.log(data.message);
+
+        // Fetch the employer's status
+        const statusResponse = await getEmployerStatus(profileId);
+        setIsActive(!statusResponse.data.data.isDeactive);
       } catch (error) {
         console.log('Error : ', error);
       }
     }
     fetchData();
   }, [])
+
+
+  async function handleDeactivate(e) {
+    e.preventDefault();
+    try {
+      await deactivateEmployer(profileId);
+      setIsActive(false);
+      toast.success('Employer deactivated successfully');
+    } catch (error) {
+      console.error('Error deactivating candidate:', error);
+      toast.error('Failed to deactivate candidate');
+    }
+  }
+
+  async function handleActivate(e) {
+    e.preventDefault();
+    try {
+      await activateEmployer(profileId);
+      setIsActive(true);
+      toast.success('Employer activated successfully');
+    } catch (error) {
+      console.error('Error activating candidate:', error);
+      toast.error('Failed to activate candidate');
+    }
+  }
 
 
 
