@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout.js';
 import { fetchContactMessages } from '../../api/api.js';
+import Pagination from '../../components/Pagination.jsx';
+import openIcon from '../../images/icon/openEye.svg'
+import closeIcon from '../../images/icon/closeEye.svg'
+import deleteIcon from '../../images/icon/DeleteIcon.svg'
 
 function ContactMessages() {
   const [messages, setMessages] = useState([]);
@@ -107,13 +111,28 @@ function ContactMessages() {
                       <td className="px-4 py-2">{message.email}</td>
                       <td className="px-4 py-2">{message.subject}</td>
                       <td className="px-4 py-2">
-                        <button
-                          className="bg-blue-500 w-17 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
-                          onClick={() => toggleMessageExpansion(message.id)}
-                        >
-                          {expandedMessageId === message.id ? 'Close' : 'View'}
-                        </button>
-                      </td>
+                      <button
+                        className="bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"
+                        onClick={() => toggleMessageExpansion(message.id)}
+                      >
+                        <img 
+                          src={expandedMessageId === message.id ? openIcon : closeIcon} 
+                          alt={expandedMessageId === message.id ? "View" : "Close"} 
+                          className="w-5 h-5"
+                        />
+                      </button>
+                      <button
+                        className=""
+                        onClick={() => {/* Add delete functionality here */}}
+                      >
+                         <img
+                                            src={deleteIcon}
+                                            alt="Delete"
+                                            className='w-6 h-6 cursor-pointer transition-transform duration-300 hover:scale-110'
+                                    
+                                        />
+                      </button>
+                    </td>
                     </tr>
                     <tr className='toMakeBlaB'>
                       <td colSpan="5" className="border">
@@ -135,32 +154,13 @@ function ContactMessages() {
               </tbody>
             </table>
           </div>
-          <div className="mt-4 flex justify-between items-center">
-            <div>
-              Showing {(currentPage - 1) * limit + 1} to {Math.min(currentPage * limit, totalMessages)} of {totalMessages} entries
-            </div>
-            <div className="flex items-center">
-              {totalPages > 1 && currentPage > 1 && (
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  className="px-3 py-1 border rounded mr-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
-                >
-                  Previous
-                </button>
-              )}
-              {totalPages > 1 && (
-                <span className="text-sm text-gray-700">{currentPage} of {totalPages}</span>
-              )}
-              {totalPages > 1 && currentPage < totalPages && (
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  className="px-3 py-1 border rounded ml-2 bg-white hover:bg-gray-100 text-gray-800 font-semibold transition duration-150 ease-in-out"
-                >
-                  Next
-                </button>
-              )}
-            </div>
-          </div>
+          <Pagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              itemsPerPage={limit}
+              totalItems={totalMessages}
+            />
         </div>
       </div>
     </DefaultLayout>

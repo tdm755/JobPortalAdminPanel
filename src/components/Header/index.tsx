@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import DropdownNotification from './DropdownNotification';
 import DropdownUser from './DropdownUser';
-import LogoIcon from '../../images/logo/logo-icon.svg';
+import LogoIcon from '../../../public/AplaKaamLogo.png';
 
 const Header = (props: {
   sidebarOpen: string | boolean | undefined;
@@ -54,8 +54,8 @@ const Header = (props: {
           </button>
           {/* <!-- Hamburger Toggle BTN --> */}
 
-          <Link className="block flex-shrink-0 lg:hidden" to="/">
-            <img src={LogoIcon} alt="Logo" />
+          <Link className="block flex-shrink-0 lg:hidden w-20" to="/">
+            <img src={LogoIcon} alt="Logo"/>
           </Link>
         </div>
 
