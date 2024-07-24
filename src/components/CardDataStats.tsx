@@ -16,7 +16,7 @@ const CardDataStats: React.FC<CardDataStatsProps> = ({
      <div className="absolute right-0 top-0 h-24 w-24 -translate-y-1/2 translate-x-1/2 transform rounded-full bg-primary/20 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:translate-x-0 group-hover:opacity-100"></div> 
       
       <div className="relative z-10">
-        <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4 group-hover:bg-primary group-hover:text-white transition-colors duration-300">
+        <div className="flex h-11.5 w-11.5 items-center justify-center rounded-full bg-meta-2 dark:bg-meta-4 group-hover:text-white transition-colors duration-300">
           {icon}
         </div>
 
