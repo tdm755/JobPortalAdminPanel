@@ -4,6 +4,7 @@ import CategoryIcon from '../../../public/JobCateIcon.svg'
 import JobTypeIcon from '../../../public/JobIcon.svg'
 import cityIcon from '../../../public/CityIcon.svg'
 import LocationIcon from '../../../public/LocationIcon.svg'
+import faqIcon from '../../../public/FAQIcon.svg';
 
 
 import stateIcon from '../../../public/stateIcon.svg';
@@ -161,7 +162,22 @@ function UpdateFeatures() {
               </div>
               <div className='flex items-end justify-end text-[#10b981] cursor-pointer'>Update Job Search By Location</div>
             </div>
+          </Link>  
+
+          <Link to={`/faqs`} >
+            <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
+              <div className="mb-10 flex gap-2 TotalCategories">
+                <img className='h-10 w-15' src={faqIcon} alt="" />
+
+                <div className=" TotalCount">
+                  <span className='text-black font-bold text-2xl' >FAQ</span>
+                  <p className='text-sm font-medium' >Set Frequently Asked Question</p>
+                </div>
+              </div>
+              <div className='flex items-end justify-end text-[#10b981] cursor-pointer'>Update FAQ's</div>
+            </div>
           </Link>       
+     
 
 
 

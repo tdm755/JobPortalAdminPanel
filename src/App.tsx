@@ -25,6 +25,7 @@ import ManageAds from './pages/ManageAdds/ManageAdds.jsx';
 import StatesComponent from './pages/UpdateFeatures/StatesComponent.jsx';
 import CityComponent from './pages/UpdateFeatures/CityComponent.jsx';
 import CustomToastContainer from './utils/CustomToastContainer.jsx';
+import UpdateFAQs from './pages/UpdateFeatures/UpdateFAQ\'s/UpdateFAQs.jsx';
 
 export const AuthContext = createContext(null);
 
@@ -210,6 +211,15 @@ function App() {
             element={
               <>
                 <CityComponent />
+              </>
+            }
+          />
+
+          <Route
+            path="/faqs"
+            element={
+              <>
+                <UpdateFAQs />
               </>
             }
           />

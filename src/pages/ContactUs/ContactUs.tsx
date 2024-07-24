@@ -166,7 +166,7 @@ function ContactMessages() {
                       </td>
                     </tr>
                     <tr className='toMakeBlaB'>
-                      <td colSpan="5" className="border">
+                      <td colSpan={5} className="border">
                         <div
                           className={`border rounded-br-3xl rounded-bl-3xl border-[#64748b] border-t-0 overflow-hidden transition-all duration-1000 ease-out ${expandedMessageId === message.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}
                         >

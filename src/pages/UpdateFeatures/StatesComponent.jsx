@@ -167,6 +167,7 @@ function StatesComponent() {
     return (
         <>
         <DefaultLayout>
+            
             <div className='bg-white w-full p-6' ref={topRef}>
                 {error && <div className="text-red-500 mb-4">{error}</div>}
                 <div className="flex flex-col items-center bg-slate-100 p-4 rounded-md">
