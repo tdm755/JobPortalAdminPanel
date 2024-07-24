@@ -7,6 +7,7 @@ import removeUserIcon from '../../../../public/remove-user-24.svg'
 import addUserIcon from '../../../../public/add-user-2-24.svg'
 import { toast} from "react-toastify";
 import { deactivateCandidate, activateCandidate, getCandidateStatus } from '../../../api/api' 
+import { API_BASE_URL } from '../../../api/api';
 
 
 function CandidateProfile() {
@@ -16,7 +17,7 @@ function CandidateProfile() {
   const [registeredEmail, setRegisteredEmail] = useState("");
   const [isActive, setIsActive] = useState(true);
 
-  const baseUrl = `http://localhost:5000/api/admin/candidates/profile/${profileId}`;
+  const baseUrl = `${API_BASE_URL}/candidates/profile/${profileId}`;
 
   useEffect(() => {
     async function fetchData() {

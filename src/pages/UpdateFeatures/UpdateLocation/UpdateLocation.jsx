@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import DefaultLayout from '../../../layout/DefaultLayout';
+import { API_BASE_URL } from '../../../api/api';
 
 
 const locations = [
@@ -34,6 +35,10 @@ const locations = [
   },
 ];
 
+
+
+
+
 const FileInput = ({ onChange }) => {
   const [fileName, setFileName] = useState('No file chosen');
 
@@ -64,9 +69,29 @@ const FileInput = ({ onChange }) => {
 
 
 
+const JobCard = ({ location, imageSrc, onImageChange, states, cities }) => {
 
-const JobCard = ({ location, imageSrc, onImageChange }) => (
-  <div className="">
+  function handleChangeState(e) {
+    let Val = e.target.value;  
+    setStateId(Val);  
+    console.log(Val);
+  }
+
+  const [stateId, setStateId] = useState('');
+  const [filteredCities, setFilteredCities] = useState([]);
+
+  useEffect(()=>{
+    const filtered = ()=>{
+      return cities && stateId ? cities.filter((item)=>{
+                return item.StateId === parseInt(stateId);
+              }) : [];
+    }
+    setFilteredCities(filtered)
+  }, [stateId, cities])
+
+
+
+  return( <div className="">
     <div className="mb-3">
       <FileInput onChange={(e) => onImageChange(e, location.id)} />
     </div>
@@ -75,10 +100,19 @@ const JobCard = ({ location, imageSrc, onImageChange }) => (
         className="border border-[#e0e6f7] rounded-md p-3 m-3 h-48 bg-cover bg-center"
         style={{ backgroundImage: `url(${imageSrc || location.image})` }}
       />
-      <div className="p-4">
-        <select name="" id="">
-          <option >select location</option>
+      <div className="p-4 flex flex-col">
+        <select onChange={handleChangeState} className='border mb-4' name="" id="">          
+           <option >select state</option>
+           {states ? states.map((item)=>{
+            return <option value={item.StateId}>{item.StateName}</option>
+           }) : ''}
 
+        </select>
+        <select className='border mb-4' name="" id="">          
+          <option >select city</option>
+          {filteredCities ? filteredCities.map((item)=>{
+            return <option value={item.CityName}>{item.CityName}</option>
+          }) : ''}
         </select>
         <p className="text-gray-600">
           <span className="font-semibold text-blue-600">{location.vacancy} Vacancy</span>
@@ -87,11 +121,49 @@ const JobCard = ({ location, imageSrc, onImageChange }) => (
       </div>
     </div>
   </div>
-);
+  )
+};
 
 const UpdateLocation = () => {
 
   const [imageSrcs, setImageSrcs] = useState({});
+
+
+
+
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+
+  useEffect(()=>{
+  async function fetchStateDetails() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/states`);
+      const data = await response.json();
+      setStates(data.data.states);
+      // console.log(data.data.states);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  fetchStateDetails();
+}, [])
+
+useEffect(()=>{
+  async function fetchCityDetails() {
+    try {
+      const response = await fetch(`${API_BASE_URL}/cities`);
+      const data = await response.json();
+      setCities(data.data.cities);
+      console.log(data.data.cities);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  fetchCityDetails();
+}, [])
+
+
+
 
   const handleImageChange = (event, id) => {
     const file = event.target.files[0];
@@ -119,6 +191,8 @@ const UpdateLocation = () => {
 
           <JobCard
             key={location.id}
+            states={states}
+            cities={cities}
             location={location}
             imageSrc={imageSrcs[location.id]}
             onImageChange={handleImageChange}
