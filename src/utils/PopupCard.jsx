@@ -1,5 +1,4 @@
-// PopupCard.jsx
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 
 const PopupCard = ({
   icon,
@@ -21,10 +20,11 @@ const PopupCard = ({
   secondaryButtonFocusRingColor = 'focus:ring-gray-400',
 }) => {
   const cardRef = useRef(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (cardRef.current && !cardRef.current.contains(event.target)) {
+      if (cardRef.current && !cardRef.current.contains(event.target) && !isLoading) {
         onClose();
       }
     };
@@ -33,7 +33,21 @@ const PopupCard = ({
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [onClose]);
+  }, [onClose, isLoading]);
+
+  const handleButtonClick = async (button) => {
+    if (button.onClick) {
+      setIsLoading(true);
+      try {
+        await button.onClick();
+      } finally {
+        setIsLoading(false);
+        onClose();
+      }
+    } else {
+      onClose();
+    }
+  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 animate-fadeIn">
@@ -54,17 +68,25 @@ const PopupCard = ({
           {buttons.map((button, index) => (
             <button
               key={index}
-              className={`auto px-4 py-2 transition-all duration-200 border-none cursor-pointer font-semibold rounded-full transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2
+              className={`auto px-4 py-2 transition-all duration-200 border-none cursor-pointer font-semibold rounded-full transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 
                 ${button.primary
                   ? `${primaryButtonColor} text-white ${primaryButtonHoverColor} ${primaryButtonFocusRingColor}`
                   : `${secondaryButtonColor} ${secondaryButtonTextColor} ${secondaryButtonHoverColor} ${secondaryButtonFocusRingColor}`
                 } hover:shadow-md active:scale-95`}
-              onClick={() => {
-                button.onClick();
-                onClose();
-              }}
+              onClick={() => handleButtonClick(button)}
+              disabled={isLoading}
             >
-              {button.text}
+              {isLoading && button.primary ? (
+                <div className="flex items-center">
+                  <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Processing...
+                </div>
+              ) : (
+                button.text
+              )}
             </button>
           ))}
         </div>

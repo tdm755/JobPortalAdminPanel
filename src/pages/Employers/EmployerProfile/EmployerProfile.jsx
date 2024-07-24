@@ -6,6 +6,9 @@ import removeUserIcon from '../../../../public/remove-user-24.svg'
 import addUserIcon from '../../../../public/add-user-2-24.svg'
 import { deactivateEmployer, activateEmployer, getEmployerStatus } from '../../../api/api'
 import { toast } from 'react-toastify';
+import PopupCard from '../../../utils/PopupCard';
+import settingIcon from '../../../images/icon/SettingIcon.svg';
+import { API_BASE_URL } from '../../../api/api';
 
 function EmployerProfile() {
 
@@ -13,8 +16,9 @@ function EmployerProfile() {
   const [EmpData, setEmpData] = useState({});
   const [registeredEmail, setRegisteredEmail] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [showStatusPopup, setShowStatusPopup] = useState(false);
 
-  const baseUrl = `http://localhost:5000/api/admin/employers/profile/${profileId}`;
+  const baseUrl = `${API_BASE_URL}/employers/profile/${profileId}`;
 
   async function HandlePostClick(e) {
     e.preventDefault();
@@ -63,26 +67,30 @@ function EmployerProfile() {
 
   async function handleDeactivate(e) {
     e.preventDefault();
-    try {
-      await deactivateEmployer(profileId);
-      setIsActive(false);
-      toast.success('Employer deactivated successfully');
-    } catch (error) {
-      console.error('Error deactivating candidate:', error);
-      toast.error('Failed to deactivate candidate');
-    }
+    setShowStatusPopup(true);
   }
 
   async function handleActivate(e) {
     e.preventDefault();
+    setShowStatusPopup(true);
+  }
+
+  async function handleConfirmStatusChange() {
     try {
-      await activateEmployer(profileId);
-      setIsActive(true);
-      toast.success('Employer activated successfully');
+      if (isActive) {
+        await deactivateEmployer(profileId);
+        setIsActive(false);
+        toast.success('Employer deactivated successfully. An email has been sent to inform them of the deactivation.');
+      } else {
+        await activateEmployer(profileId);
+        setIsActive(true);
+        toast.success('Employer activated successfully. An email has been sent to inform them of the activation.');
+      }
     } catch (error) {
-      console.error('Error activating candidate:', error);
-      toast.error('Failed to activate candidate');
+      console.error('Error changing employer status:', error);
+      toast.error(`Failed to ${isActive ? 'deactivate' : 'activate'} employer`);
     }
+    setShowStatusPopup(false);
   }
 
 
@@ -406,27 +414,26 @@ function EmployerProfile() {
         <div className="Changes flex justify-end gap-3 mt-27">
 
         {isActive ? (
-  <button 
-    onClick={handleDeactivate} 
-    className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10"
-  >
-    <span>
-      <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
-    </span>
-    Deactivate this account
-  </button>
-) : (
-  <button 
-    onClick={handleActivate}
-    className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10"
-  >
-    <span>
-      <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
-    </span>
-    Activate this account
-  </button>
-)}
-
+          <button 
+            onClick={handleDeactivate} 
+            className="inline-flex items-center justify-center gap-2.5 border border-red-600 py-4 px-10 text-center font-medium text-red-600 hover:bg-opacity-90 lg:px-8 xl:px-10"
+          >
+            <span>
+              <img src={removeUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+            </span>
+            Deactivate this account
+          </button>
+        ) : (
+          <button 
+            onClick={handleActivate}
+            className="inline-flex items-center justify-center gap-2.5 border border-[#10b981] py-4 px-10 text-center font-medium text-[#10b981] hover:bg-opacity-90 lg:px-8 xl:px-10"
+          >
+            <span>
+              <img src={addUserIcon} alt="" style={{ width: '20px', height: '20px' }} />
+            </span>
+            Activate this account
+          </button>
+        )}
             <button onClick={HandlePostClick} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
               Save Changes
             </button>
@@ -435,6 +442,37 @@ function EmployerProfile() {
         </div>
         {/* <button onClick={HandlePostClick} >Save Changes</button> */}
       </form>
+      {showStatusPopup && (
+        <PopupCard
+          icon={<img src={settingIcon} alt="Status" className="w-8 h-8" />}
+          heading={`Confirm ${isActive ? 'Deactivation' : 'Activation'}`}
+          description={`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this employer account?`}
+          buttons={[
+            {
+              text: "Cancel",
+              primary: false,
+              onClick: () => setShowStatusPopup(false)
+            },
+            {
+              text: isActive ? "Deactivate" : "Activate",
+              primary: true,
+              onClick: handleConfirmStatusChange,
+            }
+          ]}
+          onClose={() => setShowStatusPopup(false)}
+          bgColor="bg-white"
+          headingHoverColor="hover:text-red-600"
+          descriptionColor="text-gray-700"
+          descriptionHoverOpacity="hover:opacity-90"
+          primaryButtonColor={isActive ? "bg-red-600" : "bg-green-600"}
+          primaryButtonHoverColor={isActive ? "hover:bg-red-700" : "hover:bg-green-700"}
+          primaryButtonFocusRingColor={isActive ? "focus:ring-red-500" : "focus:ring-green-500"}
+          secondaryButtonColor="bg-gray-200"
+          secondaryButtonTextColor="text-gray-700"
+          secondaryButtonHoverColor="hover:bg-gray-300"
+          secondaryButtonFocusRingColor="focus:ring-gray-400"
+        />
+      )}
 
     </DefaultLayout>
   )

@@ -242,6 +242,16 @@ export const deleteAllContactMessages = async () => {
   }
 };
 
+export const updateMessageReadStatus = async (id, isRead) => {
+  try {
+    const response = await api.patch(`/contact/${id}`, { isRead });
+    return response.data;
+  } catch (error) {
+    console.error(`Error updating read status for message with ID ${id}:`, error);
+    throw error;
+  }
+};
+
 export const addState = async (stateData) => {
   try {
     const response = await api.post('/states', stateData);
