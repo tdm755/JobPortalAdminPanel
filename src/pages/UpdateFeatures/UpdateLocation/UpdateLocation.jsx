@@ -200,6 +200,11 @@ useEffect(()=>{
         ))}
 
       </div>
+    <div className="Changes flex justify-end gap-3 mt-10">
+        <button className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+          Save Changes
+        </button>
+    </div>
     </div>
   </DefaultLayout>
   );
