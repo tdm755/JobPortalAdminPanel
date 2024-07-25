@@ -76,7 +76,7 @@ const JobCard = ({ location, imageSrc, onImageChange, states, cities, index, han
     <div className="bg-white rounded-lg overflow-hidden shadow-lg">
       <div
         className="border border-[#e0e6f7] rounded-md p-3 m-3 h-48 bg-cover bg-center"
-        style={{ backgroundImage: `url(${imageSrc || location.image})` }}
+        style={{ backgroundImage: `url(${location.locationImage})` }}
       />
       <div className="p-4 flex flex-col">
         <select  onChange={handleChangeState} value={location.id} selectedText={location.StateName} className='border mb-4' name="" id="">          
@@ -246,6 +246,9 @@ const handleUpdateLocation = (index, field, value) => {
       reader.readAsDataURL(file);
     }
   };
+
+
+  console.log(locations);
 
 
 
