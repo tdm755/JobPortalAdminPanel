@@ -12,6 +12,7 @@ function ManageAds() {
       try {
         const response = await fetch(`${API_BASE_URL}/ads`)
         const data = await response.json();
+        // setAds(data)
         console.log(data);
       } catch (error) {
         console.log("error while fetching : ", error);
@@ -21,22 +22,35 @@ function ManageAds() {
    }, [])
 
 
-    async function postDetails() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/ads`, {
-          method : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(ads) 
-        })
-        const data = await response.json();
-        // console.log(data);
-      } catch (error) {
-        console.log('Error : ', error);
+    // async function postDetails() {
+      async function postDetails() {
+        try {
+          for (const ad of ads) {
+            // Ensure no null values are sent
+            const adToSave = {
+              id: ad.id,
+              placementName: ad.placementName || '',
+              price: ad.price || 0,
+              durationType: ad.durationType || '',
+            };
+      
+            const response = await fetch(`${API_BASE_URL}/ads`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(adToSave)
+            });
+            const data = await response.json();
+            if (!data.success) {
+              console.error('Error saving ad:', data.message);
+            }
+          }
+          fetchAds(); // Refresh the list after saving
+        } catch (error) {
+          console.error('Error:', error);
+        }
       }
-    }
- 
 
   const [ads, setAds] = useState([
     {
@@ -70,7 +84,7 @@ function ManageAds() {
     })
   }
 
-  console.log(ads);
+  // console.log(ads);
 
   return (
     <DefaultLayout>
