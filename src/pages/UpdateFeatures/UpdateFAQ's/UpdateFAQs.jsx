@@ -3,7 +3,7 @@ import DefaultLayout from '../../../layout/DefaultLayout';
 import { API_BASE_URL } from '../../../api/api';
 import {toast } from 'react-toastify';
 import { debounce } from 'lodash';
-import deleteIcon from '../../../../public/DeleteIcon.svg'
+import deleteIcon from '../../../images/icon/DeleteIcon.svg'
 
 function UpdateFAQs() {
     const [FAQ, setFAQ] = useState([]);
@@ -177,19 +177,21 @@ function UpdateFAQs() {
         <DefaultLayout>
             <div className='bg-white w-full p-6'>
                 <div className="flex items-center justify-center h-30 bg-slate-100">
-                    <div>
-                        <div
-                            onClick={handleAddFaqFunction}
-                            className="inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:translate-x-1 lg:px-8 xl:px-10 cursor-pointer"
-                        >
+                    <div className='flex  gap-10'>
+                        <div onClick={handleAddFaqFunction} className="inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:translate-x-1 lg:px-8 xl:px-10 cursor-pointer" >
                             Add FAQ's
                         </div>
+
+                    <button onClick={PostFAQdetails} className=" hover:translate-x-1 inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white lg:px-8 xl:px-10" >
+                        Save Changes
+                    </button>
+
                     </div>
                 </div>
 
                 <div className="faq flex flex-col-reverse">
                     {FAQ.map((item, index) => (
-                        <div className='flex flex-row-reverse items-center justify-around'>
+                        <div className='flex flex-row-reverse items-center'>
                         <div key={index} className="QA w-[75%] m-auto mt-10">
                             <div className="selectFor flex justify-between">
                             <span className='bg-[#d4e6ff] text-black p-2 rounded-t-md'>{index + 1}</span>
@@ -224,7 +226,7 @@ function UpdateFAQs() {
                                 {Error[index]?.answer && <span className="text-red-500">{Error[index].answer}</span>}
                             </div>
                         </div>
-                        <button onClick={(e)=>{handleDeleteClick(e, item.id)}} ><img src={deleteIcon} alt="" /></button>
+                        <button className='ml-14 bg-[#edf4ff] p-3 rounded-[50%]' onClick={(e)=>{handleDeleteClick(e, item.id)}} ><img src={deleteIcon} alt="" /></button>
                         </div>
                     ))}
                 </div>

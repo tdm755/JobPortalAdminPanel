@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import DefaultLayout from '../../layout/DefaultLayout.js';
-import { fetchContactMessages } from '../../api/api.js';
+import { fetchContactMessages, deleteContactMessageById, updateMessageReadStatus, deleteAllContactMessages } from '../../api/api.js';
 import Pagination from '../../components/Pagination.jsx';
 import openIcon from '../../images/icon/openEye.svg'
 import closeIcon from '../../images/icon/closeEye.svg'
-import deleteIcon from '../../images/icon/DeleteIcon.svg'
+import DeleteIconSVG from '../../images/icon/DeleteIcon.svg'
+import PopupCard from '../../utils/PopupCard.jsx';
+import { toast } from 'react-toastify';
 
 function ContactMessages() {
   const [messages, setMessages] = useState([]);
@@ -16,6 +18,8 @@ function ContactMessages() {
   const [sortOrder, setSortOrder] = useState('DESC');
   const [search, setSearch] = useState('');
   const [expandedMessageId, setExpandedMessageId] = useState(null);
+  const [showDeletePopup, setShowDeletePopup] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState(null);
 
   useEffect(() => {
     fetchContactMessages(setMessages, setTotalMessages, setTotalPages, sortBy, sortOrder, search, currentPage, limit);
@@ -52,9 +56,72 @@ function ContactMessages() {
   };
 
 
-  const toggleMessageExpansion = (id) => {
-    setExpandedMessageId(prevId => prevId === id ? null : id);
+  const toggleMessageExpansion = async (id) => {
+    setExpandedMessageId(prevId => {
+      const newExpandedId = prevId === id ? null : id;
+      
+      if (newExpandedId !== null) {
+        // Message is being expanded, mark it as read
+        updateMessageReadStatus(id, true)
+          .then(() => {
+            // Update the local state to reflect the change
+            setMessages(prevMessages => 
+              prevMessages.map(msg => 
+                msg.id === id ? { ...msg, isRead: true } : msg
+              )
+            );
+          })
+          .catch(error => {
+            console.error('Failed to update message read status:', error);
+            // Optionally, show an error toast here
+          });
+      }
+      
+      return newExpandedId;
+    });
   };
+
+  const handleDeleteClick = (message) => {
+    setMessageToDelete(message);
+    setShowDeletePopup(true);
+  };
+
+  const handleClearAll = () => {
+    const unreadCount = messages.filter(msg => !msg.isRead).length;
+    setShowDeletePopup(true);
+    setMessageToDelete({ id: 'all', name: 'all messages', unreadCount });
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (messageToDelete) {
+      try {
+        if (messageToDelete.id === 'all') {
+          await deleteAllContactMessages();
+          setMessages([]);
+          setTotalMessages(0);
+          setTotalPages(1);
+          setCurrentPage(1);
+          toast.success('All messages deleted successfully');
+        } else {
+          await deleteContactMessageById(messageToDelete.id);
+          setMessages(prevMessages => prevMessages.filter(msg => msg.id !== messageToDelete.id));
+          setTotalMessages(prevTotal => prevTotal - 1);
+          setTotalPages(Math.ceil((totalMessages - 1) / limit));
+          if (messages.length === 1 && currentPage > 1) {
+            setCurrentPage(prevPage => prevPage - 1);
+          }
+          toast.success('Message deleted successfully');
+        }
+      } catch (error) {
+        toast.error('Failed to delete message(s):', error);
+      } finally {
+        setShowDeletePopup(false);
+        setMessageToDelete(null);
+      }
+    }
+  };
+
+
 
   return (
     <DefaultLayout>
@@ -80,7 +147,18 @@ function ContactMessages() {
             </div>
             <div className="flex items-center space-x-2">
               <span>Search:</span>
-              <input type="text" className="border rounded px-2 py-1 flex-grow" value={search} onChange={handleSearch} />
+              <input 
+                type="text" 
+                className="border rounded px-2 py-1 flex-grow" 
+                value={search} 
+                onChange={handleSearch} 
+              />
+              <button
+                className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
+                onClick={handleClearAll}
+              >
+                Clear All
+              </button>
             </div>
           </div>
           <div className="overflow-x-auto">
@@ -105,34 +183,29 @@ function ContactMessages() {
               <tbody>
                 {messages.map((message) => (
                   <React.Fragment key={message.id}>
-                    <tr className="border-b">
+                    <tr className={`border-b ${!message.isRead ? 'font-semibold text-[#1967d2]' : ''}`}>
                       <td className="px-4 py-2">{new Date(message.createdAt).toLocaleDateString()}</td>
                       <td className="px-4 py-2">{message.name}</td>
                       <td className="px-4 py-2">{message.email}</td>
                       <td className="px-4 py-2">{message.subject}</td>
-                      <td className="px-4 py-2">
-                      <button
-                        className="bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"
-                        onClick={() => toggleMessageExpansion(message.id)}
-                      >
-                        <img 
-                          src={expandedMessageId === message.id ? openIcon : closeIcon} 
-                          alt={expandedMessageId === message.id ? "View" : "Close"} 
-                          className="w-5 h-5"
-                        />
-                      </button>
-                      <button
-                        className=""
-                        onClick={() => {/* Add delete functionality here */}}
-                      >
-                         <img
-                                            src={deleteIcon}
-                                            alt="Delete"
-                                            className='w-6 h-6 cursor-pointer transition-transform duration-300 hover:scale-110'
-                                    
-                                        />
-                      </button>
-                    </td>
+                      <td className="px-4 py-2 flex gap-2">
+                        <button
+                          className="bg-gray hover:bg-[#e2ebf4] p-1 rounded-md"
+                          onClick={() => toggleMessageExpansion(message.id)}
+                        >
+                          <img 
+                            src={expandedMessageId === message.id ? openIcon : closeIcon} 
+                            alt={expandedMessageId === message.id ? "View" : "Close"} 
+                            className="w-5 h-5"
+                          />
+                        </button>
+                        <button
+                          className="p-1 rounded-md hover:bg-red-100"
+                          onClick={() => handleDeleteClick(message)}
+                        >
+                          <img src={DeleteIconSVG} alt="Delete" className="w-6 h-6" />
+                        </button>
+                      </td>
                     </tr>
                     <tr className='toMakeBlaB'>
                       <td colSpan={5} className="border">
@@ -142,9 +215,11 @@ function ContactMessages() {
                           <div className="rounded-br-3xl rounded-bl-3xl p-4 space-y-2">
                             <div className="font-bold">Message:</div>
                             <div>{message.message}</div>
-                            <div>
-                              <span className="font-bold">Phone:</span> {message.phoneNumber}
-                            </div>
+                            {message.phoneNumber && (
+                              <div>
+                                <span className="font-bold">Phone:</span> {message.phoneNumber}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>
@@ -163,6 +238,51 @@ function ContactMessages() {
             />
         </div>
       </div>
+      {showDeletePopup && (
+  <PopupCard
+    icon={<img src={DeleteIconSVG} alt="Delete" className="w-12 h-12" />}
+    heading="Confirm Deletion"
+    description={messageToDelete?.id === 'all' 
+      ? (
+          <span>
+            Are you sure you want to delete all messages? 
+            {messageToDelete.unreadCount > 0 && (
+              <span>
+                {' '}There {messageToDelete.unreadCount === 1 ? 'is' : 'are'}{' '}
+                <span className="text-red-500 font-bold">{messageToDelete.unreadCount}</span> 
+                {' '}unread message{messageToDelete.unreadCount === 1 ? '' : 's'}.
+              </span>
+            )}
+          </span>
+        )
+      : `Are you sure you want to delete the message from ${messageToDelete?.name}?`
+    }
+    buttons={[
+      {
+        text: 'Cancel',
+        onClick: () => setShowDeletePopup(false),
+        primary: false,
+      },
+      {
+        text: 'Delete',
+        onClick: handleDeleteConfirm,
+        primary: true,
+      },
+    ]}
+    onClose={() => setShowDeletePopup(false)}
+    bgColor="bg-white"
+    headingHoverColor="hover:text-red-600"
+    descriptionColor="text-gray-700"
+    descriptionHoverOpacity="hover:opacity-90"
+    primaryButtonColor="bg-red-500"
+    primaryButtonHoverColor="hover:bg-red-600"
+    primaryButtonFocusRingColor="focus:ring-red-500"
+    secondaryButtonColor="bg-gray-200"
+    secondaryButtonTextColor="text-gray-700"
+    secondaryButtonHoverColor="hover:bg-gray-300"
+    secondaryButtonFocusRingColor="focus:ring-gray-400"
+  />
+)}
     </DefaultLayout>
   );
 }

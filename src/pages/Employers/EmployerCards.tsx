@@ -73,10 +73,10 @@ function EmployerCards() {
       const currentStatus = employerStatuses[employerToToggle.EmployerProfile.eid];
       if (currentStatus) {
         await activateEmployer(employerToToggle.EmployerProfile.eid);
-        toast.success('Employer activated successfully');
+        toast.success('Employer activated successfully. An email has been sent to inform them of the activation.');
       } else {
         await deactivateEmployer(employerToToggle.EmployerProfile.eid);
-        toast.success('Employer deactivated successfully');
+        toast.success('Employer deactivated successfully. An email has been sent to inform them of the deactivation.');
       }
 
       fetchEmployersData(setEmployers, setTotalEmployers, setTotalPages, sortOrder, search, currentPage, limit);

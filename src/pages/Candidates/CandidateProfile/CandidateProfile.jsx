@@ -8,6 +8,8 @@ import addUserIcon from '../../../../public/add-user-2-24.svg'
 import { toast} from "react-toastify";
 import { deactivateCandidate, activateCandidate, getCandidateStatus } from '../../../api/api' 
 import { API_BASE_URL } from '../../../api/api';
+import PopupCard from '../../../utils/PopupCard';
+import settingIcon from '../../../images/icon/SettingIcon.svg'
 
 
 function CandidateProfile() {
@@ -16,6 +18,7 @@ function CandidateProfile() {
   const [CanData, setCanData] = useState({});
   const [registeredEmail, setRegisteredEmail] = useState("");
   const [isActive, setIsActive] = useState(true);
+  const [showStatusPopup, setShowStatusPopup] = useState(false);
 
   const baseUrl = `${API_BASE_URL}/candidates/profile/${profileId}`;
 
@@ -40,25 +43,28 @@ function CandidateProfile() {
 
   async function handleDeactivate(e) {
     e.preventDefault();
-    try {
-      await deactivateCandidate(profileId);
-      setIsActive(false);
-      toast.success('Candidate deactivated successfully');
-    } catch (error) {
-      console.error('Error deactivating candidate:', error);
-      toast.error('Failed to deactivate candidate');
-    }
+    setShowStatusPopup(true);
   }
 
   async function handleActivate(e) {
     e.preventDefault();
+    setShowStatusPopup(true);
+  }
+
+  async function handleConfirmStatusChange() {
     try {
-      await activateCandidate(profileId);
-      setIsActive(true);
-      toast.success('Candidate activated successfully');
+      if (isActive) {
+        await deactivateCandidate(profileId);
+        setIsActive(false);
+        toast.success('Candidate deactivated successfully. An email has been sent to inform them of the deactivation.');
+      } else {
+        await activateCandidate(profileId);
+        setIsActive(true);
+        toast.success('Candidate activated successfully. An email has been sent to inform them of the activation.');
+      }
     } catch (error) {
-      console.error('Error activating candidate:', error);
-      toast.error('Failed to activate candidate');
+      console.error('Error changing candidate status:', error);
+      toast.error(`Failed to ${isActive ? 'deactivate' : 'activate'} candidate`);
     }
   }
 
@@ -558,7 +564,37 @@ function CandidateProfile() {
       </div>
         </div>
       </form>
-
+      {showStatusPopup && (
+        <PopupCard
+          icon={<img src={settingIcon} alt="Status" className="w-8 h-8" />}
+          heading={`Confirm ${isActive ? 'Deactivation' : 'Activation'}`}
+          description={`Are you sure you want to ${isActive ? 'deactivate' : 'activate'} this candidate account?`}
+          buttons={[
+            {
+              text: "Cancel",
+              primary: false,
+              onClick: () => setShowStatusPopup(false)
+            },
+            {
+              text: isActive ? "Deactivate" : "Activate",
+              primary: true,
+              onClick: handleConfirmStatusChange,
+            }
+          ]}
+          onClose={() => setShowStatusPopup(false)}
+          bgColor="bg-white"
+          headingHoverColor="hover:text-red-600"
+          descriptionColor="text-gray-700"
+          descriptionHoverOpacity="hover:opacity-90"
+          primaryButtonColor={isActive ? "bg-red-600" : "bg-green-600"}
+          primaryButtonHoverColor={isActive ? "hover:bg-red-700" : "hover:bg-green-700"}
+          primaryButtonFocusRingColor={isActive ? "focus:ring-red-500" : "focus:ring-green-500"}
+          secondaryButtonColor="bg-gray-200"
+          secondaryButtonTextColor="text-gray-700"
+          secondaryButtonHoverColor="hover:bg-gray-300"
+          secondaryButtonFocusRingColor="focus:ring-gray-400"
+        />
+      )}
 
 
     </DefaultLayout>

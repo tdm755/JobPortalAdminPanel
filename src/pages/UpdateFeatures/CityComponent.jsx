@@ -184,47 +184,49 @@ function CityComponent() {
         const currentItems = filteredCities.slice(indexOfFirstItem, indexOfLastItem);
     return (
         <DefaultLayout>
-            <div className='bg-white w-full p-6' ref={topRef}>
-                {error && <div className="text-red-500 mb-4">{error}</div>}
-                <div className="flex flex-col items-center bg-slate-100 p-4 rounded-md">
-                    <div className="grid gap-4 lg:grid-cols-2 lg:gap-6 w-full max-w-4xl">
-                        <input
-                            name="CityName"
-                            value={newCity.CityName}
-                            onChange={handleInputChange}
-                            className='outline-none px-4 py-2 border border-gray-300 rounded-md transition-all duration-300 hover:border-blue-500 hover:shadow-lg'
-                            type="text"
-                            placeholder="Enter City Name"
-                        />
-                        <select
-                            name="StateId"
-                            value={newCity.StateId}
-                            onChange={handleInputChange}
-                            className='outline-none px-4 py-2 border border-gray-300 rounded-md transition-all duration-300 hover:border-blue-500 hover:shadow-lg'
-                        >
-                            <option value="">Select State</option>
-                            {states.map((state) => (
-                                <option key={state.StateId} value={state.StateId}>
-                                    {state.StateName}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="flex gap-4 mt-4">
-                        <button
-                            onClick={editIndex === null ? handleAddCity : handleSaveEdit}
-                            className='bg-[#1967d2] h-12 px-6 text-white rounded-md transition-transform duration-300 transform hover:scale-105 hover:bg-[#0d47a1] hover:shadow-lg'>
-                            {editIndex === null ? 'Add City' : 'Save Changes'}
-                        </button>
-                        {editIndex !== null && (
-                            <button
-                                onClick={handleCancelEdit}
-                                className='bg-red-500 h-12 px-6 text-white rounded-md transition-transform duration-300 transform hover:scale-105 hover:bg-red-700 hover:shadow-lg'>
-                                Cancel
-                            </button>
-                        )}
-                    </div>
-                </div>
+           <div className='bg-white w-full p-6' ref={topRef}>
+    {error && <div className="text-red-500 mb-4">{error}</div>}
+    <div className="flex flex-col items-center bg-slate-100 p-4 rounded-md">
+        <div className="grid gap-4 w-full max-w-4xl sm:grid-cols-1 md:grid-cols-2">
+            <input
+                name="CityName"
+                value={newCity.CityName}
+                onChange={handleInputChange}
+                className='w-full outline-none px-4 py-2 border border-gray-300 rounded-md transition-all duration-300 hover:border-blue-500 hover:shadow-lg'
+                type="text"
+                placeholder="Enter City Name"
+            />
+            <select
+                name="StateId"
+                value={newCity.StateId}
+                onChange={handleInputChange}
+                className='w-full outline-none px-4 py-2 border border-gray-300 rounded-md transition-all duration-300 hover:border-blue-500 hover:shadow-lg'
+            >
+                <option value="">Select State</option>
+                {states.map((state) => (
+                    <option key={state.StateId} value={state.StateId}>
+                        {state.StateName}
+                    </option>
+                ))}
+            </select>
+        </div>
+        <div className="flex flex-wrap gap-4 mt-4">
+                <button
+                    onClick={editIndex === null ? handleAddCity : handleSaveEdit}
+                    className='bg-[#1967d2] h-12 px-6 text-white rounded-md transition-transform duration-300 transform hover:scale-105 hover:bg-[#0d47a1] hover:shadow-lg'
+                >
+                    {editIndex === null ? 'Add City' : 'Save Changes'}
+                </button>
+                {editIndex !== null && (
+                    <button
+                        onClick={handleCancelEdit}
+                        className='bg-red-500 h-12 px-6 text-white rounded-md transition-transform duration-300 transform hover:scale-105 hover:bg-red-700 hover:shadow-lg'
+                    >
+                        Cancel
+                    </button>
+                )}
+            </div>
+        </div>
                 <div className="mt-4">
                     <select
                         value={selectedState}
