@@ -4,42 +4,10 @@ import DefaultLayout from '../../../layout/DefaultLayout';
 import { API_BASE_URL } from '../../../api/api';
 
 
-const locations = [
-  {
-    id: 1,
-    name: 'Mumbai, Maharashtra',
-    image: '',
-    vacancy: 170,
-    companies: 720,
-  },
-  {
-    id: 2,
-    name: 'Bangalore, Karnataka',
-    image: '',
-    vacancy: 75,
-    companies: 30,
-  },
-  {
-    id: 3,
-    name: 'Delhi',
-    image: '',
-    vacancy: 45,
-    companies: 120,
-  },
-  {
-    id: 4,
-    name: 'Hyderabad, Telangana',
-    image: '',
-    vacancy: 60,
-    companies: 460,
-  },
-];
 
 
 
-
-
-const FileInput = ({ onChange }) => {
+  const FileInput = ({ onChange }) => {
   const [fileName, setFileName] = useState('No file chosen');
 
   const handleFileChange = (event) => {
@@ -69,12 +37,22 @@ const FileInput = ({ onChange }) => {
 
 
 
-const JobCard = ({ location, imageSrc, onImageChange, states, cities }) => {
+const JobCard = ({ location, imageSrc, onImageChange, states, cities, index, handleUpdateLocation }) => {
 
   function handleChangeState(e) {
-    let Val = e.target.value;  
-    setStateId(Val);  
-    console.log(Val);
+    let selectedIndex = e.target.selectedIndex;
+    let selectedOption = e.target.options[selectedIndex];
+    let selectedText = selectedOption.text;
+    let selectedValue = e.target.value;
+    
+    setStateId(selectedValue);
+    
+    handleUpdateLocation(index, 'state', selectedText);  
+  }
+
+  function handleChangeCity(e) {
+    let selectedText = e.target.options[e.target.selectedIndex].text;
+    handleUpdateLocation(index, 'city', selectedText);
   }
 
   const [stateId, setStateId] = useState('');
@@ -93,7 +71,7 @@ const JobCard = ({ location, imageSrc, onImageChange, states, cities }) => {
 
   return( <div className="">
     <div className="mb-3">
-      <FileInput onChange={(e) => onImageChange(e, location.id)} />
+      <FileInput onChange={(e) => onImageChange(e, location.id, index)} />
     </div>
     <div className="bg-white rounded-lg overflow-hidden shadow-lg">
       <div
@@ -101,14 +79,14 @@ const JobCard = ({ location, imageSrc, onImageChange, states, cities }) => {
         style={{ backgroundImage: `url(${imageSrc || location.image})` }}
       />
       <div className="p-4 flex flex-col">
-        <select onChange={handleChangeState} className='border mb-4' name="" id="">          
+        <select  onChange={handleChangeState} value={location.id} selectedText={location.StateName} className='border mb-4' name="" id="">          
            <option >select state</option>
            {states ? states.map((item)=>{
             return <option value={item.StateId}>{item.StateName}</option>
            }) : ''}
 
         </select>
-        <select className='border mb-4' name="" id="">          
+        <select onChange={handleChangeCity} value={location.cities} className='border mb-4' name="" id="">          
           <option >select city</option>
           {filteredCities ? filteredCities.map((item)=>{
             return <option value={item.CityName}>{item.CityName}</option>
@@ -126,55 +104,149 @@ const JobCard = ({ location, imageSrc, onImageChange, states, cities }) => {
 
 const UpdateLocation = () => {
 
+  const [locations, setLocations] = useState([
+    {
+      locationImage: '',
+      state: '',
+      city : '',
+      isHide : '',
+    },
+    {
+      locationImage: '',
+      state: '',
+      city : '',
+      isHide : '',
+    },
+    {
+      locationImage: '',
+      state: '',
+      city : '',
+      isHide : '',
+    },
+    {
+      locationImage: '',
+      state: '',
+      city : '',
+      isHide : '',
+    },
+  ]);
+  
+
+
+const handleUpdateLocation = (index, field, value) => {
+  setLocations(prevLocations => {
+    const newLocations = [...prevLocations];
+    newLocations[index] = {
+      ...newLocations[index],
+      [field]: value
+    };
+    return newLocations;
+  });
+};
+
+
   const [imageSrcs, setImageSrcs] = useState({});
 
-
+  // useEffect(()=>{
+   
+  //   console.log(locations);
+  // }, [imageSrcs])
 
 
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-  useEffect(()=>{
-  async function fetchStateDetails() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/states`);
-      const data = await response.json();
-      setStates(data.data.states);
-      // console.log(data.data.states);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  fetchStateDetails();
-}, [])
-
-useEffect(()=>{
-  async function fetchCityDetails() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/cities`);
-      const data = await response.json();
-      setCities(data.data.cities);
-      console.log(data.data.cities);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  fetchCityDetails();
-}, [])
+    useEffect(()=>{
+        async function fetchStateDetails() {
+          try {
+            const response = await fetch(`${API_BASE_URL}/states`);
+            const data = await response.json();
+            setStates(data.data.states);
+            // console.log(data.data.states);
+          } catch (error) {
+            console.log(error);
+          }
+        }
+        fetchStateDetails();
+     }, [])
 
 
+   
+    useEffect(()=>{
+      async function fetchCityDetails() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/cities`);
+          const data = await response.json();
+          setCities(data.data.cities);
+          // console.log(data.data.cities);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      fetchCityDetails();
+    }, [])
+
+    useEffect(()=>{
+      async function fetchDetails() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/job-locations`)
+          const data = await response.json();
+          console.log('data Should Be : ', data);
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+      fetchDetails();
+    }, [])
 
 
-  const handleImageChange = (event, id) => {
+
+
+      async function handleSaveData() {
+        try {
+          const response = await fetch(`${API_BASE_URL}/job-locations`, {
+            method : 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(locations)
+          })
+          const data = await response.json();
+          console.log('data in after save : ', data);
+
+        } catch (error) {
+          console.log(error);
+        }
+      }
+
+
+
+
+
+  const handleImageChange = (event, id, index) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        setImageSrcs(prev => ({ ...prev, [id]: reader.result }));
+        // setImageSrcs(prev => ({ ...prev, [id]: reader.result }));
+        
+        setLocations((preVal)=>{
+          let newArray = [...preVal]    
+
+          let newArrayDatais = newArray.map((item, i)=>{
+            return  i === index ? {...item, locationImage : reader.result} : item;
+          })
+
+          console.log( 'DATA :' ,newArrayDatais);
+          return newArrayDatais
+        })
       };
       reader.readAsDataURL(file);
     }
   };
+
 
 
 
@@ -190,18 +262,20 @@ useEffect(()=>{
         {locations.map((location, index) => (
 
           <JobCard
+            index = {index}
             key={location.id}
             states={states}
             cities={cities}
             location={location}
             imageSrc={imageSrcs[location.id]}
             onImageChange={handleImageChange}
+            handleUpdateLocation = {handleUpdateLocation}
           />
         ))}
 
       </div>
     <div className="Changes flex justify-end gap-3 mt-10">
-        <button className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
+        <button onClick={handleSaveData} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
           Save Changes
         </button>
     </div>

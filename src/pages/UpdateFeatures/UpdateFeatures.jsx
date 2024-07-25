@@ -83,7 +83,9 @@ function UpdateFeatures() {
   return (
     <>
       <DefaultLayout>
-        <div className="flex grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-7 gap-y-7">
+        <div className="flex grid grid-cols-1 sm:grid-cols-2 tabIn:grid-cols-3 tabUlu:grid-cols-4 gap-x-7 gap-y-7">
+
+
           <Link to={`/updateFeature/${"category"}`} >
             <div className='flex p-3 flex-col justify-end h-45 w-full bg-white shadow-4 dark:border-strokedark dark:bg-boxdark'>
               <div className="mb-10 flex gap-2 TotalCategories">
