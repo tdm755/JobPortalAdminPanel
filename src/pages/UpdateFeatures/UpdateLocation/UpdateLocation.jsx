@@ -109,25 +109,26 @@ const UpdateLocation = () => {
       locationImage: '',
       state: '',
       city : '',
-      isHide : '',
+      isHide : 'false',
     },
     {
       locationImage: '',
       state: '',
       city : '',
-      isHide : '',
+      isHide : 'false',
+      
     },
     {
       locationImage: '',
       state: '',
       city : '',
-      isHide : '',
+      isHide : 'false',
     },
     {
       locationImage: '',
       state: '',
       city : '',
-      isHide : '',
+      isHide : 'false',
     },
   ]);
   

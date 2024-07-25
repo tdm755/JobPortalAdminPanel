@@ -1,10 +1,77 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import DefaultLayout from '../../layout/DefaultLayout'
 import viewIcon from '../../images/icon/viewEyeIcon.svg'
 import deleteIcon from '../../images/icon/DeleteIcon.svg'
+import { API_BASE_URL } from '../../api/api'
 
 function ManageAds() {
+
+  useEffect(()=>{
+    async function fetchDetails() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/ads`)
+        const data = await response.json();
+        console.log(data);
+      } catch (error) {
+        console.log("error while fetching : ", error);
+      }
+    }
+    fetchDetails();
+   }, [])
+
+
+    async function postDetails() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/ads`, {
+          method : 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(ads) 
+        })
+        const data = await response.json();
+        // console.log(data);
+      } catch (error) {
+        console.log('Error : ', error);
+      }
+    }
+ 
+
+  const [ads, setAds] = useState([
+    {
+      placementName : '',
+      price : '',
+      durationType : '',
+    },
+    {
+      placementName : '',
+      price : '',
+      durationType : '',
+    },
+    {
+      placementName : '',
+      price : '',
+      durationType : '',
+    }
+  ]);
+
+  function handleChange(e, index) {
+    let {name, value} = e.target;
+
+    if (name === 'price') {
+      value = value === '' ? 0 : Number(value);
+    }
+
+    setAds((preVal)=>{
+      let newArray = [...preVal];
+      newArray[index] = {...newArray[index], [name] : value}
+      return newArray;
+    })
+  }
+
+  console.log(ads);
+
   return (
     <DefaultLayout>
           <h1 className="Titles text-black text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
@@ -25,23 +92,42 @@ function ManageAds() {
                 </tr>
               </thead>
               <tbody>
-                {[1, 2, 3].map((_, index) => (
+                {ads.map((item, index) => (
                   <tr key={index} className="border-b hover:bg-gray-50">
                     <td className="px-4 py-2">
                       <input 
+                        name='placementName'
                         className="w-full border  px-2 py-1" 
                         type="text" 
-                        defaultValue="Image-Top(720x90)"
+                        onChange={(e)=>{handleChange(e, index)}}
+                        value={item.placementName}
                       />
                     </td>
                     <td className="px-4 py-2">
                       <div className="flex items-center">
                         <input 
+                          name='price'
                           className="w-20 border  px-2 py-1 mr-2" 
                           type="number" 
-                          placeholder="25"
+                          placeholder="25"    
+                          onChange={(e)=>{handleChange(e, index)}}
+                          value={item.price}                      
                         />
-                        <span className="text-gray-600">/days</span>
+                        
+                      </div>
+                      <div className="flex items-center" >
+                        <select 
+                            name="durationType" 
+                            id="" 
+                            onChange={(e)=>{handleChange(e, index)}}
+                            value={item.durationType}
+                        >
+                          <option >select</option>
+                          <option value="day">day</option>
+                          <option value="month">month</option>
+                          <option value="years">year</option>
+                          
+                        </select>                       
                       </div>
                     </td>
                     <td className="px-4 py-2">
@@ -57,6 +143,7 @@ function ManageAds() {
             </table>
           </div>
         </div>
+        <button onClick={postDetails}>SAVE DETAILS</button>
       </div>
     </DefaultLayout>
   )
