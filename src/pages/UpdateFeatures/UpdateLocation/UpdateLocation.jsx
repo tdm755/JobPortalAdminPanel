@@ -2,12 +2,9 @@ import { useEffect, useState } from 'react';
 import React from 'react';
 import DefaultLayout from '../../../layout/DefaultLayout';
 import { API_BASE_URL } from '../../../api/api';
+import axios from 'axios';
 
-
-
-
-
-  const FileInput = ({ onChange }) => {
+const FileInput = ({ onChange }) => {
   const [fileName, setFileName] = useState('No file chosen');
 
   const handleFileChange = (event) => {
@@ -34,256 +31,227 @@ import { API_BASE_URL } from '../../../api/api';
   );
 };
 
-
-
-
-const JobCard = ({ location, imageSrc, onImageChange, states, cities, index, handleUpdateLocation }) => {
-
-  function handleChangeState(e) {
-    let selectedIndex = e.target.selectedIndex;
-    let selectedOption = e.target.options[selectedIndex];
-    let selectedText = selectedOption.text;
-    let selectedValue = e.target.value;
-    
-    setStateId(selectedValue);
-    
-    handleUpdateLocation(index, 'state', selectedText);  
-  }
-
-  function handleChangeCity(e) {
-    let selectedText = e.target.options[e.target.selectedIndex].text;
-    handleUpdateLocation(index, 'city', selectedText);
-  }
-
+const JobCard = ({ location, onImageChange, states, cities, index, handleUpdateLocation }) => {
   const [stateId, setStateId] = useState('');
   const [filteredCities, setFilteredCities] = useState([]);
 
-  useEffect(()=>{
-    const filtered = ()=>{
-      return cities && stateId ? cities.filter((item)=>{
-                return item.StateId === parseInt(stateId);
-              }) : [];
+  useEffect(() => {
+    if (location.state) {
+      const state = states.find(s => s.StateName === location.state);
+      if (state) {
+        setStateId(state.StateId.toString());
+      }
     }
-    setFilteredCities(filtered)
-  }, [stateId, cities])
+  }, [location.state, states]);
 
+  useEffect(() => {
+    const filtered = cities.filter((item) => item.StateId === parseInt(stateId));
+    setFilteredCities(filtered);
+  }, [stateId, cities]);
 
+  const handleChangeState = (e) => {
+    const selectedValue = e.target.value;
+    const selectedText = e.target.options[e.target.selectedIndex].text;
 
-  return( <div className="">
-    <div className="mb-3">
-      <FileInput onChange={(e) => onImageChange(e, location.id, index)} />
-    </div>
-    <div className="bg-white rounded-lg overflow-hidden shadow-lg">
-      <div
-        className="border border-[#e0e6f7] rounded-md p-3 m-3 h-48 bg-cover bg-center"
-        style={{ backgroundImage: `url(${location.locationImage})` }}
-      />
-      <div className="p-4 flex flex-col">
-        <select  onChange={handleChangeState} value={location.id} selectedText={location.StateName} className='border mb-4' name="" id="">          
-           <option >select state</option>
-           {states ? states.map((item)=>{
-            return <option value={item.StateId}>{item.StateName}</option>
-           }) : ''}
+    setStateId(selectedValue);
+    handleUpdateLocation(index, 'state', selectedText);
+  };
 
-        </select>
-        <select onChange={handleChangeCity} value={location.cities} className='border mb-4' name="" id="">          
-          <option >select city</option>
-          {filteredCities ? filteredCities.map((item)=>{
-            return <option value={item.CityName}>{item.CityName}</option>
-          }) : ''}
-        </select>
-        <p className="text-gray-600">
-          <span className="font-semibold text-blue-600">{location.vacancy} Vacancy</span>
-          <span className="float-right text-gray-500">{location.companies} companies</span>
-        </p>
+  const handleChangeCity = (e) => {
+    const selectedText = e.target.options[e.target.selectedIndex].text;
+    handleUpdateLocation(index, 'city', selectedText);
+  };
+
+  return (
+    <div className="">
+      <div className="mb-3">
+        <FileInput onChange={(e) => onImageChange(e, location.id, index)} />
+      </div>
+      <div className="bg-white rounded-lg overflow-hidden shadow-lg">
+        <div
+          className="border border-[#e0e6f7] rounded-md p-3 m-3 h-48 bg-cover bg-center"
+          style={{ backgroundImage: `url(${location.locationImage})` }}
+        />
+        <div className="p-4 flex flex-col">
+          <select onChange={handleChangeState} value={stateId} className="border mb-4">
+            <option value="">select state</option>
+            {states.map((item) => (
+              <option key={item.StateId} value={item.StateId}>
+                {item.StateName}
+              </option>
+            ))}
+          </select>
+          <select onChange={handleChangeCity} value={location.city || ''} className="border mb-4">
+            <option value="">select city</option>
+            {filteredCities.map((item) => (
+              <option key={item.CityId} value={item.CityName}>
+                {item.CityName}
+              </option>
+            ))}
+          </select>
+          <p className="text-gray-600">
+            <span className="font-semibold text-blue-600">{location.vacancy} Vacancy</span>
+            <span className="float-right text-gray-500">{location.companies} companies</span>
+          </p>
+        </div>
       </div>
     </div>
-  </div>
-  )
+  );
 };
 
 const UpdateLocation = () => {
-
-  const [locations, setLocations] = useState([
-    {
-      locationImage: '',
-      state: '',
-      city : '',
-      isHide : '',
-    },
-    {
-      locationImage: '',
-      state: '',
-      city : '',
-      isHide : '',
-    },
-    {
-      locationImage: '',
-      state: '',
-      city : '',
-      isHide : '',
-    },
-    {
-      locationImage: '',
-      state: '',
-      city : '',
-      isHide : '',
-    },
-  ]);
-  
-
-
-const handleUpdateLocation = (index, field, value) => {
-  setLocations(prevLocations => {
-    const newLocations = [...prevLocations];
-    newLocations[index] = {
-      ...newLocations[index],
-      [field]: value
-    };
-    return newLocations;
-  });
-};
-
-
-  const [imageSrcs, setImageSrcs] = useState({});
-
-  // useEffect(()=>{
-   
-  //   console.log(locations);
-  // }, [imageSrcs])
-
-
+  const [locations, setLocations] = useState([]);
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
 
-    useEffect(()=>{
-        async function fetchStateDetails() {
-          try {
-            const response = await fetch(`${API_BASE_URL}/states`);
-            const data = await response.json();
-            setStates(data.data.states);
-            // console.log(data.data.states);
-          } catch (error) {
-            console.log(error);
-          }
-        }
-        fetchStateDetails();
-     }, [])
+  const fetchLocations = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/job-locations`);
+      setLocations(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-
-   
-    useEffect(()=>{
-      async function fetchCityDetails() {
-        try {
-          const response = await fetch(`${API_BASE_URL}/cities`);
-          const data = await response.json();
-          setCities(data.data.cities);
-          // console.log(data.data.cities);
-        } catch (error) {
-          console.log(error);
-        }
+  useEffect(() => {
+    const fetchStateDetails = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/states`);
+        setStates(response.data.data.states);
+      } catch (error) {
+        console.log(error);
       }
-      fetchCityDetails();
-    }, [])
+    };
 
-    useEffect(()=>{
-      async function fetchDetails() {
-        try {
-          const response = await fetch(`${API_BASE_URL}/job-locations`)
-          const data = await response.json();
-          console.log('data Should Be : ', data);
-
-        } catch (error) {
-          console.log(error);
-        }
+    const fetchCityDetails = async () => {
+      try {
+        const response = await axios.get(`${API_BASE_URL}/cities`);
+        setCities(response.data.data.cities);
+      } catch (error) {
+        console.log(error);
       }
+    };
 
-      fetchDetails();
-    }, [])
+    fetchStateDetails();
+    fetchCityDetails();
+    fetchLocations();
+  }, []);
 
-
-
-
-      async function handleSaveData() {
-        try {
-          const response = await fetch(`${API_BASE_URL}/job-locations`, {
-            method : 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(locations)
-          })
-          const data = await response.json();
-          console.log('data in after save : ', data);
-
-        } catch (error) {
-          console.log(error);
-        }
-      }
-
-
-
-
+  const handleUpdateLocation = (index, field, value) => {
+    setLocations((prevLocations) => {
+      const newLocations = [...prevLocations];
+      newLocations[index] = {
+        ...newLocations[index],
+        [field]: value,
+      };
+      return newLocations;
+    });
+  };
 
   const handleImageChange = (event, id, index) => {
     const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onload = () => {
-        // setImageSrcs(prev => ({ ...prev, [id]: reader.result }));
-        
-        setLocations((preVal)=>{
-          let newArray = [...preVal]    
-
-          let newArrayDatais = newArray.map((item, i)=>{
-            return  i === index ? {...item, locationImage : reader.result} : item;
-          })
-
-          console.log( 'DATA :' ,newArrayDatais);
-          return newArrayDatais
-        })
+        setLocations((prevLocations) => {
+          const newLocations = [...prevLocations];
+          newLocations[index] = {
+            ...newLocations[index],
+            locationImage: reader.result,
+          };
+          return newLocations;
+        });
       };
       reader.readAsDataURL(file);
     }
   };
 
+  const MAX_LOCATIONS = 4;  // Change this number to increase the limit
 
-  console.log(locations);
+  const handleAddLocation = () => {
+    if (locations.length < MAX_LOCATIONS) {
+      setLocations((prevLocations) => [
+        ...prevLocations,
+        { id: `new-${Date.now()}`, state: '', city: '', locationImage: null },
+      ]);
+    }
+  };
 
-
-
+  const handleSaveData = async () => {
+    const formData = new FormData();
+    formData.append('locations', JSON.stringify(locations.map(loc => ({
+      id: loc.id,  // Make sure this is the id from the backend
+      state: loc.state,
+      city: loc.city,
+      isHide: loc.isHide
+    }))));
+  
+    locations.forEach((location, index) => {
+      if (location.locationImage && location.locationImage.startsWith('data:image')) {
+        const base64Data = location.locationImage.split(',')[1];
+        const binaryData = atob(base64Data);
+        const arrayBuffer = new ArrayBuffer(binaryData.length);
+        const uint8Array = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < binaryData.length; i++) {
+          uint8Array[i] = binaryData.charCodeAt(i);
+        }
+        const blob = new Blob([arrayBuffer], { type: 'image/jpeg' });
+        formData.append(`locationImage`, blob, `image_${index}.jpg`);
+      }
+    });
+  
+    try {
+      const response = await axios.post(`${API_BASE_URL}/job-locations`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      console.log('data after save:', response.data);
+      // Fetch updated locations after successful save
+      fetchLocations();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <DefaultLayout>
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-4xl font-bold text-center mb-2">Jobs by Location</h1>
-      <p className="text-xl text-gray-600 text-center mb-8">
-        Find your favourite jobs and get the benefits of yourself
-      </p>
-      <div className="grid grid-cols-1 sm:grid-cols-2  lg:grid-cols-2 tabOut:grid-cols-3 tabUlu:grid-cols-4 gap-6">
-
-        {locations.map((location, index) => (
-
-          <JobCard
-            index = {index}
-            key={location.id}
-            states={states}
-            cities={cities}
-            location={location}
-            imageSrc={imageSrcs[location.id]}
-            onImageChange={handleImageChange}
-            handleUpdateLocation = {handleUpdateLocation}
-          />
-        ))}
-
+      <div className="container mx-auto px-4 py-8">
+        <h1 className="text-4xl font-bold text-center mb-2">Jobs by Location</h1>
+        <p className="text-xl text-gray-600 text-center mb-8">
+          Find your favourite jobs and get the benefits of yourself
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 tabOut:grid-cols-3 tabUlu:grid-cols-4 gap-6">
+          {locations.map((location, index) => (
+            <JobCard
+              key={location.id || `new-${index}`}
+              index={index}
+              states={states}
+              cities={cities}
+              location={location}
+              onImageChange={handleImageChange}
+              handleUpdateLocation={handleUpdateLocation}
+            />
+          ))}
+        </div>
+        <div className="flex justify-between items-center mt-6">
+            {locations.length < MAX_LOCATIONS && (
+              <button
+                onClick={handleAddLocation}
+                className="inline-flex items-center justify-center bg-green-600 py-2 px-4 text-center font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+              >
+                Add Location
+              </button>
+            )}
+            <button
+              onClick={handleSaveData}
+              className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+            >
+              Save Changes
+            </button>
+          </div>
       </div>
-    <div className="Changes flex justify-end gap-3 mt-10">
-        <button onClick={handleSaveData} className="BTNToAddColumn inline-flex items-center justify-center bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10" >
-          Save Changes
-        </button>
-    </div>
-    </div>
-  </DefaultLayout>
+    </DefaultLayout>
   );
 };
 
