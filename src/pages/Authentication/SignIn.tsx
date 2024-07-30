@@ -34,7 +34,7 @@ const SignIn: React.FC = () => {
   return (
     <>
 
-      <div className="rounded-sm border flex items-center justify-center border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
+      <div className="overflow-hidden rounded-sm border flex items-center justify-center border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
         <div className="flex h-[100vh] w-[90%] flex-wrap items-center">
           <div className="hidden w-full xl:block xl:w-1/2">
             <div className="py-17.5 px-26 text-center">
